@@ -1,0 +1,1368 @@
+html {
+  margin: 0px;
+  padding: 0px;
+  overflow: hidden;
+  background-color: transparent;
+}
+
+@font-face {
+  font-family: moldeofont;
+  src: url('ALIEN5.TTF');
+}
+
+body {
+  margin: 0px;
+  padding: 0px;
+  background-color: transparent;
+}
+
+
+::-webkit-scrollbar-thumb {
+  display: none;
+}
+
+.titlebar {	
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	width: 90%;
+	height: 10px;
+	background-color: transparent;
+	-webkit-app-region: drag;
+	-webkit-user-select: none;
+	text-align: left;
+	padding: 2px;
+	font-size: 7px;
+	font-family: moldeofont;
+	color: #FFF;
+	z-index: 100;
+}
+
+.top-titlebar-close-button {
+  position: absolute;
+  right: -10%;
+  top: 2px;
+  width: 10px;
+  height: 10px;
+  -webkit-app-region: no-drag;
+  background-color: #000 !important;
+  background-image: url(button_close.png);
+}
+
+#container {
+	margin: 0px;
+	padding: 0px;
+	border: 0px;
+	width: 100%;
+	height: 100%;
+	background-image: url('art/moldeocontrol_back.png');
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+}
+
+div {
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+}
+
+button {
+	display: block;
+	position: absolute;
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+	background-color: transparent;
+	margin: 0px;
+	padding: 0px;
+	border: 0px;
+	-webkit-tap-highlight-color: #000;
+	-webkit-user-select: none;
+	outline: none;
+	/*border: solid 1px #0F0;*/
+	cursor: pointer;
+	cursor: hand;
+}
+
+button.object_enabled {
+	/*
+	border-top: solid 2px #2F2;
+	border-left: solid 2px #2F2;
+	border-radius: 8px;
+	*/
+}
+
+/*
+button.fxselected  {
+	border-radius: 8px;
+	box-shadow: 4px 4px 0px 0px #F44;
+	z-index: 20000;
+}
+
+button.fxselected:after {
+	display: block;
+	position: absolute;
+	opacity: 0.0;
+	transition: all 1s;
+	top: 0px;
+	right: 0px;
+	content: "x";
+	color: #FFF;
+	width: 25%;
+	height: 25%;
+	border-radius: 4px;
+	box-shadow: 4px 4px 4px 4px #F44;
+	background-color: #F44;
+}
+
+button.fxselected:hover:after {
+	right: -20px;
+	opacity: 1.0;
+	transition: all 1s;
+}
+*/
+
+.key_button {
+	width: 34%;/*44px*/
+	height: 34%;/*34px*/
+}
+
+.circle_button {
+	width: 30%;/*18px*/
+	height: 42%;/*32px*/
+}
+
+.special_button {
+	width: 29%;/*29px*/
+	height: 18%;/*18px*/
+}
+
+.space_button {
+	width: 100%;/*118px*/
+	height: 32%;/*32px*/
+	background-size: 100% 100%;
+}
+
+
+/*PANEL EFFECTS */
+
+.objects_selector_panel {
+	display: block;
+	position: absolute;
+	/*border: solid 1px #F00;*/
+}
+
+.channel_controls {
+	display: block !important;
+	position: absolute;
+	/*border: solid 1px #0FF;*/
+}
+
+
+
+
+
+/*CHANNEL CONTROLS*/
+
+
+.left_side {
+	left: 3%;
+	height: 60%;
+	width: 31.25%;
+	bottom:  0px;
+}
+
+.center_side {
+	left: 50%;
+	margin-left: -15%;
+	height: 60%;
+	width: 30%;
+	bottom:  10%;
+}
+
+.right_side {
+	left: 66%;
+	height: 60%;
+	width: 31.25%;
+	bottom:  0px;
+}
+
+.button_X {
+	background-image: url( buttons/button_X.svg );
+	left: 3%;
+	top: 12%;
+	width: 4%;
+	height: 8%;
+}
+
+.button_X #label_fx_selected {
+	display: block;
+	position: absolute;
+	left: 100%;
+	top: -25%;
+	background-color: #000;
+	color: #FFF;
+	font-family: moldeofont;
+}
+
+/*
+
+PRECONFIG SELECTOR  PANEL
+
+1,2,3
+
+
+*/
+
+.preconfigs_selector_panel {
+		width: 16%;
+		height: 25%;
+		left: 25%;
+		top: 12%;
+}
+
+.preconfigs_selector_panel button {
+	height: 100%;
+	width: 25%;
+}
+
+.button_ObjectSelected {
+	
+}
+
+
+.button_indicat {
+	background-image: url( buttons/indicat_VOID.svg );
+	left: 0%;
+	bottom: 0%;
+}
+
+.button_1 {
+	background-image: url( buttons/button_1_off.svg );
+	left: 25%;
+	bottom: 0%;
+}
+
+.button_2 {
+	background-image: url( buttons/button_2_off.svg );
+	left: 50%;
+	bottom: 0%;
+}
+
+.button_3 {
+	background-image: url( buttons/button_3_off.svg );
+	left: 75%;
+	bottom: 0%;
+}
+
+.button_1.circle_selected,
+.button_1:active {
+	background-image: url( buttons/button_1_on.svg );
+}
+
+
+.button_2.circle_selected,
+.button_2:active {
+	background-image: url( buttons/button_2_on.svg );
+}
+
+.button_3.circle_selected,
+.button_3:active {
+	background-image: url( buttons/button_3_on.svg );
+}
+
+/*W,A,S,D*/
+	
+.first_effects {
+	top: 24%;
+	left: 8%;
+	width: 16%;
+	height: 60%;
+	z-index: 4;
+}
+
+.first_effects button,
+.second_effects button,
+.cursor_panel button {
+	width: 33%;
+	height: 50%;
+}
+
+
+	
+.button_W {
+	background-image: url( buttons/button_W_off.svg );
+	left: 33%;
+	top: 0%;
+}
+#button_W:active,
+#button_W.object_enabled { background-image: url( buttons/button_W_on.svg ); }
+#button_W.object_enabled.fxselected { background-image: url(buttons/button_W_selec_on.svg ); }
+.button_W.fxselected { background-image: url( buttons/button_W_selec.svg ); }
+.button_W.fxediting { background-image: url( buttons/button_W_selec_on.svg ); }
+
+.button_A {
+	background-image: url( buttons/button_A_off.svg );
+	left: 0%;
+	top: 25%;
+}
+#button_A:active,
+#button_A.object_enabled { background-image: url( buttons/button_A_on.svg ); }
+#button_A.object_enabled.fxselected { background-image: url( buttons/button_A_selec_on.svg ); }
+.button_A.fxselected { background-image: url( buttons/button_A_selec.svg ); }
+.button_A.fxediting { background-image: url( buttons/button_A_selec_on.svg ); }
+
+.button_S {
+	background-image: url( buttons/button_S_off.svg );
+	left: 33%;
+	top: 50%;
+}
+#button_S:active,
+#button_S.object_enabled { background-image: url( buttons/button_S_on.svg ); }
+#button_S.object_enabled.fxselected { background-image: url( buttons/button_S_selec_on.svg ); }
+.button_S.fxselected { background-image: url( buttons/button_S_selec.svg ); }
+.button_S.fxediting { background-image: url( buttons/button_S_selec_on.svg ); }
+
+.button_D {
+	background-image: url( buttons/button_D_off.svg );
+	left: 66%;
+	top: 25%;
+}
+#button_D:active,
+#button_D.object_enabled { background-image: url( buttons/button_D_on.svg ); }
+#button_D.object_enabled.fxselected { background-image: url( buttons/button_D_selec_on.svg ); }
+.button_D.fxselected { background-image: url( buttons/button_D_selec.svg ); }
+.button_D.fxediting { background-image: url( buttons/button_D_selec_on.svg ); }
+
+
+
+
+
+
+
+/*CENTER SIDE*/
+
+/*TAB,ENTER,SPACE*/
+
+.play_panel {
+	width: 40%;
+	left: 30%;
+	height: 23%;
+	top: 50%;
+	z-index: 0;
+}
+.play_panel button {
+	width: 33%;
+	height: 100%;
+	top: 0%;
+}
+
+.button_TAB {
+	background-image: url( buttons/button_TAB_off.svg );
+	left: 2%;
+}
+
+.button_ENTER {
+	background-image: url( buttons/button_ENTER_off.svg );
+	right: 2%;
+}
+
+.beat_panel {
+	left: 43%;
+	bottom: 10%;
+	width: 14%;
+	height: 18%;
+}
+
+.button_SPACE  {
+	background-image: url( buttons/button_SPACE_off.svg );
+	width: 100%;
+	height: 100%;
+	
+}
+
+.button_TAB:active {
+	background-image: url( buttons/button_TAB_on.svg );
+}
+
+.button_ENTER:active {
+	background-image: url( buttons/button_ENTER_on.svg );
+}
+
+.button_SPACE:active {
+	background-image: url( buttons/button_SPACE_on.svg );
+}
+
+
+/*V,B,N,M*/
+.second_effects {
+/*
+	left: 37.5% !important;
+	width: 25% !important;
+	height: 28%;
+	top: 40% !important;
+	*/
+	top: 14%;
+	width: 16%;
+	height: 60%;
+	left: 42%;
+	z-index: 1;
+}
+
+.second_effects button {
+	/*height: 100%;*/
+}	
+
+/*
+.button_V {
+	background-image: url( buttons/button_V_off.svg );
+	left: 0%;
+	bottom: 0%;
+	width: 25%;
+}
+#button_V:active,
+#button_V.object_enabled { background-image: url( buttons/button_V_on.svg ); }
+#button_V.object_enabled.fxselected { background-image: url(buttons/button_V_selec_on.svg ); }
+#button_V.fxselected { background-image: url( buttons/button_V_selec.svg ); }
+
+.button_B {
+	background-image: url( buttons/button_B_off.svg );
+	left: 25%;
+	bottom: 0%;
+	width: 25%;
+}
+#button_B:active,
+#button_B.object_enabled { background-image: url( buttons/button_B_on.svg ); }
+#button_B.object_enabled.fxselected { background-image: url( buttons/button_B_selec_on.svg ); }
+#button_B.fxselected { background-image: url( buttons/button_B_selec.svg ); }
+
+.button_N {
+	background-image: url( buttons/button_N_off.svg );
+	left: 50%;
+	bottom: 0%;
+	width: 25%;
+}
+#button_N:active,
+#button_N.object_enabled { background-image: url( buttons/button_N_on.svg ); }
+#button_N.object_enabled.fxselected { background-image: url( buttons/button_N_selec_on.svg ); }
+#button_N.fxselected { background-image: url( buttons/button_N_selec.svg ); }
+
+.button_M {
+	background-image: url( buttons/button_M_off.svg );
+	left: 75%;
+	bottom: 0%;
+	width: 25%;
+}
+#button_M:active,
+#button_M.object_enabled { background-image: url( buttons/button_M_on.svg ); }
+#button_M.object_enabled.fxselected { background-image: url( buttons/button_M_selec_on.svg ); }
+#button_M.fxselected { background-image: url( buttons/button_M_selec.svg ); }
+*/
+
+.button_I {
+	background-image: url( buttons/button_I_off.svg );
+	left: 33%;
+	top: 0%;
+}
+#button_I:active,
+#button_I.object_enabled { background-image: url( buttons/button_I_on.svg ); }
+#button_I.object_enabled.fxselected { background-image: url(buttons/button_I_selec_on.svg ); }
+.button_I.fxselected { background-image: url( buttons/button_I_selec.svg ); }
+.button_I.fxediting { background-image: url( buttons/button_I_selec_on.svg ); }
+
+.button_J {
+	background-image: url( buttons/button_J_off.svg );
+	left: 0%;
+	top: 25%;
+}
+#button_J:active,
+#button_J.object_enabled { background-image: url( buttons/button_J_on.svg ); }
+#button_J.object_enabled.fxselected { background-image: url( buttons/button_J_selec_on.svg ); }
+.button_J.fxselected { background-image: url( buttons/button_J_selec.svg ); }
+.button_J.fxediting { background-image: url( buttons/button_J_selec_on.svg ); }
+
+.button_K {
+	background-image: url( buttons/button_N_off.svg );
+	left: 33%;
+	top: 50%;
+}
+#button_K:active,
+#button_K.object_enabled { background-image: url( buttons/button_K_on.svg ); }
+#button_K.object_enabled.fxselected { background-image: url( buttons/button_K_selec_on.svg ); }
+.button_K.fxselected { background-image: url( buttons/button_K_selec.svg ); }
+.button_K.fxediting { background-image: url( buttons/button_K_selec_on.svg ); }
+
+.button_L {
+	background-image: url( buttons/button_L_off.svg );
+	left: 66%;
+	top: 25%;
+}
+#button_L:active,
+#button_L.object_enabled { background-image: url( buttons/button_L_on.svg ); }
+#button_L.object_enabled.fxselected { background-image: url( buttons/button_L_selec_on.svg ); }
+.button_L.fxselected { background-image: url( buttons/button_L_selec.svg ); }
+.button_L.fxediting { background-image: url( buttons/button_L_selec_on.svg ); }
+
+/*F1,F2,F3*/
+
+.channel_selectors {
+	width: 16%;
+	height: 25%;
+	left: 59%;
+	top: 12%;
+}
+.channel_selectors button {
+	width: 25%;
+	height: 100%;
+}
+
+
+
+.button_F1 {
+	background-image: url( buttons/button_F1_off.svg );
+	left: 25%;
+	top: 0%;
+}
+
+.button_F2 {
+	background-image: url( buttons/button_F2_off.svg );
+	left: 50%;
+	top: 0%;
+}
+
+.button_F3 {
+	background-image: url( buttons/button_F3_off.svg );
+	left: 75%;
+	top: 0%;
+}
+
+.button_F1:active {
+	background-image: url( buttons/button_F1_on.svg );
+}
+
+.button_F2:active {
+	background-image: url( buttons/button_F2_on.svg );
+}
+
+.button_F3:active {
+	background-image: url( buttons/button_F3_on.svg );
+}
+	
+/*UP,LEFT,DOWN,RIGHT*/
+
+.cursor_panel {
+	right: 8%;
+	top: 24%;
+	width: 16%;
+	height: 60%;
+}	
+
+
+.button_UP {
+	background-image: url( buttons/button_UP_off.svg );
+	left: 33%;
+	top: 0%;
+}
+
+.button_LEFT {
+	background-image: url( buttons/button_LEFT_off.svg );
+	left: 0%;
+	top: 25%;
+}
+
+.button_DOWN {
+	background-image: url( buttons/button_DOWN_off.svg );
+	left: 33%;
+	bottom: 0%;
+}
+
+.button_RIGHT {
+	background-image: url( buttons/button_RIGHT_off.svg );
+	right: 0%;
+	top: 25%;
+}
+
+
+.button_UP:active {
+	background-image: url( buttons/button_UP_on.svg );
+}
+
+.button_LEFT:active {
+	background-image: url( buttons/button_LEFT_on.svg );
+}
+
+.button_DOWN:active {
+	background-image: url( buttons/button_DOWN_on.svg );
+}
+
+.button_RIGHT:active {
+	background-image: url( buttons/button_RIGHT_on.svg );
+}
+
+
+
+
+
+
+/* 
+
+	OBJECT SELECTORS
+
+ */
+
+.object_selectors {
+	width: 5%;
+	height: 40%;
+	left: 1.5%;
+	top: 14%;
+}
+
+.object_selectors button {
+	width: 100%;
+	height: 50%;
+	position: relative;
+	float: left;
+	clear: both;
+}
+
+.button_SHIFT {
+	background-image: url( buttons/button_SHIFT_off.svg );
+	
+}
+
+#button_SHIFT.shiftEnabled {
+	background-image: url( buttons/button_SHIFT_on.svg );
+}
+ 
+.button_CTRL {
+	background-image: url( buttons/button_CTRL_off.svg );
+	
+}
+#button_CTRL.ctrlEnabled {
+	background-image: url( buttons/button_CTRL_on.svg );
+}
+
+.button_SHIFT:active {
+	background-image: url( buttons/button_SHIFT_on.svg );
+	
+}
+ 
+.button_CTRL:active {
+	background-image: url( buttons/button_CTRL_on.svg );
+	
+}
+
+
+/*
+
+ CHANNEL SELECTORS
+
+*/
+
+.channel_navigator {
+	width: 5%;
+	height: 40%;
+	right: 1.5%;
+	top: 14%;
+}
+
+.channel_navigator button {
+	width: 100%;
+	height: 50%;
+	position: relative;
+	float: left;
+	clear: both;
+}
+
+.button_PGUP {
+	background-image: url( buttons/button_PGUP_off.svg );
+	
+}
+ 
+.button_PGDOWN {
+	background-image: url( buttons/button_PGDOWN_off.svg );
+	
+}
+
+.button_PGUP:active {
+	background-image: url( buttons/button_PGUP_on.svg );
+	
+}
+ 
+.button_PGDOWN:active {
+	background-image: url( buttons/button_PGDOWN_on.svg );
+	
+}
+
+/**
+ CURSOR SLIDE CONTROLS
+*/
+
+.slide_controls {
+	display: block;
+	position: absolute;
+	
+}
+
+.slide_H {
+	width: 16%;
+	height: 10%;
+	bottom: 5%;
+	right: 8%;
+}
+
+.slide_V {
+	width: 1%;
+	height: 62%;
+	top: 22%;
+	right: 7%;
+	-webkit-appearance: slider-vertical;
+	orient: vertical;
+	writing-mode: bt-lr;
+}
+
+
+input[type=range].slide_H {
+	-webkit-appearance: none;
+	background-color: #0FF;
+	height: 4px;
+	width: auto;
+}
+
+input[type=range].slide_V {
+	-webkit-appearance: slider-vertical;
+	background-color: #0FF;
+}
+
+
+
+/**
+
+
+
+
+
+			EDITOR
+
+
+
+
+*/
+
+#editor_button {
+	transition: all 1s;
+	top: -8%;
+	right: 2%;
+	width: 5%;
+	height: 8%;
+	
+	background-image: url( buttons/button_EDITOR_on.svg );
+	z-index: 120;
+	cursor: pointer;
+	cursor: hand;
+}
+
+#editor_button.editor_button_close {
+	top: -8% !important;
+	background-image: url( buttons/button_EDITOR_off.svg ) !important;
+	
+}
+
+#buttonED_OpenProject {
+	display: block;
+	position: absolute;
+	left: 1%;
+	top: 2%;
+	width: 3%;
+	height:15%;
+}
+.button_OpenProject {
+	background-image: url(buttons/button_OpenProject.svg);
+}
+
+.button_OpenProject:active,
+.button_OpenProject_on {
+	background-image: url(buttons/button_OpenProject_on.svg);
+}
+
+
+#buttonED_SaveProject {
+	display: block;
+	position: absolute;
+	left: 5%;
+	top: 2%;
+	width: 3%;
+	height: 18%;
+}
+.button_SaveProject {
+	background-image: url(buttons/button_Save.svg);
+}
+
+#buttonED_SaveProject.saveneeded {
+	background-image: url(buttons/button_Save_on.svg);
+}
+
+.button_SaveProject:active,
+.button_SaveProject_on {
+	background-image: url(buttons/button_Save.svg);
+}
+
+#buttonED_SaveProjectAs {
+	display: block;
+	position: absolute;
+	left: 9%;
+	top: 2%;
+	width: 3%;
+	height: 18%;
+}
+.button_SaveProjectAs:active,
+.button_SaveProjectAs {
+	background-image: url(buttons/button_SaveAs.svg);
+}
+
+.button_SaveProjectAs_on {
+	background-image: url(buttons/button_SaveAs.svg);
+}
+
+
+
+
+#buttonED_Presentation {
+	display: block;
+	position: absolute;
+	right: 1%;
+	top: 2%;
+	width: 3%;
+	height: 18%;
+}
+.button_Presentation {
+	background-image: url(buttons/button_Presentation.svg);
+}
+
+.button_Presentation:active,
+.button_Presentation_on {
+	background-image: url(buttons/button_Presentation_on.svg);
+}
+
+#buttonED_Screenshot {
+	display: block;
+	position: absolute;
+	right: 5%;
+	top: 2%;
+	width: 3%;
+	height: 18%;
+}
+.button_Screenshot {
+	background-image: url(buttons/button_Screenshot.svg);
+}
+
+.button_Screenshot:active,
+.button_Screenshot_on {
+	background-image: url(buttons/button_Screenshot_on.svg);
+}
+
+
+.window_panel {
+	display: block;
+	position: absolute;
+/*	border: solid 2px #F0F;*/
+}
+
+#editor_panel {
+	transition: all 1s;
+	width: 100%;
+	background-color: #333;
+	height: 100%;
+	top: 100%;
+	z-index: 101;
+}
+
+.editor_inactive {
+	/*display: none !important;*/
+	
+}
+
+#editor_panel.editor_opened {
+	top: 8%;
+}
+
+
+.first_editor_effects {
+	top: 24%;
+	left: 4%;
+	width: 16%;
+	height: 60%;
+	z-index: 4;
+	position: absolute;
+	display: block;
+}
+
+.second_editor_effects {
+	top: 24%;
+	right: 4%;
+	width: 16%;
+	height: 60%;
+	z-index: 4;
+	position: absolute;
+	display: block;
+}
+
+.first_editor_effects button,
+.second_editor_effects button {
+	width: 33%;
+	height: 50%;
+}
+
+.effects_side {
+	left: 20%;
+	width: 100%;
+	height: 18%;	
+	top:  5%;
+	border: solid 1px #0FF;
+}
+
+
+.object_side {
+	display: block;
+	position: absolute;
+	width: 60%;
+	height: 90%;	
+	top:  0%;
+	left: 20%;
+	/*border: solid 2px #F0F;*/
+}
+
+
+
+
+
+	.object_side .object_selected {
+		/*border: solid 1px #00F;*/
+		width: 100%;
+		height: 40%;
+		top: -1%;
+		
+		padding: 0px;
+		margin: 0px;
+		display: block;
+		position: relative;
+		float: left;
+	}
+		.button_object_onoff {
+			left: 0%;
+			top: 50%;
+			margin-top: 0%;
+			height: 50%;
+			width: 10%;
+			background-image: url(buttons/button_Object_Disable.svg);
+		}
+		
+			.button_object_onoff_on {
+				background-image: url(buttons/button_Object_Enable.svg) !important;
+			}
+
+		.object_label {
+			display: block;
+			position: absolute;
+			border: solid 1px #00FFF4;
+			border-radius: 8px;
+			top: 55%;
+			left: 10%;
+			height: 40%;
+			width: 30%;
+			
+			padding-left: 2%;
+			padding-top: 0.3%;
+			/*border: solid 1px #FFF;*/
+			
+			
+			font-size: 19px;
+			font-family: Alien League;
+			text-transform: uppercase;
+			color: #94fbff;				
+				
+		}
+
+		.object_preconfigs {
+			display: block;
+			position: absolute;
+			left: 28%;
+			top: 0%;
+			width: 14%;
+			height: 56%;
+			background-image: url(buttons/button_Editor_Preconfigs.svg);
+			/*border: solid 1px #FFF;*/
+		}
+			.object_preconfigs_1 {
+				background-image: url(buttons/button_Editor_Preconfigs_1.svg);			
+			}
+
+			.object_preconfigs_2 {
+				background-image: url(buttons/button_Editor_Preconfigs_2.svg);
+			}
+
+			.object_preconfigs_3 {
+				background-image: url(buttons/button_Editor_Preconfigs_3.svg);
+			}
+			
+			.object_preconfigs button {
+				display: block;
+				position: absolute;
+				top: 8%;
+				width: 29% !important;
+				height: 60%;
+			}
+			
+			.object_preconfigs #buttonED_1 {
+				left: 9%;
+			}
+			.object_preconfigs #buttonED_2 {
+				left: 36%;
+			}
+			.object_preconfigs #buttonED_3 {
+				left: 62%;
+			}
+			
+				.object_preconfigs  > button.circle_button {
+					/*
+					display: block;
+					position: relative !important;
+					float: left;
+					clear: none;
+					
+					width: 6%;
+					margin: 1%;
+					height: 18%;
+					*/
+
+				}
+				
+				.object_preconfigs #buttonED_1.circle_selected {
+					background-image: url( buttons/button_1_on.svg );
+				}
+				.object_preconfigs #buttonED_2.circle_selected {
+					background-image: url( buttons/button_2_on.svg );
+				}
+				.object_preconfigs #buttonED_3.circle_selected {
+					background-image: url( buttons/button_3_on.svg );
+				}
+						
+		
+		.object_edition {
+			display: block;
+			position: absolute;
+			top: 0%;
+			left: 44%;
+			width: 8%;
+			height: 100%;
+			/*background-image: url(buttons/button_Editor_ObjectEdition.svg);*/
+			border: solid 1px #FFF;
+			border-radius: 4px;
+		}
+		
+			.object_edition button {
+				display: block;
+				position: absolute;
+				top: 65%;
+				width: 38%;
+				height: 30%;
+			}
+			
+			#object_edition_image {
+				display: block;
+				position: absolute;
+				/*border: solid 1px #F00;*/
+				width: 100%;
+				height: 65%;
+			}
+			
+			.object_edition .object_edit {
+				background-image: url(buttons/button_Editor_ObjectEdition_EDIT.svg);
+				left: 6%;
+			}
+			
+			.object_edition .object_import {
+				background-image: url(buttons/button_Editor_ObjectEdition_IMPORT.svg);
+				left: 56%;
+			}
+			
+		.object_color {
+			display: block;
+			position: absolute;
+			right: 1%;
+			top: 0%;
+			width: 30%;
+			height: 100%;
+			border: solid 1px #FFF;
+		}
+		
+		#object_color_palette {
+			display: block;
+			position: absolute;
+			top: 50%;
+			right: 0%;
+			width: 100%;
+			height: 50%;
+		}
+		
+.parameters_side {
+	display: block;
+	position: absolute;
+	left: 15%;
+	width: 27%;
+	height: 60%;	
+	top:  38%;
+	padding-top: 0.9%;
+	/*border: solid 1px #F00;*/
+	
+	font-size: 13px;
+	font-family: Alien League;
+	text-transform: uppercase;
+	/*color: #00FFF4;*/
+	color: #999;
+	overflow: hidden;
+	background-image: url(buttons/parameter_side_background_line.png);
+	background-repeat: repeat-y;
+	background-position: 1.2% -1%;
+	background-size: 1% 100%;
+}
+
+	.parameters_side .parameters_side_MOB {
+
+		display: block;
+		position: absolute;
+		left: -100%;
+		width: 100%;
+		height: 100%;
+
+		/*border: solid 1px #F0F;*/
+		transition: all 1s;
+
+	}
+		.parameters_side_MOB_selected {
+			left: 0% !important;
+		}
+		
+		.parameters_side_MOB .parameters_side_MOB_preconf {
+			display: block;
+			position: absolute;
+			left: -100%;
+			width: 100%;
+			height: 100%;
+			/*border: solid 1px #F0F;*/
+			transition: all 1s;
+		}
+
+		div.parameters_selected {
+			display: block;
+			left: 0% !important;
+			transition: all 1s;
+			/*background-color: #CCC;*/
+		}
+
+
+		.parameters_side .parameter_group {
+			display: block;
+			position: relative;
+			width: 100%;
+			height: 32%;
+			background-image: url(buttons/parameter_group_background_off.svg);
+			background-repeat: no-repeat;
+			background-size: 100% 100%;
+			float: left;
+			cursor: pointer;
+			cursor: hand;
+			
+		}
+		
+		.parameter_group.group_selected {
+			background-image: url(buttons/parameter_group_background_on.svg);
+		}
+		
+		.parameter_group>label {
+			display: block;
+			position: absolute;
+			margin-left: 5%;
+			padding: 2%;
+			height: 60%;
+			width: 80%;
+			/*border: solid 1px #00FFF4;*/
+			border: solid 1px #999;
+			border-radius: 7px;
+			background-color: #3e3e3e;
+			cursor: pointer;
+			cursor: hand;
+		}
+		.group_selected>label {
+			border: solid 1px #00FFF4 !important;
+			color: #00FFF4 !important;
+		}
+		
+.parameter_inspector_side {
+	display: block;
+	position: absolute;
+	border: solid 1px #999;
+	border-radius: 7px;
+	left: 42%;
+	width: 57%;
+	height: 58%;	
+	top:  42%;
+}
+	.parameter_inspector {
+		display: none;
+	}
+	
+	.inspector_show {
+		display: block !important;
+	}
+	
+	.parameter_inspector button {
+		display: block;
+		position: relative;
+		float: left;
+		margin-top: 2%;
+		margin-left: 2%;
+		width: 12%;
+		height: 40%;
+	}
+	
+	.parameter_inspector .parameter_slide {
+		display: block;
+		position: relative;
+		float: left;
+		clear: left;
+		margin-top: 2%;
+		margin-left: 5%;
+		width: 85%;
+		height: 40%;
+	}
+	
+	/* POSITION INSPECTOR */
+	
+	 .param_input {
+		display: block;
+		position: relative;
+		float: left;
+		width: 40px;
+		height: 13px;
+		font-size: 10px;
+		border: solid 1px #999;
+		background-color: #333;
+		color: #999;
+	 }
+
+	#selector_POSITION_X {
+		background-image: url(buttons/button_X_off.svg);
+	}
+	#selector_POSITION_X:active,
+	#selector_POSITION_X.selected {
+		background-image: url(buttons/button_X_on.svg);
+	}
+	
+	#selector_POSITION_Y {
+		background-image: url(buttons/button_Y_off.svg );
+	}
+	#selector_POSITION_Y:active,
+	#selector_POSITION_Y.selected {
+		background-image: url(buttons/button_Y_on.svg );
+	}
+	
+	#selector_POSITION_Z {
+		background-image: url(buttons/button_Z_off.svg );
+	}
+	#selector_POSITION_Z:active,
+	#selector_POSITION_Z.selected {
+		background-image: url(buttons/button_Z_on.svg );
+	}	
+	
+	/* SCALE INSPECTOR */
+	
+	#selector_SCALE_Vertical {
+		background-image: url(buttons/button_Vertical_off.svg );
+	}
+	#selector_SCALE_Vertical:active,
+	#selector_SCALE_Vertical.selected {
+		background-image: url(buttons/button_Vertical_on.svg );
+	}
+	
+	#selector_SCALE_Horizontal {
+		background-image: url(buttons/button_Horizontal_off.svg );
+	}
+	#selector_SCALE_Horizontal:active,
+	#selector_SCALE_Horizontal.selected {
+		background-image: url(buttons/button_Horizontal_on.svg );
+	}
+	
+	#selector_SCALE_Zoom {
+		background-image: url(buttons/button_Zoom_off.svg );
+	}
+	#selector_SCALE_Zoom:active,
+	#selector_SCALE_Zoom.selected {
+		background-image: url(buttons/button_Zoom_on.svg );
+	}
+	
+	
+	/* MOTION INSPECTOR */
+	
+	#selector_MOTION_Vertical {
+		background-image: url(buttons/button_Vertical_off.svg );
+	}
+	#selector_MOTION_Vertical:active,
+	#selector_MOTION_Vertical.selected {
+		background-image: url(buttons/button_Vertical_on.svg );
+	}
+	
+	#selector_MOTION_Horizontal {
+		background-image: url(buttons/button_Horizontal_off.svg );
+	}
+	#selector_MOTION_Horizontal:active,
+	#selector_MOTION_Horizontal.selected {
+		background-image: url(buttons/button_Horizontal_on.svg );
+	}
+	
+	#selector_MOTION_Circular {
+		background-image: url(buttons/button_Circular_off.svg );
+	}
+	#selector_MOTION_Circular:active,
+	#selector_MOTION_Circular.selected {
+		background-image: url(buttons/button_Circular_on.svg );
+	}
+
+	
+	
+
+.button_previous_effect ,
+.button_next_effect {
+	width: 8%;
+	height: 40%;
+	top: 30%;
+	/*border: solid 1px #00F;*/
+	
+	display: block;
+	position: relative;
+	
+	clear: none;
+	cursor: pointer;
+}
+
+.button_previous_effect {
+	float: left;
+}
+
+.button_next_effect {
+	float: right;
+}
+
+
+.button_previous_effect  {
+	background-image: url( buttons/button_previous_effect.svg );
+}
+
+.button_next_effect  {
+	background-image: url( buttons/button_next_effect.svg );
+	
+}
+
+
+
+
+
+

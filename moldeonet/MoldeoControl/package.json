@@ -1,0 +1,17 @@
+{
+  "name": "Moldeo Control",
+  "description": "Moldeo 1.0 Controller for Moldeo Player",
+  "main": "MoldeoControl.html",
+  "single-instance": false,
+  "window": {
+	"icon": "moldeocontrol.png",
+    "show": true,
+    "toolbar": true,
+    "frame": false,
+    "position": "center",
+    "width": 834,
+    "height": 164,
+    "min_width": 834,
+    "min_height": 164
+  }
+}
