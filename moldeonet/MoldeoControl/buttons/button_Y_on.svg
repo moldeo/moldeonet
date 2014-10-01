@@ -14,7 +14,7 @@
    id="svg22422"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="button_X_on.svg">
+   sodipodi:docname="button_Y_on.svg">
   <defs
      id="defs22424">
     <filter
@@ -226,7 +226,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="7.6265125"
-     inkscape:cx="16.982283"
+     inkscape:cx="0.59209155"
      inkscape:cy="2.4488872"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -235,11 +235,11 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="504"
-     inkscape:window-height="423"
-     inkscape:window-x="817"
-     inkscape:window-y="345"
-     inkscape:window-maximized="0" />
+     inkscape:window-width="1366"
+     inkscape:window-height="716"
+     inkscape:window-x="-4"
+     inkscape:window-y="-4"
+     inkscape:window-maximized="1" />
   <metadata
      id="metadata22427">
     <rdf:RDF>
@@ -248,7 +248,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -297,13 +297,13 @@
          transform="scale(1.1605619,0.86165158)"
          sodipodi:linespacing="125%"
          id="text6072-3-8-4-4-3-5-1-5-6-7-39"
-         y="1662.5194"
-         x="491.79688"
+         y="1662.3033"
+         x="490.78052"
          style="font-size:14.40774059px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#00ffff;fill-opacity:1;stroke:none;font-family:Sans"
          xml:space="preserve"><tspan
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#00ffff;fill-opacity:1;font-family:Alien League;-inkscape-font-specification:Alien League"
-           y="1662.5194"
-           x="491.79688"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#00ffff;fill-opacity:1;font-family:DSC;-inkscape-font-specification:DSC"
+           y="1662.3033"
+           x="490.78052"
            id="tspan6074-0-9-7-6-6-2-5-2-7-1-0"
            sodipodi:role="line">y</tspan></text>
     </g>
