@@ -60,7 +60,56 @@ fs.chooseFile = function( idinput ) {
 	chooser.click();
 }
 
-
+function updateSliderHorizontalValue( value, target, send ) {
+				if (send==undefined) send = false;
+				var rect = target.getBoundingClientRect();
+				x = rect.left;
+				y = rect.top;
+				w = rect.right - rect.left;
+				h = rect.bottom - rect.top;
+				
+				target.setAttribute("style","background-position: -"+( w - value*w/100.0 )+"px 0px;");
+				target.setAttribute("value",value);
+				target.value = value;
+				if (send) {
+					var message = target.getAttribute("msg");
+					var moblabel =  target.getAttribute("moblabel");
+					var msg = sliderMessages[message];
+					if (moblabel) {
+						msg = msg.replace( /moblabel/g , moblabel );
+						msg = msg.replace( /msgvalue/g , value/100.0 );
+						console.log("msg:"+msg);
+						OscMoldeoSend( JSON.parse( msg ) );	
+					}
+					
+				}
+			};
+function updateSliderVerticalValue( value, target, send ) {
+				if (send==undefined) send = false;
+				var rect = target.getBoundingClientRect();
+				x = rect.left;
+				y = rect.top;
+				w = rect.right - rect.left;
+				h = rect.bottom - rect.top;
+				
+				target.setAttribute("style","background-position: -"+( h - value*h/100.0 )+"px 0px;");
+				target.setAttribute("value",value);
+				target.value = value;
+				
+				if (send) {
+					var message = target.getAttribute("msg");
+					var moblabel =  target.getAttribute("moblabel");
+					var msg = sliderMessages[message];
+					if (moblabel) {
+						msg = msg.replace( /moblabel/g , moblabel );
+						msg = msg.replace( /msgvalue/g , value/50.0 );
+						console.log("msg:"+msg);
+						OscMoldeoSend( JSON.parse( msg ) );	
+					}
+					
+				}
+				
+			};
 
 /*END XULRUNNER FCA's "fs" object compatibility END*/
 
@@ -142,10 +191,28 @@ oscServer.on('message', function(msg, rinfo) {
 				//recombineClasses( fxbutton );
 			}
 		}
-			
-		if (Editor.ObjectSelected==effect_label_name) {
-			Editor.States[effect_label_name] = moldeo_message_info;
+		
+		Editor.States[effect_label_name] = moldeo_message_info;
+		
+		if (Editor.ObjectSelected==effect_label_name) {			
 			UpdateState(effect_label_name);
+		}
+		
+		//update Player objects
+		if (Player.ObjectSelected==effect_label_name) {
+			var alphav = moldeo_message_info["alpha"]*100;
+			
+			console.log("alpha:"+alphav);
+			
+			var sH = document.getElementById("slide_HORIZONTAL_channel_alpha");
+			sH.disabled = false;
+			sH.setAttribute("moblabel", effect_label_name);
+			sH.updateValue( alphav, sH );
+			
+			var sV  = document.getElementById("slide_VERTICAL_channel_tempo");
+			sV.disabled = false;
+			sV.setAttribute("moblabel", effect_label_name);
+			sV.updateValue( moldeo_message_info["tempo"]["delta"]*50, sV );
 		}
 		
 	}
@@ -181,14 +248,15 @@ oscServer.on('message', function(msg, rinfo) {
 	
 	
 function OscMoldeoSend( obj ) {
-
-	if (obj.msg) {
-		if (obj.val0) {
-			if (obj.val1) {
-				if (obj.val2) {
-					if (obj.val3) {
-						if (obj.val4) {
+	//console.log("obj:"+JSON.stringify(obj));
+	if (obj.msg!=undefined) {
+		if (obj.val0!=undefined) {
+			if (obj.val1!=undefined) {
+				if (obj.val2!=undefined) {
+					if (obj.val3!=undefined) {
+						if (obj.val4!=undefined) {
 							oscClient.send( obj.msg, obj.val0, obj.val1, obj.val2, obj.val3, obj.val4 );
+							//console.log("obj.val4:"+obj.val4);
 						} else oscClient.send( obj.msg, obj.val0, obj.val1, obj.val2, obj.val3 );
 					} else oscClient.send( obj.msg, obj.val0, obj.val1, obj.val2 );
 				} else oscClient.send( obj.msg, obj.val0, obj.val1 );
@@ -331,6 +399,11 @@ var mapSelectionStateMod = {
 	"DOWN": { "member": "tempo", "value": "decrement", "pressed": false }
 };
 
+var sliderMessages = {
+	'channel_alpha': '{ "msg": "/moldeo","val0": "effectsetstate", "val1": "moblabel", "val2": "alpha", "val3": msgvalue }',
+	'channel_tempo': '{ "msg": "/moldeo","val0": "effectsetstate", "val1": "moblabel", "val2": "tempo", "val3": msgvalue }',
+};
+
 function launchMoldeoPlayer() {
 
 
@@ -354,6 +427,9 @@ function selectEffect( selkey ) {
 	//show correct preconfig selected
 	UnselectButtonsCircle();
 	activateClass( document.getElementById("button_"+(Player.PreconfigSelected[Player.ObjectSelected]+1)), "circle_selected" );
+	
+	//set sliders
+	OscMoldeoSend( { 'msg': '/moldeo','val0': 'effectgetstate', 'val1': mapSelectionsObjects[selkey] } );
 	
 	activateClass( document.getElementById("button_"+selkey), "fxselected" );
 }
@@ -395,14 +471,14 @@ function UnselectButtonsCircle() {
 	}
 }
 
-function selectPlayerPreconfig( object_selection, preconfig_selection ) { 
+function selectPlayerPreconfig( object_selection, preconfig_selection, forceselect ) { 
 	
 	console.log("selectPlayerPreconfig > object_selection: "+ object_selection
 				+ " preconfig_selection:" + preconfig_selection );
 				
 	if (object_selection==undefined) object_selection = Player.ObjectSelected;
 	
-	if (object_selection) {
+	if (object_selection!=undefined) {
 	
 		if (preconfig_selection==undefined) preconfig_selection = 0;
 		var APIObj = { 
@@ -414,10 +490,15 @@ function selectPlayerPreconfig( object_selection, preconfig_selection ) {
 					
 		Player.PreconfigSelected[object_selection] = preconfig_selection;
 		
+		if (forceselect==true) {
+			selectEffect(object_selection);
+		}
+		
 		if (object_selection==Player.ObjectSelected) {
 			UnselectButtonsCircle();
 			activateClass( document.getElementById("button_" + (preconfig_selection+1) ), "circle_selected" );
 		}
+		
 			
 		OscMoldeoSend( APIObj );
 	}
@@ -428,52 +509,16 @@ function RegisterButtonPreconfigs() {
 	/** BUTTON 1,2,3 */
 	document.getElementById("button_1").addEventListener( "click", function(event) {
 		console.log("button_1");
-		/*
-		UnselectButtonsCircle();
-		var APIObj = { 
-					'msg': '/moldeo',
-					'val0': 'preconfigset', 
-					'val1': Player.ObjectSelected, 
-					'val2': 0 
-					};
-		Player.PreconfigSelected[Player.ObjectSelected] = 0;
-		activateClass( event.target, "circle_selected" );
-		OscMoldeoSend( APIObj );
-		*/
 		selectPlayerPreconfig( Player.ObjectSelected, 0 );
 	});
 
 	document.getElementById("button_2").addEventListener( "click", function(event) {
 		console.log("button_2");
-		/*
-		UnselectButtonsCircle();
-		var APIObj = { 
-					'msg': '/moldeo',
-					'val0': 'preconfigset', 
-					'val1': Player.ObjectSelected, 
-					'val2': 1 
-					};
-		Player.PreconfigSelected[Player.ObjectSelected] = 1;
-		activateClass( event.target, "circle_selected" );
-		OscMoldeoSend( APIObj );
-		*/
 		selectPlayerPreconfig( Player.ObjectSelected, 1 );
 	});
 
 	document.getElementById("button_3").addEventListener( "click", function(event) {
 		console.log("button_3");
-		/*
-		UnselectButtonsCircle();
-		var APIObj = { 
-					'msg': '/moldeo',
-					'val0': 'preconfigset', 
-					'val1': Player.ObjectSelected, 
-					'val2': 2 
-					};
-		Player.PreconfigSelected[Player.ObjectSelected] = 2;
-		activateClass( event.target, "circle_selected" );
-		OscMoldeoSend( APIObj );
-		*/
 		selectPlayerPreconfig( Player.ObjectSelected, 2 );
 	});
 
@@ -546,7 +591,11 @@ function ctrlSelected() {
 	var ctrl_el = document.getElementById("button_CTRL");
 	return classActivated( ctrl_el, "ctrlEnabled" );
 }
-	
+
+var canvaspalette;
+var ctxpalette;
+var paletteImg;
+
 function RegisterButtonActions() {
 
 	/** BUTTON W,A,S,D */
@@ -793,25 +842,39 @@ function RegisterButtonActions() {
 		
 		
 		document.getElementById("buttonED_1").addEventListener( "click", function(event) {
-				//console.log(event);
-
 				console.log("buttonED_1 > ");
-				
 				selectEditorPreconfig(0);
 		});
 		document.getElementById("buttonED_2").addEventListener( "click", function(event) {
-				//console.log(event);
-
 				console.log("buttonED_2 > ");
 				selectEditorPreconfig(1);
 		});
 		document.getElementById("buttonED_3").addEventListener( "click", function(event) {
-				//console.log(event);
-
 				console.log("buttonED_3 > ");
 				selectEditorPreconfig(2);
 		});
 		
+		var sH = document.getElementById("slide_HORIZONTAL_channel_alpha");
+		
+		sH.updateValue = updateSliderHorizontalValue;
+		sH.addEventListener( "change",
+			function(event) {
+				console.log("slide_HORIZONTAL_channel_alpha" + event.target.value );
+				event.target.updateValue( event.target.value, event.target, true );	
+			}
+		);
+		sH.updateValue( 0 , sH );
+		
+		var sV = document.getElementById("slide_VERTICAL_channel_tempo");
+		sV.updateValue = updateSliderVerticalValue;
+		sV.addEventListener( "change",
+			function(event) {
+				console.log("slide_VERTICAL_channel_tempo" + event.target.value );
+				event.target.updateValue( event.target.value, event.target, true );	
+			}
+		);
+		sV.updateValue( 0 , sV );
+
 		/*
 		
 		document.getElementById("buttonED_previous_preconfig").addEventListener( "click", function(event) {
@@ -1022,11 +1085,11 @@ function RegisterButtonActions() {
 		
 
 		/*OBJECT COLOR*/
+		canvaspalette = document.getElementById("object_color_palette");
+		ctxpalette = canvaspalette.getContext("2d");
 		
-		var canvaspalette = document.getElementById("object_color_palette");
-		var ctxpalette = canvaspalette.getContext("2d");
-		var paletteImg = new Image();
-		paletteImg.src = "buttons/color_palette.png";
+		paletteImg = new Image();
+		paletteImg.src = "buttons/color_palette_bn.png";
 		
 		paletteImg.onload = function() {			
 			ctxpalette.drawImage(	paletteImg, 
@@ -1037,19 +1100,61 @@ function RegisterButtonActions() {
 		};
 		
 		canvaspalette.addEventListener("click", function(event) {
+			
+			  ctxpalette.clearRect(0,0,canvaspalette.width,canvaspalette.height);
+			  ctxpalette.drawImage(	paletteImg, 
+								0,
+								0, 
+								canvaspalette.width,
+								canvaspalette.height);
+								
+			  //ctxpalette.fillStyle = "rgb(200,0,0)";  
+			  //ctxpalette.fillRect( 0, 0, canvaspalette.width, canvaspalette.height);
 		  
 			  var x;
 			  var y;
 			  
-			  var rect = this.getBoundingClientRect();
+			  var rect = event.target.getBoundingClientRect();
+			  var fx = canvaspalette.width/200;
+			  var fy = canvaspalette.height/30;
 			  
-			  x = event.clientX - rect.left;
-			  y = event.clientY - rect.top;
+			  x = (event.clientX - rect.left)*fx;
+			  y = (event.clientY - rect.top) *fy;
 			  
-			  var pixel = ctxpalette.getImageData( x, y , 1, 1 ).data;
 			  
-			  var color = "#" + ("000000" + rgbToHex( pixel[0], pixel[1], pixel[2] ) ).slice(-6);
-			  console.log( "color: " + color );
+			  var pixel = ctxpalette.getImageData( x, y , 1, 1 );
+			  var pixel_data = pixel.data;
+			  
+			  var color = "#" + ("000000" + rgbToHex( pixel_data[0], pixel_data[1], pixel_data[2] ) ).slice(-6);
+			  console.log( "canvaspalette color: " + color + " r: "+ pixel_data[0] 
+			  + " g: " + pixel_data[1]
+			  + " b: " + pixel_data[2]
+			  +  " x:" + x
+			  +  " y:" + y
+			  + " event.clientX:" +event.clientX
+			  + " event.clientY:" + event.clientY
+			  );
+			  
+			  //ctxpalette.putImageData( pixel, x, y  );
+			  /*
+			  ctxpalette.lineWidth="2";
+			  ctxpalette.strokeStyle="white";
+			  ctxpalette.rect(x,y,5*fx,5*fy);
+			  ctxpalette.stroke();
+			  
+			  ctxpalette.strokeStyle="black";
+			  ctxpalette.rect(x-2*fx,y-2*fy,(5+4)*fx,(5+4)*fy);
+			  ctxpalette.stroke();
+			  */
+			  document.getElementById("object_color_sel").setAttribute("style","background-color:"+color+";");
+			  
+			  SetValue(	Editor.ObjectSelected, 
+						"color",
+						Editor.PreconfigsSelected[Editor.ObjectSelected],
+						color
+						);
+			  
+			  /*OscMoldeoSend( { "msg": "/moldeo","val0": "valueset", "val1": , "val2": "color", "val3": color } );*/
 			  //App.selectColor( App.color );
 			  //activateTool("tool_07");
 		});
@@ -1217,8 +1322,7 @@ function selectEditorImage( preconfig_index ) {
 		console.log("selectEditorPreconfig > paramName: "+paramName+" ObjectImages: " + filesrc);
 		
 		var IMGOBJECT = ObjectImages[paramName]["preconf_"+preconfig_index];
-		
-		
+				
 		if (IMGOBJECT && IMGOBJECT.img) {
 			console.log("object_edition_image.width:"+object_edition_image.width+" object_edition_image:"+object_edition_image.height );
 			console.log("IMGOBJECT.width:"+IMGOBJECT.img.width+" IMGOBJECT:"+IMGOBJECT.img.height );
@@ -1228,6 +1332,33 @@ function selectEditorImage( preconfig_index ) {
 			console.log("selectEditorImage > no images in ["+Editor.ObjectSelected+"]");
 		}
 	}
+}
+
+function rgbToHex(r, g, b) {
+    return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+}
+
+function selectEditorColor( preconfig_index ) {
+	/*
+	var object_edition = document.getElementById("object_edition");
+	object_edition.setAttribute("moblabel", Editor.ObjectSelected );
+	object_edition.setAttribute("preconfig", Editor.PreconfigSelected );
+	*/
+	var object_color_sel = document.getElementById("object_color_sel");
+	
+	console.log("selectEditorColor("+preconfig_index+")");
+	if (preconfig_index==undefined) preconfig_index = Editor.PreconfigSelected;
+	
+	var Color = Editor.Parameters[Editor.ObjectSelected]["color"]["paramvalues"][preconfig_index];
+	//create hexa color:
+	var red = Math.floor( Color[0]["value"]*255 );
+	var green = Math.floor( Color[1]["value"]*255 );
+	var blue = Math.floor( Color[2]["value"]*255 );
+	console.log("rgbToHex( "+red+", "+green+","+ blue+" ):"+rgbToHex( red, green, blue ));
+	object_color_sel.setAttribute( "style" , "background-color:" + rgbToHex( red, green, blue )+";");
+
+
+	
 }
 
 function InspectorHideAll() {
@@ -1621,7 +1752,11 @@ function SetValue( moblabel, selector, preconfig, sliderValue ) {
 				if (ParamValue) {
 					var Data = ParamValue[0];
 					if (Data) {
-						Data["value"] = sliderValue;
+						if (Param["paramdefinition"]["type"]=="COLOR") {
+							//Data[];
+						} else {							
+							Data["value"] = sliderValue;
+						}
 						success = true;
 					} else error("SetValue > no Data for " + selector +" preconf:"+selector+" subvalue: 0 ");
 				} else error("SetValue > no ParamValue for " + preconfig);
@@ -1632,13 +1767,14 @@ function SetValue( moblabel, selector, preconfig, sliderValue ) {
 	
 	if (success) {
 		var APIObj = { 
-					'msg': '/moldeo',
-					'val0': 'valueset', 
-					'val1': moblabel, 
-					'val2': selector,
-					'val3': preconfig,
-					'val4': sliderValue
+					"msg": "/moldeo",
+					"val0": "valueset", 
+					"val1": moblabel, 
+					"val2": selector,
+					"val3": preconfig,
+					"val4": sliderValue
 					};
+		console.log("APIObj:"+JSON.stringify(APIObj));
 		Editor.SaveNeeded = true;
 		if (Editor.SaveNeeded) {
 			activateClass( document.getElementById("buttonED_SaveProject"), "saveneeded" );
@@ -1661,6 +1797,7 @@ function UpdateInspector( inspectorElement, moblabel, preconfig ) {
 	inspectorElement.setAttribute("moblabel", moblabel);
 	//inspector.setAttribute("preconfig", Editor.PreconfigsSelected[mobLabel]);
 	inspectorElement.setAttribute("preconfig", preconfig );
+	Editor.PreconfigsSelected[moblabel] = preconfig;
 	
 	//group is
 	var group = inspectorElement.getAttribute("group");
@@ -1746,7 +1883,7 @@ function selectEditorPreconfig( preconfig_index ) {
 	Preconfs = Editor.Preconfigs[ Editor.ObjectSelected ];
 	
 	/* selectPlayerPreconfig */
-	selectPlayerPreconfig( Player.ObjectSelected, Editor.PreconfigSelected );
+	selectPlayerPreconfig( Editor.ObjectSelected, Editor.PreconfigSelected, true /*force select*/ );
 	
 	
 	
@@ -1818,6 +1955,7 @@ function selectEditorPreconfig( preconfig_index ) {
 	//EN funcion de las imagenes que tenemos en ObjectImages generamos THUMBNAILS
 	// aqui solo para 1	
 	selectEditorImage();
+	selectEditorColor();
 	
 	console.log( "Preconfig selected: " + JSON.stringify(CurrentPreconfig, "", "\t" ) );
 }
