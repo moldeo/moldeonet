@@ -703,35 +703,74 @@ PRECONFIG SELECTOR  PANEL
 }
 
 .slide_H {
-	width: 16%;
-	height: 10%;
-	bottom: 5%;
+	width: 100%;
+	height: 100%;
+}
+
+#slide_channel_alpha {
+	bottom: 8%;
 	right: 8%;
+	width: 16%;
+	
+	/*border: solid 1px #F00;*/
 }
 
-.slide_V {
-	width: 1%;
-	height: 62%;
-	top: 22%;
-	right: 7%;
-	-webkit-appearance: slider-vertical;
-	orient: vertical;
-	writing-mode: bt-lr;
+#slide_channel_tempo {
+	bottom: 45%;
+	right: 1.4%;
+	width: 12%;
+	/*border: solid 1px #0F0;*/
 }
 
-
-input[type=range].slide_H {
-	-webkit-appearance: none;
-	background-color: #0FF;
-	height: 4px;
-	width: auto;
+#slide_channel_tempo input {
+	width: 100%;
 }
 
+input[type=range].slide_H,
 input[type=range].slide_V {
-	-webkit-appearance: slider-vertical;
-	background-color: #0FF;
+	-webkit-appearance: none;
+	/*border: solid 1px #0F0;*/
+	background-color: transparent;
+	background-image: url( buttons/slide_back_fill.svg);
+	background-size: 100% 18px;
+	background-repeat: no-repeat;
+	/*background-position: -100% 0%;*/
+	height: 18px;
 }
 
+.slide_V_back {
+	-webkit-transform: rotate(-90deg);
+}
+
+.slide_H_back,
+.slide_V_back {
+	display: block;
+	position: absolute;
+	background-image: url( buttons/slide_back.svg);
+	background-size: 100% 18px;
+	background-position: 0px 2px;
+	height: 18px;
+}
+
+
+
+
+
+input[type=range]::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	display: block;
+	background-color: transparent;
+	width: 10px;
+	height: 18px;
+	background-image: url(buttons/slider_thumb_off.svg);
+	background-size: 100% 100%; 
+	background-position: 0px 0px;
+	background-repeat: no-repeat;
+}
+
+input[type=range]::-webkit-slider-thumb:active {
+	background-image: url(buttons/slider_thumb_on.svg);
+}
 
 
 /**
@@ -1087,20 +1126,31 @@ input[type=range].slide_V {
 		.object_color {
 			display: block;
 			position: absolute;
-			right: 1%;
+			right: 0.5%;
 			top: 0%;
-			width: 30%;
-			height: 100%;
+			width: 230px;
+			height: 30px;
 			border: solid 1px #FFF;
 		}
 		
 		#object_color_palette {
 			display: block;
 			position: absolute;
-			top: 50%;
-			right: 0%;
-			width: 100%;
-			height: 50%;
+			top: 0px;
+			right: 0px;
+			width: 200px;
+			height: 30px;
+		}
+		
+		#object_color_sel {
+			display: block;
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			width: 20px;
+			height: 20px;
+			border: solid 4px #999;
+			background-color: #FFF;
 		}
 		
 .parameters_side {
