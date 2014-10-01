@@ -14,7 +14,7 @@
    id="svg22422"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="Documento nuevo 8">
+   sodipodi:docname="button_X_off.svg">
   <defs
      id="defs22424">
     <filter
@@ -65,9 +65,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="5.3927587"
-     inkscape:cx="15.736475"
-     inkscape:cy="0.29974238"
+     inkscape:zoom="10.785517"
+     inkscape:cx="-2.3004076"
+     inkscape:cy="6.0476108"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -75,11 +75,11 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="504"
-     inkscape:window-height="423"
-     inkscape:window-x="156"
-     inkscape:window-y="156"
-     inkscape:window-maximized="0" />
+     inkscape:window-width="1366"
+     inkscape:window-height="716"
+     inkscape:window-x="-4"
+     inkscape:window-y="-4"
+     inkscape:window-maximized="1" />
   <metadata
      id="metadata22427">
     <rdf:RDF>
@@ -88,7 +88,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -137,13 +137,13 @@
          transform="scale(1.1605619,0.86165159)"
          sodipodi:linespacing="125%"
          id="text6072-3-8-4-4-3-5-1-5-6-7-3-5"
-         y="383.03525"
-         x="162.42149"
+         y="382.88403"
+         x="161.50874"
          style="font-size:10.08049011px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#cccccc;fill-opacity:1;stroke:none;font-family:Sans"
          xml:space="preserve"><tspan
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#cccccc;fill-opacity:1;font-family:Alien League;-inkscape-font-specification:Alien League"
-           y="383.03525"
-           x="162.42149"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#cccccc;fill-opacity:1;font-family:DSC;-inkscape-font-specification:DSC"
+           y="382.88403"
+           x="161.50874"
            id="tspan6074-0-9-7-6-6-2-5-2-7-1-4-13"
            sodipodi:role="line">x</tspan></text>
     </g>
