@@ -14,9 +14,9 @@ function recombineClasses( element ) {
 }
 */
 if (error==undefined) {
-function error(msg) {
-	console.log("--ERROR-- " + msg );
-}
+	function error(msg) {
+		console.log("--ERROR-- " + msg );
+	}
 }
 
 function activateClass( element, class_name, trigger_time, trigger_callback  ) {
@@ -80,5 +80,5 @@ function rgbToHex2(rgb){
 };
 
 function getRandomInt(min, max) {
-	  return Math.floor(Math.random() * (max - min + 1)) + min;
-	}
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
