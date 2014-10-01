@@ -7,7 +7,7 @@ html {
 
 @font-face {
   font-family: moldeofont;
-  src: url('ALIEN5.TTF');
+  src: url('dsc.TTF');
 }
 
 body {
@@ -1014,7 +1014,7 @@ input[type=range]::-webkit-slider-thumb:active {
 			
 			
 			font-size: 19px;
-			font-family: Alien League;
+			font-family: moldeofont;
 			text-transform: uppercase;
 			color: #94fbff;				
 				
@@ -1164,7 +1164,9 @@ input[type=range]::-webkit-slider-thumb:active {
 	/*border: solid 1px #F00;*/
 	
 	font-size: 13px;
-	font-family: Alien League;
+	font-family: moldeofont;
+				/*cambio de fuente*/
+
 	text-transform: uppercase;
 	/*color: #00FFF4;*/
 	color: #999;

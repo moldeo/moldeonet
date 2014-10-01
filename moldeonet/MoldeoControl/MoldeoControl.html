@@ -17,6 +17,7 @@
 <div class="titlebar">MOLDEO CONTROL <button id="close-window-button" class="top-titlebar-close-button" title="cerrar"></button></div>
 
 <div id="container">
+
 	<!--
 	<input type="file" nwworkingdir="C:\Windows" />
 	<input type="file" nwsaveas />
@@ -87,10 +88,12 @@
 		<button id="button_DOWN"  key="DOWN" class="button_DOWN key_button"></button>
 	</div>
 	
-	
-	<input id="slide_HORIZONTAL" class="slide_H slide_controls" type="range" min="0" max="100"/>
-	<input id="slide_VERTICAL" class="slide_V slide_controls" type="range" min="0" max="100"/>
-	
+	<div id="slide_channel_alpha" class="slide_H_back">
+		<input id="slide_HORIZONTAL_channel_alpha" msg="channel_alpha" moblabel="" class="slide_H slide_controls" type="range"  min="0" max="100" disabled/>
+	</div>
+	<div id="slide_channel_tempo" class="slide_V_back">
+		<input id="slide_VERTICAL_channel_tempo" msg="channel_tempo" moblabel="" class="slide_V slide_controls" type="range" min="0" max="100" disabled/>
+	</div>
 </div>
 <div id="editor_panel" class="window_panel">
 		
@@ -142,8 +145,10 @@
 			</div>
 			
 			<div id="object_color" class="object_color">
+				<div id="object_color_sel"></div>
 				<canvas id="object_color_palette"></canvas>
 			</div>
+			
 		</div>
 		
 		<div id="parameters_side" class="parameters_side">
