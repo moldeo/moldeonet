@@ -702,7 +702,8 @@ PRECONFIG SELECTOR  PANEL
 	
 }
 
-.slide_H {
+.slide_H,
+.parameter_slide {
 	width: 100%;
 	height: 100%;
 }
@@ -727,6 +728,7 @@ PRECONFIG SELECTOR  PANEL
 }
 
 input[type=range].slide_H,
+input[type=range].parameter_slide,
 input[type=range].slide_V {
 	-webkit-appearance: none;
 	/*border: solid 1px #0F0;*/
@@ -742,6 +744,7 @@ input[type=range].slide_V {
 	-webkit-transform: rotate(-90deg);
 }
 
+.parameter_slide_back,
 .slide_H_back,
 .slide_V_back {
 	display: block;
