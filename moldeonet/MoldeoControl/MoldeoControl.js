@@ -1314,7 +1314,8 @@ function selectEditorImage( preconfig_index ) {
 	
 		var filesrc = ObjectImages[paramName]["preconf_"+preconfig_index]["src"];
 	
-		if (paramName=="texture") {
+		if (	paramName=="texture" /*in general*/
+				|| paramName=="images" /*just for SECUENCIA -> FLOW*/) {
 			object_edition.setAttribute("paramname", paramName );
 			object_edition.setAttribute("title", filesrc );
 		}		
@@ -1327,7 +1328,9 @@ function selectEditorImage( preconfig_index ) {
 			console.log("object_edition_image.width:"+object_edition_image.width+" object_edition_image:"+object_edition_image.height );
 			console.log("IMGOBJECT.width:"+IMGOBJECT.img.width+" IMGOBJECT:"+IMGOBJECT.img.height );
 		
-			ctx.drawImage( IMGOBJECT.img, 0,0, object_edition_image.width, object_edition_image.height );
+			if (IMGOBJECT.img.width>0 && IMGOBJECT.img.height>0) {
+				ctx.drawImage( IMGOBJECT.img, 0,0, object_edition_image.width, object_edition_image.height );
+			}
 		} else {
 			console.log("selectEditorImage > no images in ["+Editor.ObjectSelected+"]");
 		}
@@ -1336,6 +1339,21 @@ function selectEditorImage( preconfig_index ) {
 
 function rgbToHex(r, g, b) {
     return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+}
+
+function hexToRgb(hex) {
+    // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+    var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+        return r + r + g + g + b + b;
+    });
+
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
 }
 
 function selectEditorColor( preconfig_index ) {
@@ -1351,12 +1369,13 @@ function selectEditorColor( preconfig_index ) {
 	
 	var Color = Editor.Parameters[Editor.ObjectSelected]["color"]["paramvalues"][preconfig_index];
 	//create hexa color:
-	var red = Math.floor( Color[0]["value"]*255 );
-	var green = Math.floor( Color[1]["value"]*255 );
-	var blue = Math.floor( Color[2]["value"]*255 );
-	console.log("rgbToHex( "+red+", "+green+","+ blue+" ):"+rgbToHex( red, green, blue ));
-	object_color_sel.setAttribute( "style" , "background-color:" + rgbToHex( red, green, blue )+";");
-
+	if (Color && Color.length>3) {
+		var red = Math.floor( Color[0]["value"]*255 );
+		var green = Math.floor( Color[1]["value"]*255 );
+		var blue = Math.floor( Color[2]["value"]*255 );
+		console.log("rgbToHex( "+red+", "+green+","+ blue+" ):"+rgbToHex( red, green, blue ));
+		object_color_sel.setAttribute( "style" , "background-color:" + rgbToHex( red, green, blue )+";");
+	}
 
 	
 }
@@ -1649,6 +1668,10 @@ function SetInspectorMode( group, parammode ) {
 
 }
 
+/**
+	Executed on every change event on every Inspector's Sliders...
+	
+*/
 function ExecuteSliderInspector(event) {
 	var group = event.target.parentNode.getAttribute("group");
 	var moblabel = event.target.parentNode.getAttribute("moblabel");
@@ -1692,6 +1715,7 @@ function ExecuteSliderInspector(event) {
 			SetValue( moblabel, selector, preconfig, sliderValue );
 		}
 	} else {
+		
 		var inputEl = document.getElementById("selector_"+group+"_"+selector+"_input");
 		if (inputEl) inputEl.setAttribute("value",sliderValue);
 		SetValue( moblabel, selector, preconfig, sliderValue );
@@ -1722,15 +1746,30 @@ function ImportFile( moblabel, paramname, preconfig, filename ) {
 	//delete and re Update...
 	
 	var ObjectImages = Editor.Images[moblabel];
-	ObjectImages[paramname]["preconf_"+preconfig]["src"] = filename;//ParamValues[0][0]["value"];
-	ObjectImages[paramname]["preconf_"+preconfig]["img"] = new Image();
-	ObjectImages[paramname]["preconf_"+preconfig]["img"].src = filename;
-	//Console.Info.datapath + ParamValues[0][0]["value"];
+	if (ObjectImages!=undefined) {
+		if (ObjectImages[paramname]!=undefined) {
+			if (ObjectImages[paramname]["preconf_"+preconfig]!=undefined) {
+				ObjectImages[paramname]["preconf_"+preconfig]["src"] = filename;//ParamValues[0][0]["value"];
+				//if (ObjectImages[paramname]["preconf_"+preconfig]["img"]==undefined) {
+					ObjectImages[paramname]["preconf_"+preconfig]["img"] = new Image();
+					ObjectImages[paramname]["preconf_"+preconfig]["img"].src = filename;
+					if (ObjectImages[paramname]["preconf_"+preconfig]["img"].complete) {
+						selectEditorImage(preconfig);
+					} else {
+						ObjectImages[paramname]["preconf_"+preconfig]["img"].onload = function() {
+							selectEditorImage(preconfig);
+						};
+					}
+				//} else {
+				//	if () {
+					
+				//	}
+				//}
+			} else console.log("error: no ObjectImages["+paramname+"][preconf_"+preconfig+"] for moblabel: "+moblabel);
+		} else console.log("error: no ObjectImages["+paramname+"] for moblabel: "+moblabel);
+	} else console.log("error: no ObjectImages for moblabel: "+moblabel);
 	
-	ObjectImages[paramname]["preconf_"+preconfig]["img"].onload = function() {
-		selectEditorImage(preconfig);
-	};
-	
+	//Console.Info.datapath + ParamValues[0][0]["value"];	
 	//var psideWin = document.getElementById("parameters_side_" + moblabel );
 	//var pare = psideWin.parentNode;
 	//pare.removeChild(psideWin);
@@ -1742,6 +1781,8 @@ function SetValue( moblabel, selector, preconfig, sliderValue ) {
 	
 	console.log("SetValue("+moblabel+","+selector+","+preconfig+","+sliderValue+")");
 	var success = false;
+	
+	/**WE UPDATE THE VALUE IN CONTROL MEMORY (to optimize for now not to fetch all object parameters values: MUST TODO NEXT: wait until fetch new value)*/
 	var Params = Editor.Parameters[moblabel];
 	if (Params) {
 		var Param = Params[selector];
@@ -1754,6 +1795,13 @@ function SetValue( moblabel, selector, preconfig, sliderValue ) {
 					if (Data) {
 						if (Param["paramdefinition"]["type"]=="COLOR") {
 							//Data[];
+							//explode( color
+							if (sliderValue!=undefined) {
+								var resColor = hexToRgb(sliderValue);
+								ParamValue[0]["value"] = resColor.r / 255.0;
+								ParamValue[1]["value"] = resColor.g / 255.0;
+								ParamValue[2]["value"] = resColor.b / 255.0;							
+							} else console.log("SetValue > ERROR: sliderValue is undefined");
 						} else {							
 							Data["value"] = sliderValue;
 						}
@@ -1881,6 +1929,7 @@ function selectEditorPreconfig( preconfig_index ) {
 
 	Editor.PreconfigSelected = preconfig_index;
 	Preconfs = Editor.Preconfigs[ Editor.ObjectSelected ];
+	Editor.PreconfigsSelected[Editor.ObjectSelected] = preconfig_index;
 	
 	/* selectPlayerPreconfig */
 	selectPlayerPreconfig( Editor.ObjectSelected, Editor.PreconfigSelected, true /*force select*/ );
