@@ -30,6 +30,7 @@
 		<input id="openproject" type="file" accept=".mol" />
 		<input id="importfile" type="file" accept=".jpg,.png" />
 		<input id="saveasfile" type="file" nwsaveas />
+		<input id="saveasproject" type="file" nwdirectory />
 	</div>
 	<!--<button id="openplayer" onclick="javascript:launchMoldeoPlayer();">player</button>-->
 	<!--<button id="button_X" key="X" class="button_X circle_button"><label id="label_fx_selected">fx selected</label></button>-->
@@ -161,37 +162,37 @@
 			moblabel="" preconfig="">
 			<!-- GROUPED START -->
 			<div id="parameter_inspector_POSITION" group="POSITION" class="parameter_inspector">
-				<button id="selector_POSITION_X" class="empty selected"></button>
+				<button id="selector_POSITION_translatex" class="parameter_selector "></button>
 				<input title="X" id="selector_POSITION_translatex_input" class="param_input" type="text" value=""/>
 				
-				<button id="selector_POSITION_Y" class="empty "></button>
+				<button id="selector_POSITION_translatey" class="parameter_selector "></button>
 				<input title="Y"  id="selector_POSITION_translatey_input" class="param_input"  type="text" value=""/>
 				
-				<button id="selector_POSITION_Z" class="empty "></button>
+				<button id="selector_POSITION_translatez" class="parameter_selector "></button>
 				<input title="Z"  id="selector_POSITION_translatez_input"  class="param_input" type="text" value=""/>
 				
 				<input id="POSITION_slide" selector="" class="parameter_slide" type="range" min="0" max="100" step="1" value="0"/>
 			</div>
 			
 			<div id="parameter_inspector_SCALE"  group="SCALE" class="parameter_inspector">
-				<button id="selector_SCALE_Vertical" class="empty selected"></button>
+				<button id="selector_SCALE_scaley" class="parameter_selector "></button>
 				<input title="X" id="selector_SCALE_scaley_input" class="param_input" type="text" value=""/>
 				
-				<button id="selector_SCALE_Horizontal" class="empty "></button>
+				<button id="selector_SCALE_scalex" class="parameter_selector "></button>
 				<input title="X" id="selector_SCALE_scalex_input" class="param_input" type="text" value=""/>
 				
-				<button id="selector_SCALE_Zoom" class="empty "></button>
+				<button id="selector_SCALE_Zoom" class="parameter_selector "></button>
 				<input id="SCALE_slide" class="parameter_slide" type="range" min="0" max="100" step="1" value="0"/>
 			</div>
 			
 			<div id="parameter_inspector_MOTION"  group="MOTION" class="parameter_inspector">
-				<button id="selector_MOTION_Vertical"  class="empty selected"></button>
+				<button id="selector_MOTION_Vertical"  class="parameter_selector "></button>
 				<input title="X" id="selector_MOTION_translatey_input" class="param_input" type="text" value=""/>
 				
-				<button id="selector_MOTION_Horizontal" class="empty "></button>
+				<button id="selector_MOTION_Horizontal" class="parameter_selector "></button>
 				<input title="X" id="selector_MOTION_translatex_input" class="param_input" type="text" value=""/>
 				
-				<button id="selector_MOTION_Circular" class="empty "></button>
+				<button id="selector_MOTION_Circular" class="parameter_selector "></button>
 				<input id="MOTION_slide" class="parameter_slide"  type="range" min="0" max="100" step="1" value="0"/>
 			</div>
 			<div id="parameter_inspector_CONFIGURATION" class="parameter_inspector">

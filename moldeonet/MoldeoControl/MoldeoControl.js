@@ -238,6 +238,25 @@ oscServer.on('message', function(msg, rinfo) {
 	
 	if (moldeo_message_code=="consolesave") {
 		deactivateClass( document.getElementById("buttonED_SaveProject"), "saveneeded" );
+		deactivateClass( document.getElementById("buttonED_SaveProjectAs"), "saveneeded" );
+		if (moldeo_message_target=="success") {
+			alert("Se salvó el proyecto");
+			Editor.SaveNeeded = false;
+		}
+	}
+	if (	moldeo_message_code=="consolesaveas"
+			&& moldeo_message_target=="success") {
+		deactivateClass( document.getElementById("buttonED_SaveProject"), "saveneeded" );
+		deactivateClass( document.getElementById("buttonED_SaveProjectAs"), "saveneeded" );
+		if (moldeo_message_target=="success") {
+			alert("Se salvó el proyecto");
+			Editor.SaveNeeded = false;
+		}
+	}
+	
+	if ( moldeo_message_code=="consolesaveas"
+		&& moldeo_message_target!="success") {
+		alert("Ocurrió un problema al guardar el proyecto.");
 	}
 			
   
@@ -908,19 +927,19 @@ function RegisterButtonActions() {
 		
 		/*INSPECTORS*/
 		/*POSITIONS*/
-		document.getElementById("selector_POSITION_X").addEventListener("click", function(event) {
+		document.getElementById("selector_POSITION_translatex").addEventListener("click", function(event) {
 			UnselectSelectorPositions(event.target.parentNode);
 			activateClass( event.target, "selected");
 			SetInspectorMode("POSITION","translatex");
 		});
 		
-		document.getElementById("selector_POSITION_Y").addEventListener("click", function(event) {
+		document.getElementById("selector_POSITION_translatey").addEventListener("click", function(event) {
 			UnselectSelectorPositions(event.target.parentNode);
 			activateClass( event.target, "selected");
 			SetInspectorMode("POSITION","translatey");
 		});
 		
-		document.getElementById("selector_POSITION_Z").addEventListener("click", function(event) {
+		document.getElementById("selector_POSITION_translatez").addEventListener("click", function(event) {
 			UnselectSelectorPositions(event.target.parentNode);
 			activateClass( event.target, "selected");
 			SetInspectorMode("POSITION","translatez");
@@ -929,13 +948,13 @@ function RegisterButtonActions() {
 		document.getElementById("POSITION_slide").addEventListener("change", ExecuteSliderInspector );
 		
 		/*SCALE*/
-		document.getElementById("selector_SCALE_Vertical").addEventListener("click", function(event) {
+		document.getElementById("selector_SCALE_scaley").addEventListener("click", function(event) {
 			UnselectSelectorPositions(event.target.parentNode);
 			activateClass( event.target, "selected");
 			SetInspectorMode("SCALE","scaley");
 		});
 		
-		document.getElementById("selector_SCALE_Horizontal").addEventListener("click", function(event) {
+		document.getElementById("selector_SCALE_scalex").addEventListener("click", function(event) {
 			UnselectSelectorPositions(event.target.parentNode);
 			activateClass( event.target, "selected");
 			SetInspectorMode("SCALE","scalex");
@@ -1013,6 +1032,20 @@ function RegisterButtonActions() {
 			SaveProjectAs( filename );
 			
 		});
+		
+		var saveasproject = document.getElementById("saveasproject");		
+		saveasproject.addEventListener( "change", function(event) {
+			
+			//var moblabel = event.target.importobject.getAttribute("moblabel");
+			//var preconfig = event.target.importobject.getAttribute("preconfig");
+			//var paramname = event.target.importobject.getAttribute("paramname");
+			
+			var dirname = event.target.value;			
+			console.log("saveasproject > " + dirname );
+			
+			SaveProjectAs( dirname );
+			
+		});
 				
 		document.getElementById("object_import").addEventListener( "click", function(event) {
 		
@@ -1066,10 +1099,16 @@ function RegisterButtonActions() {
 		});
 		
 		document.getElementById("buttonED_SaveProjectAs").addEventListener( "click", function(event) {
-			console.log("buttonED_Presentation > ");
+			console.log("buttonED_SaveProjectAs > ");
+			/*
 			var savefileas = document.getElementById("saveasfile");			
 			if (savefileas) {
 				savefileas.click();
+			}
+			*/
+			var saveasproject = document.getElementById("saveasproject");			
+			if (saveasproject) {
+				saveasproject.click();
 			}
 		});
 
@@ -1192,7 +1231,7 @@ function TR( label ) {
 var Editor = {
 	"ObjectSelected": "",
 	"PreconfigSelected": 0,
-	"SaveNeeded": "",
+	"SaveNeeded": false,
 	
 	"Objects": {},
 	"States": {},
@@ -1826,7 +1865,7 @@ function SetValue( moblabel, selector, preconfig, sliderValue ) {
 		Editor.SaveNeeded = true;
 		if (Editor.SaveNeeded) {
 			activateClass( document.getElementById("buttonED_SaveProject"), "saveneeded" );
-			//activateClass( document.getElementById("buttonED_SaveProjectAs"), "saveneeded" );
+			activateClass( document.getElementById("buttonED_SaveProjectAs"), "saveneeded" );
 		}
 		OscMoldeoSend( APIObj );
 	}
@@ -1857,7 +1896,7 @@ function UpdateInspector( inspectorElement, moblabel, preconfig ) {
 	
 	var inspectorParams = inspectors[group];
 	
-	console.log("UpdateInspector > assing parameters");
+	console.log("UpdateInspector > assign parameters");
 	for( var paramName in inspectorParams) {
 		if (inspectorParams[paramName]==true) {
 			//significa que este parametro existe en este CONFIG
@@ -1875,11 +1914,25 @@ function UpdateInspector( inspectorElement, moblabel, preconfig ) {
 						inputInspector.setAttribute("value", data);
 					else
 						error("UpdateInspector > " + inputInspectorName+" not found!");
+					/*
+					var inputInspectorSelectorButtonId = "selector_"+group+"_"+paramName;
+					var inputInspectorSelectorButton = document.getElementById( inputInspectorSelectorButtonId );
+					if (inputInspectorSelectorButton)	
+						inputInspectorSelectorButton.click();
+					*/
 				} else console.log("NO PRECONFIG VALUE FOR : " + moblabel+"."+paramName+" ("+preconfig+")" );
 			}
 			
 		}
 	}
+	
+	
+	var parameter_inspector_GROUP_id = "parameter_inspector_"+group;
+	var pi_GROUP = document.getElementById(parameter_inspector_GROUP_id);
+	if (pi_GROUP) {
+		// seleccionar 
+	}
+	
 	
 
 }
