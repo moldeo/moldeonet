@@ -6,6 +6,30 @@ var execFile = require('child_process').execFile,
 exec = require('child_process').exec,
 child;
 
+fs.copyFile = function(source, target, cb) {
+  var cbCalled = false;
+
+  var rd = fs.createReadStream(source);
+  rd.on("error", function(err) {
+    done(err);
+  });
+  var wr = fs.createWriteStream(target);
+  wr.on("error", function(err) {
+    done(err);
+  });
+  wr.on("close", function(ex) {
+    done();
+  });
+  rd.pipe(wr);
+
+  function done(err) {
+    if (!cbCalled) {
+      if (cb!=undefined) cb(err);
+      cbCalled = true;
+    }
+  }
+}
+
 
 fs.callProgram = function( programrelativepath, programarguments, callback ) {
 	
@@ -50,15 +74,6 @@ fs.launchPlayer = function( project_file ) {
 	
 }
 
-fs.chooseFile = function( idinput ) {
-	var chooser = document.querySelector( idinput );
-	
-    chooser.addEventListener("change", function(evt) {
-      console.log(this.value);
-    }, false);
-	
-	chooser.click();
-}
 
 function updateSliderHorizontalValue( value, target, send ) {
 				if (send==undefined) send = false;
@@ -240,7 +255,7 @@ oscServer.on('message', function(msg, rinfo) {
 		deactivateClass( document.getElementById("buttonED_SaveProject"), "saveneeded" );
 		deactivateClass( document.getElementById("buttonED_SaveProjectAs"), "saveneeded" );
 		if (moldeo_message_target=="success") {
-			alert("Se salvó el proyecto");
+			alert("Se guardó el proyecto");
 			Editor.SaveNeeded = false;
 		}
 	}
@@ -249,7 +264,10 @@ oscServer.on('message', function(msg, rinfo) {
 		deactivateClass( document.getElementById("buttonED_SaveProject"), "saveneeded" );
 		deactivateClass( document.getElementById("buttonED_SaveProjectAs"), "saveneeded" );
 		if (moldeo_message_target=="success") {
-			alert("Se salvó el proyecto");
+			if (moldeo_message_info && moldeo_message_info["projectfullpath"])
+				alert("Se guardó el nuevo proyecto en: "+moldeo_message_info["projectfullpath"]);
+			else
+				alert("Se guardó el nuevo proyecto");
 			Editor.SaveNeeded = false;
 		}
 	}
@@ -258,14 +276,35 @@ oscServer.on('message', function(msg, rinfo) {
 		&& moldeo_message_target!="success") {
 		alert("Ocurrió un problema al guardar el proyecto.");
 	}
+	
+	if (	moldeo_message_code=="consolescreenshot"
+		&& moldeo_message_target=="success") {
+		//moldeo_message_info
+		//alert("Ocurrió un problema al guardar el proyecto.");
+		if (moldeo_message_info && moldeo_message_info["lastscreenshot"]) {
+			var fullscreenshotpath = moldeo_message_info["lastscreenshot"];
+			console.log("fullscreenshotpath: "+fullscreenshotpath);
+			//alert("Se capturó la pantalla en : " + fullscreenshotpath);
+			/**
+			var new_win = gui.Window.get(
+			  window.open( fullscreenshotpath, {
+				  position: 'center',
+				  toolbar: false,
+				  width: 400,
+				  height: 300
+				} )
+			);
+			*/
+			var saveasscreenshot = document.getElementById("saveasscreenshot");
+			saveasscreenshot.setAttribute("lastscreenshot",fullscreenshotpath);
+			saveasscreenshot.click();
+		}
+	}
 			
   
 });
 	
 
-
-	
-	
 function OscMoldeoSend( obj ) {
 	//console.log("obj:"+JSON.stringify(obj));
 	if (obj.msg!=undefined) {
@@ -336,16 +375,13 @@ var today = moment();
 
 window.onfocus = function() { 
   console.log("focus");
-  //focusTitlebars(true);
 }
 
 window.onblur = function() { 
   console.log("blur");
-  //focusTitlebars(false);
 }
 
 window.onresize = function() {
-  /*updateContentStyle();*/
 }
 
 window.onload = function() {
@@ -354,9 +390,7 @@ window.onload = function() {
     window.close();
   }
   
-  //updateContentStyle();
   gui.Window.get().show();
-  //fs.chooseFile('#fileDialog');
   RegisterButtonActions();
 }
 
@@ -423,14 +457,16 @@ var sliderMessages = {
 	'channel_tempo': '{ "msg": "/moldeo","val0": "effectsetstate", "val1": "moblabel", "val2": "tempo", "val3": msgvalue }',
 };
 
-function launchMoldeoPlayer() {
-
-
-}
 
 function SaveProjectAs( filename ) {
 	//must clone!!! Use moDataManager::Export function...
 	OscMoldeoSend( { 'msg': '/moldeo','val0': 'consolesaveas', 'val1': filename } );
+}
+
+function SaveScreenshotAs( screenshot, filename ) {
+
+	fs.copyFile( screenshot, filename );
+	
 }
 
 
@@ -1033,6 +1069,21 @@ function RegisterButtonActions() {
 			
 		});
 		
+		var saveasscreenshot = document.getElementById("saveasscreenshot");
+		saveasscreenshot.addEventListener( "change", function(event) {
+			
+			//var moblabel = event.target.importobject.getAttribute("moblabel");
+			//var preconfig = event.target.importobject.getAttribute("preconfig");
+			//var paramname = event.target.importobject.getAttribute("paramname");
+			
+			var filename = event.target.value;	
+			var	screenshot = event.target.getAttribute("lastscreenshot");
+			console.log("saveasscreenshot > " + filename );
+			
+			SaveScreenshotAs( screenshot, filename );
+			
+		});
+		
 		var saveasproject = document.getElementById("saveasproject");		
 		saveasproject.addEventListener( "change", function(event) {
 			
@@ -1426,7 +1477,6 @@ function InspectorHideAll() {
 		deactivateClass( inspector, "inspector_show" );
 	}
 }
-
 
 function ParametersUnselectAll() {
 	var psideWinPre = document.getElementById("parameters_side_"+Editor.ObjectSelected+"_" + Editor.PreconfigSelected );
