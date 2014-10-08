@@ -31,6 +31,7 @@
 		<input id="importfile" type="file" accept=".jpg,.png" />
 		<input id="saveasfile" type="file" nwsaveas />
 		<input id="saveasproject" type="file" nwdirectory />
+		<input id="saveasscreenshot" type="file" nwsaveas accept=".png" />
 	</div>
 	<!--<button id="openplayer" onclick="javascript:launchMoldeoPlayer();">player</button>-->
 	<!--<button id="button_X" key="X" class="button_X circle_button"><label id="label_fx_selected">fx selected</label></button>-->
@@ -99,13 +100,13 @@
 <div id="editor_panel" class="window_panel">
 		
 	<button id="editor_button"></button>
-	<button id="buttonED_OpenProject" key="O" class="button_OpenProject key_button">
+	<button id="buttonED_OpenProject" key="O" class="button_OpenProject key_button" title="Abrir un nuevo proyecto Moldeo">
 	</button>
-	<button id="buttonED_SaveProject" class="button_SaveProject"></button>
-	<button id="buttonED_SaveProjectAs" class="button_SaveProjectAs"></button>
+	<button id="buttonED_SaveProject" class="button_SaveProject" title="Guardar"></button>
+	<button id="buttonED_SaveProjectAs" class="button_SaveProjectAs"  title="Guardar Como / Clonar"></button>
 	
-	<button id="buttonED_Presentation"  class="button_Presentation"></button>
-	<button id="buttonED_Screenshot"  class="button_Screenshot"></button>
+	<button id="buttonED_Presentation"  class="button_Presentation" title="Cambiar Modo de Presentación"></button>
+	<button id="buttonED_Screenshot"  class="button_Screenshot" title="Capturar Pantalla"></button>
 		
 	<div class="first_editor_effects">
 		
@@ -146,7 +147,7 @@
 			</div>
 			
 			<div id="object_color" class="object_color">
-				<div id="object_color_sel"></div>
+				<div id="object_color_sel" title="Color seleccionado"></div>
 				<canvas id="object_color_palette"></canvas>
 			</div>
 			
