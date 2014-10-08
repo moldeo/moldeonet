@@ -860,6 +860,10 @@ input[type=range]::-webkit-slider-thumb:active {
 	background-image: url(buttons/button_SaveAs.svg);
 }
 
+#buttonED_SaveProjectAs.saveneeded {
+	background-image: url(buttons/button_SaveAs_on.svg);
+}
+
 .button_SaveProjectAs_on {
 	background-image: url(buttons/button_SaveAs.svg);
 }
@@ -1304,45 +1308,45 @@ input[type=range]::-webkit-slider-thumb:active {
 		color: #999;
 	 }
 
-	#selector_POSITION_X {
+	#selector_POSITION_translatex {
 		background-image: url(buttons/button_X_off.svg);
 	}
-	#selector_POSITION_X:active,
-	#selector_POSITION_X.selected {
+	#selector_POSITION_translatex:active,
+	#selector_POSITION_translatex.selected {
 		background-image: url(buttons/button_X_on.svg);
 	}
 	
-	#selector_POSITION_Y {
+	#selector_POSITION_translatey {
 		background-image: url(buttons/button_Y_off.svg );
 	}
-	#selector_POSITION_Y:active,
-	#selector_POSITION_Y.selected {
+	#selector_POSITION_translatey:active,
+	#selector_POSITION_translatey.selected {
 		background-image: url(buttons/button_Y_on.svg );
 	}
 	
-	#selector_POSITION_Z {
+	#selector_POSITION_translatez {
 		background-image: url(buttons/button_Z_off.svg );
 	}
-	#selector_POSITION_Z:active,
-	#selector_POSITION_Z.selected {
+	#selector_POSITION_translatez:active,
+	#selector_POSITION_translatez.selected {
 		background-image: url(buttons/button_Z_on.svg );
 	}	
 	
 	/* SCALE INSPECTOR */
 	
-	#selector_SCALE_Vertical {
+	#selector_SCALE_scaley {
 		background-image: url(buttons/button_Vertical_off.svg );
 	}
-	#selector_SCALE_Vertical:active,
-	#selector_SCALE_Vertical.selected {
+	#selector_SCALE_scaley:active,
+	#selector_SCALE_scaley.selected {
 		background-image: url(buttons/button_Vertical_on.svg );
 	}
 	
-	#selector_SCALE_Horizontal {
+	#selector_SCALE_scalex {
 		background-image: url(buttons/button_Horizontal_off.svg );
 	}
-	#selector_SCALE_Horizontal:active,
-	#selector_SCALE_Horizontal.selected {
+	#selector_SCALE_scalex:active,
+	#selector_SCALE_scalex.selected {
 		background-image: url(buttons/button_Horizontal_on.svg );
 	}
 	
