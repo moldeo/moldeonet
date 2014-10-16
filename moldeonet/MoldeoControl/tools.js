@@ -1,3 +1,87 @@
+/**
+
+	Utility tools (moldeo independent)
+
+*/
+
+
+var fs = require('fs');
+var moment = require('moment');
+var gui = require('nw.gui');
+var today = moment();
+var execFile = require('child_process').execFile, 
+exec = require('child_process').exec,
+child;
+
+fs.copyFile = function(source, target, cb) {
+  var cbCalled = false;
+
+  var rd = fs.createReadStream(source);
+  rd.on("error", function(err) {
+    done(err);
+  });
+  var wr = fs.createWriteStream(target);
+  wr.on("error", function(err) {
+    done(err);
+  });
+  wr.on("close", function(ex) {
+    done();
+  });
+  rd.pipe(wr);
+
+  function done(err) {
+    if (!cbCalled) {
+      if (cb!=undefined) cb(err);
+      cbCalled = true;
+    }
+  }
+}
+
+
+fs.callProgram = function( programrelativepath, programarguments, callback ) {
+	
+	console.log("Call Program:" + programrelativepath
+				+ " arguments:" + programarguments );
+				
+	child = exec( programrelativepath + " "+ programarguments,
+		function(error,stdout,stderr) { 
+			if (error) {
+				console.log(error.stack); 
+				console.log('Error code: '+ error.code); 
+				console.log('Signal received: '+ 
+				error.signal);
+			} 
+			console.log('Child Process stdout: '+ stdout);
+			console.log('Child Process stderr: '+ stderr);
+			if (callback) {
+				callback();
+			}
+		}
+	);
+	child.on('exit', function (code) { 
+		console.log('Child process exited '+'with exit code '+ code);
+	});
+}
+
+fs.launchFile = function( file_open_path ) {
+
+	console.log("Launching file:" + file_open_path );
+	
+	fs.callProgram( file_open_path );
+	
+}
+
+fs.launchPlayer = function( project_file ) {
+	
+	console.log("Launching player: "+player_full_path+" " + project_file );
+	
+	fs.callProgram( '"'+player_full_path+'"', project_file, function() {
+		console.log("Calling callback for: project_file: " + project_file);
+	} );
+	
+}
+
+
 /*
 var combinationStates = {
 	"fxselected",

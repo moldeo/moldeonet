@@ -8,7 +8,13 @@
 
 <script src="config.js"></script>
 <script src="tools.js"></script>
+<script src="translations.js"></script>
+<script src="app.js"></script>
+
+<script src="MoldeoObjects.js"></script>
+<script src="MoldeoOscApi.js"></script>
 <script src="MoldeoControl.js"></script>
+
 
 </head>
 
@@ -18,14 +24,6 @@
 
 <div id="container">
 
-	<!--
-	<input type="file" nwworkingdir="C:\Windows" />
-	<input type="file" nwsaveas />
-	<input type="file" nwworkingdir="C:\Windows" />
-	<input type="file" webkitdirectory />
-	<input type="file" accept=".doc,.docx,.xml,application/msword">
-	<input type="file" multiple />
-	-->
 	<div style="display: none;">
 		<input id="openproject" type="file" accept=".mol" />
 		<input id="importfile" type="file" accept=".jpg,.png" />
@@ -33,8 +31,6 @@
 		<input id="saveasproject" type="file" nwdirectory />
 		<input id="saveasscreenshot" type="file" nwsaveas accept=".png" />
 	</div>
-	<!--<button id="openplayer" onclick="javascript:launchMoldeoPlayer();">player</button>-->
-	<!--<button id="button_X" key="X" class="button_X circle_button"><label id="label_fx_selected">fx selected</label></button>-->
 	
 	<div class="channel_controls preconfigs_selector_panel">
 		<button id="button_Object" class="button_indicat indicat_VOID circle_button"></button>
