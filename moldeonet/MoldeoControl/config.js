@@ -18,7 +18,6 @@ var player_sdl_exe = "moldeoplayersdl.exe";
 var player_glut_exe = "moldeoplayerglut.exe";
 var director_exe = "moldeodirector.exe";
 
-
-
-
 var player_full_path = player_file_path + player_sdl2_exe;
+
+

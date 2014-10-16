@@ -1,473 +1,56 @@
-var fs = require('fs');
-var moment = require('moment');
-var gui = require('nw.gui');
-
-var execFile = require('child_process').execFile, 
-exec = require('child_process').exec,
-child;
-
-fs.copyFile = function(source, target, cb) {
-  var cbCalled = false;
-
-  var rd = fs.createReadStream(source);
-  rd.on("error", function(err) {
-    done(err);
-  });
-  var wr = fs.createWriteStream(target);
-  wr.on("error", function(err) {
-    done(err);
-  });
-  wr.on("close", function(ex) {
-    done();
-  });
-  rd.pipe(wr);
-
-  function done(err) {
-    if (!cbCalled) {
-      if (cb!=undefined) cb(err);
-      cbCalled = true;
-    }
-  }
-}
-
-
-fs.callProgram = function( programrelativepath, programarguments, callback ) {
-	
-	console.log("Call Program:" + programrelativepath
-				+ " arguments:" + programarguments );
-				
-	child = exec( programrelativepath + " "+ programarguments,
-		function(error,stdout,stderr) { 
-			if (error) {
-				console.log(error.stack); 
-				console.log('Error code: '+ error.code); 
-				console.log('Signal received: '+ 
-				error.signal);
-			} 
-			console.log('Child Process stdout: '+ stdout);
-			console.log('Child Process stderr: '+ stderr);
-			if (callback) {
-				callback();
-			}
-		}
-	);
-	child.on('exit', function (code) { 
-		console.log('Child process exited '+'with exit code '+ code);
-	});
-}
-
-fs.launchFile = function( file_open_path ) {
-
-	console.log("Launching file:" + file_open_path );
-	
-	fs.callProgram( file_open_path );
-	
-}
-
-fs.launchPlayer = function( project_file ) {
-	
-	console.log("Launching player: "+player_full_path+" " + project_file );
-	
-	fs.callProgram( '"'+player_full_path+'"', project_file, function() {
-		console.log("Calling callback for: project_file: " + project_file);
-	} );
-	
-}
 
 
 function updateSliderHorizontalValue( value, target, send ) {
-				if (send==undefined) send = false;
-				var rect = target.getBoundingClientRect();
-				x = rect.left;
-				y = rect.top;
-				w = rect.right - rect.left;
-				h = rect.bottom - rect.top;
-				
-				target.setAttribute("style","background-position: -"+( w - value*w/100.0 )+"px 0px;");
-				target.setAttribute("value",value);
-				target.value = value;
-				if (send) {
-					var message = target.getAttribute("msg");
-					var moblabel =  target.getAttribute("moblabel");
-					var msg = sliderMessages[message];
-					if (moblabel) {
-						msg = msg.replace( /moblabel/g , moblabel );
-						msg = msg.replace( /msgvalue/g , value/100.0 );
-						console.log("msg:"+msg);
-						OscMoldeoSend( JSON.parse( msg ) );	
-					}
-					
-				}
-			};
+	if (send==undefined) send = false;
+	var rect = target.getBoundingClientRect();
+	x = rect.left;
+	y = rect.top;
+	w = rect.right - rect.left;
+	h = rect.bottom - rect.top;
+	
+	target.setAttribute("style","background-position: -"+( w - value*w/100.0 )+"px 0px;");
+	target.setAttribute("value",value);
+	target.value = value;
+	if (send) {
+		var message = target.getAttribute("msg");
+		var moblabel =  target.getAttribute("moblabel");
+		var msg = sliderMessages[message];
+		if (moblabel) {
+			msg = msg.replace( /moblabel/g , moblabel );
+			msg = msg.replace( /msgvalue/g , value/100.0 );
+			console.log("msg:"+msg);
+			OscMoldeoSend( JSON.parse( msg ) );	
+		}
+		
+	}
+};
+			
 function updateSliderVerticalValue( value, target, send ) {
-				if (send==undefined) send = false;
-				var rect = target.getBoundingClientRect();
-				x = rect.left;
-				y = rect.top;
-				w = rect.right - rect.left;
-				h = rect.bottom - rect.top;
-				
-				target.setAttribute("style","background-position: -"+( h - value*h/100.0 )+"px 0px;");
-				target.setAttribute("value",value);
-				target.value = value;
-				
-				if (send) {
-					var message = target.getAttribute("msg");
-					var moblabel =  target.getAttribute("moblabel");
-					var msg = sliderMessages[message];
-					if (moblabel) {
-						msg = msg.replace( /moblabel/g , moblabel );
-						msg = msg.replace( /msgvalue/g , value/50.0 );
-						console.log("msg:"+msg);
-						OscMoldeoSend( JSON.parse( msg ) );	
-					}
-					
-				}
-				
-			};
-
-/*END XULRUNNER FCA's "fs" object compatibility END*/
-
-
-var osc = require('node-osc');
-//var ioserver = require('socket.io').listen(8081);
-
-var oscServer, oscClient;
-var configOsc = {
-				/*MoldeoControl listen to MoldeoPlayer Server in port 3335*/
-                server: {
-                    port: 3335,
-                    host: '127.0.0.1'
-                },
-				
-				/**MoldeoControl Speak to MoldeoPlayer as a Client in port 3334*/
-                client: {
-                    port: 3334,
-                    host: '127.0.0.1'
-                }
-            };
-
-oscServer = new osc.Server( configOsc.server.port, configOsc.server.host);
-oscClient = new osc.Client( configOsc.client.host, configOsc.client.port);
-
-oscServer.on('message', function(msg, rinfo) {
-  //console.log( "oscServer.on('message'.....) receive ! msg: " + msg, ' rinfo:' + rinfo);  
-  console.log( "oscServer.on('message'.....) receive ! msg: " +JSON.stringify(msg[2],"", "\n") );
-  //socket.emit("message", msg);
-  var object_regexp = /({.*})/i
-  //var data = msg.match( object_regexp );
-  var  moldeoapimessage = msg[2];
-  var moldeo_message_int = moldeoapimessage[0];
-  var moldeo_message_code = moldeoapimessage[1];
-  var moldeo_message_target = moldeoapimessage[2];
-  var objectinfo = moldeoapimessage[3];
-  
-  var moldeo_message_int = moldeoapimessage[0];
-  var moldeo_message_code = moldeoapimessage[1];
-  var moldeo_message_target = moldeoapimessage[2];
-  var objectinfo = moldeoapimessage[3];
-  var moldeo_message_info;
-  
-  if (objectinfo) {
-	objectinfo = objectinfo.replace( /\'/g , '"');
-	objectinfo = objectinfo.replace( /\\/g , '\\\\');
-	console.log( "oscServer.on('message'.....) objectinfo:"+objectinfo);
-	moldeo_message_info = JSON.parse( objectinfo );
-  }
-  
-  console.log( "\n" + "moldeoapimessage: moldeo_message_int:"+ moldeo_message_int
-			+	"\n" + "moldeo_message_code: " + moldeo_message_code
-			+	"\n" + "moldeo_message_target: " + moldeo_message_target
-			+	"\n" + "moldeo_message_info: " + moldeo_message_info ); 
-			
-	if (moldeo_message_code=="effectgetstate") {
+	if (send==undefined) send = false;
+	var rect = target.getBoundingClientRect();
+	x = rect.left;
+	y = rect.top;
+	w = rect.right - rect.left;
+	h = rect.bottom - rect.top;
 	
-		console.log("processing api message: effectgetstate" );
-		// use moldeo_message_target, 
-		// to update all controls that 
-		// are observers of the object states
-		var effect_label_name = moldeo_message_target;
-		var effect_activated = moldeo_message_info["Activated"];
-		var fxbuttons = document.getElementsByClassName(effect_label_name);
-		
-		console.log( "fxbuttons:"  + fxbuttons);
-		for( var i=0; i<fxbuttons.length; i++ ) {
-			var fxbutton = fxbuttons[i];
-			console.log( "fxbutton: i: "  + i + " html: " + fxbutton.outerHTML );
-			if (fxbutton) {
-				console.log( "fxbutton: is activated ? " + effect_activated );
-				if ( effect_activated == '1' ) {
-					console.log( "activating fxbutton:" );
-					activateClass( fxbutton, "object_enabled" );
-				} else { /* -1 */
-					console.log( "deactivating fxbutton:" );
-					deactivateClass( fxbutton, "object_enabled" );
-				}
-				//recombineClasses( fxbutton );
-			}
-		}
-		
-		Editor.States[effect_label_name] = moldeo_message_info;
-		
-		if (Editor.ObjectSelected==effect_label_name) {			
-			UpdateState(effect_label_name);
-		}
-		
-		//update Player objects
-		if (Player.ObjectSelected==effect_label_name) {
-			var alphav = moldeo_message_info["alpha"]*100;
-			
-			console.log("alpha:"+alphav);
-			
-			var sH = document.getElementById("slide_HORIZONTAL_channel_alpha");
-			sH.disabled = false;
-			sH.setAttribute("moblabel", effect_label_name);
-			sH.updateValue( alphav, sH );
-			
-			var sV  = document.getElementById("slide_VERTICAL_channel_tempo");
-			sV.disabled = false;
-			sV.setAttribute("moblabel", effect_label_name);
-			sV.updateValue( moldeo_message_info["tempo"]["delta"]*50, sV );
+	target.setAttribute("style","background-position: -"+( h - value*h/100.0 )+"px 0px;");
+	target.setAttribute("value",value);
+	target.value = value;
+	
+	if (send) {
+		var message = target.getAttribute("msg");
+		var moblabel =  target.getAttribute("moblabel");
+		var msg = sliderMessages[message];
+		if (moblabel) {
+			msg = msg.replace( /moblabel/g , moblabel );
+			msg = msg.replace( /msgvalue/g , value/50.0 );
+			console.log("msg:"+msg);
+			OscMoldeoSend( JSON.parse( msg ) );	
 		}
 		
 	}
 	
-	
-	if (moldeo_message_code=="objectget") {
-		console.log("processing api message: objectget > " +  moldeo_message_info);
-				
-		UpdateEditor( moldeo_message_target, moldeo_message_info );
-		
-	}
-	
-	if (moldeo_message_code=="consoleget") {
-	
-		console.log("processing api message: consoleget > " +  moldeo_message_info);
-		UpdateConsole( moldeo_message_info);
-		
-		if (Editor.ObjectRequested!=undefined
-			&& Editor.ObjectRequested!="")
-			OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectget', 'val1': '' + Editor.ObjectRequested + '' } );
-		
-	}
-	
-	if (moldeo_message_code=="consolesave") {
-		deactivateClass( document.getElementById("buttonED_SaveProject"), "saveneeded" );
-		deactivateClass( document.getElementById("buttonED_SaveProjectAs"), "saveneeded" );
-		if (moldeo_message_target=="success") {
-			alert("Se guardó el proyecto");
-			Editor.SaveNeeded = false;
-		}
-	}
-	if (	moldeo_message_code=="consolesaveas"
-			&& moldeo_message_target=="success") {
-		deactivateClass( document.getElementById("buttonED_SaveProject"), "saveneeded" );
-		deactivateClass( document.getElementById("buttonED_SaveProjectAs"), "saveneeded" );
-		if (moldeo_message_target=="success") {
-			if (moldeo_message_info && moldeo_message_info["projectfullpath"])
-				alert("Se guardó el nuevo proyecto en: "+moldeo_message_info["projectfullpath"]);
-			else
-				alert("Se guardó el nuevo proyecto");
-			Editor.SaveNeeded = false;
-		}
-	}
-	
-	if ( moldeo_message_code=="consolesaveas"
-		&& moldeo_message_target!="success") {
-		alert("Ocurrió un problema al guardar el proyecto.");
-	}
-	
-	if (	moldeo_message_code=="consolescreenshot"
-		&& moldeo_message_target=="success") {
-		//moldeo_message_info
-		//alert("Ocurrió un problema al guardar el proyecto.");
-		if (moldeo_message_info && moldeo_message_info["lastscreenshot"]) {
-			var fullscreenshotpath = moldeo_message_info["lastscreenshot"];
-			console.log("fullscreenshotpath: "+fullscreenshotpath);
-			//alert("Se capturó la pantalla en : " + fullscreenshotpath);
-			/**
-			var new_win = gui.Window.get(
-			  window.open( fullscreenshotpath, {
-				  position: 'center',
-				  toolbar: false,
-				  width: 400,
-				  height: 300
-				} )
-			);
-			*/
-			var saveasscreenshot = document.getElementById("saveasscreenshot");
-			saveasscreenshot.setAttribute("lastscreenshot",fullscreenshotpath);
-			saveasscreenshot.click();
-		}
-	}
-			
-  
-});
-	
-
-function OscMoldeoSend( obj ) {
-	//console.log("obj:"+JSON.stringify(obj));
-	if (obj.msg!=undefined) {
-		if (obj.val0!=undefined) {
-			if (obj.val1!=undefined) {
-				if (obj.val2!=undefined) {
-					if (obj.val3!=undefined) {
-						if (obj.val4!=undefined) {
-							oscClient.send( obj.msg, obj.val0, obj.val1, obj.val2, obj.val3, obj.val4 );
-							//console.log("obj.val4:"+obj.val4);
-						} else oscClient.send( obj.msg, obj.val0, obj.val1, obj.val2, obj.val3 );
-					} else oscClient.send( obj.msg, obj.val0, obj.val1, obj.val2 );
-				} else oscClient.send( obj.msg, obj.val0, obj.val1 );
-			} else oscClient.send( obj.msg, obj.val0 );
-		} else oscClient.send( obj.msg );
-	} else oscClient.send( obj );
-}
-
-/* version bridge */
-/*
-ioserver.sockets.on('connection', function (socket) {
-  socket.on("config", function (obj) {
-    oscServer = new osc.Server(obj.server.port, obj.server.host);
-    oscClient = new osc.Client(obj.client.host, obj.client.port);
-
-    oscClient.send('/status', socket.sessionId + ' connected');
-
-    oscServer.on('message', function(msg, rinfo) {
-      console.log(msg, rinfo);
-      socket.emit("message", msg);
-    });
-  });
-  socket.on("message", function (obj) {
-	if (obj.msg) {
-		if (obj.val0) {
-			if (obj.val1) {
-				if (obj.val2) {
-					if (obj.val3) {
-						oscClient.send( obj.msg, obj.val0, obj.val1, obj.val2, obj.val3 );
-					} else oscClient.send( obj.msg, obj.val0, obj.val1, obj.val2 );
-				} else oscClient.send( obj.msg, obj.val0, obj.val1 );
-			} else oscClient.send( obj.msg, obj.val0 );
-		} else oscClient.send( obj.msg );
-	} else oscClient.send( obj );
-  });
-});
-*/
-
-
-var Console = {
-
-	"Info": {}
-	
 };
-
-
-function UpdateConsole( info ) {
-
-	Console.Info = info;
-
-}
-
-
-var today = moment();
-
-//alert(today); 
-
-
-window.onfocus = function() { 
-  console.log("focus");
-}
-
-window.onblur = function() { 
-  console.log("blur");
-}
-
-window.onresize = function() {
-}
-
-window.onload = function() {
-  
-  document.getElementById("close-window-button").onclick = function() {
-    window.close();
-  }
-  
-  gui.Window.get().show();
-  RegisterButtonActions();
-}
-
-var MoldeoControlActions = function() {
-
-	fs.callProgram(  );
-
-};
-
-
-var Player = {
-	"ObjectSelected": "",
-	"PreconfigSelected": {},
-	"Objects": {}
-};
-
-var mapSelectionsObjects = {
-	"W":"W-ICONO",
-	"A":"A-PARTICULAS",
-	"S":"S-SECUENCIA",
-	"D":"D-TUNEL",
-	
-	"I":"I-CAMARA",
-	"J":"J-LAPIZ",
-	"K":"K-SONIDO",
-	"L":"L-ECO"
-};
-var mapSelectionsObjectsByLabel = {
-	"W-ICONO":"W",
-	"A-PARTICULAS":"A",
-	"S-SECUENCIA": "S",
-	"D-TUNEL":"D",
-	
-	"I-CAMARA":"I",
-	"J-LAPIZ":"J",
-	"K-SONIDO":"K",
-	"L-ECO":"L"
-};
-/*
-var mapEditorSelections = {
-	"W":"W-ICONO",
-	"A":"A-PARTICULAS",
-	"S":"S-SECUENCIA",
-	"D":"D-CUBO",
-	
-	"I":"V-CAMARA",
-	"J":"B-LAPIZ",
-	"K":"N-SONIDO",
-	"L":"M-ECO"
-};
-*/
-
-
-var mapSelectionStateMod = {
-	"LEFT": { "member": "alpha", "value": "decrement", "pressed": false },
-	"RIGHT": { "member": "alpha", "value": "increment", "pressed": false },
-	
-	"UP": { "member": "tempo", "value": "increment", "pressed": false },
-	"DOWN": { "member": "tempo", "value": "decrement", "pressed": false }
-};
-
-var sliderMessages = {
-	'channel_alpha': '{ "msg": "/moldeo","val0": "effectsetstate", "val1": "moblabel", "val2": "alpha", "val3": msgvalue }',
-	'channel_tempo': '{ "msg": "/moldeo","val0": "effectsetstate", "val1": "moblabel", "val2": "tempo", "val3": msgvalue }',
-};
-
-
-function SaveProjectAs( filename ) {
-	//must clone!!! Use moDataManager::Export function...
-	OscMoldeoSend( { 'msg': '/moldeo','val0': 'consolesaveas', 'val1': filename } );
-}
-
-function SaveScreenshotAs( screenshot, filename ) {
-
-	fs.copyFile( screenshot, filename );
-	
-}
 
 
 function selectEffect( selkey ) {
@@ -515,11 +98,6 @@ function selectEditorEffectByLabel( MOBlabel ) {
 }
 
 
-function RegisterEditorButtonObject() {
-	document.getElementById('object_label').innerHTML = Editor.ObjectSelected;
-}
-
-
 function UnselectButtonsCircle() {
 	for(var i = 1; i<=3; i++) {
 		deactivateClass( document.getElementById("button_"+i), "circle_selected" );
@@ -559,69 +137,8 @@ function selectPlayerPreconfig( object_selection, preconfig_selection, forcesele
 	}
 }
 
-function RegisterButtonPreconfigs() {
-	
-	/** BUTTON 1,2,3 */
-	document.getElementById("button_1").addEventListener( "click", function(event) {
-		console.log("button_1");
-		selectPlayerPreconfig( Player.ObjectSelected, 0 );
-	});
 
-	document.getElementById("button_2").addEventListener( "click", function(event) {
-		console.log("button_2");
-		selectPlayerPreconfig( Player.ObjectSelected, 1 );
-	});
 
-	document.getElementById("button_3").addEventListener( "click", function(event) {
-		console.log("button_3");
-		selectPlayerPreconfig( Player.ObjectSelected, 2 );
-	});
-
-}
-
-function RegisterButtonInspectors() {
-
-	/** BUTTON 1,2,3 */
-	/*
-	document.getElementById("button_1").onclick = function() {
-		console.log("button_1");
-		var APIObj = { 
-					'msg': '/moldeo',
-					'val0': 'preconfigset', 
-					'val1': selectedEffect, 
-					'val2': 0 
-					};
-		OscMoldeoSend( APIObj );
-	};
-
-	document.getElementById("button_2").onclick = function() {
-		console.log("button_2");
-		OscMoldeoSend( { 'msg': '/moldeo','val0': 'preconfigset', 'val1': selectedEffect, 'val2': 1 } );
-	};
-
-	document.getElementById("button_3").onclick = function() {
-		console.log("button_3");
-		OscMoldeoSend( { 'msg': '/moldeo','val0': 'preconfigset', 'val1': selectedEffect, 'val2': 2 } );
-	};
-	*/
-
-}
-
-function startSend( tkey ) {
-	
-	var dataCommand = mapSelectionStateMod[ tkey ]["command"];
-	
-	OscMoldeoSend( dataCommand );
-	
-	if (mapSelectionStateMod[ tkey ]["pressed"] == true ) {
-		setTimeout( function() { startSend( tkey ); } , 40 );
-	}
-}
-
-var lastKeyDown, keyIsPressed = {}, keyIsDown={}, keyCodeForCharCode = {},
-    charCodeForKeyCode = {};
-
-var keycount = 0;
 var editor_active = true;
 
 function activateEditor() {
@@ -651,9 +168,12 @@ var canvaspalette;
 var ctxpalette;
 var paletteImg;
 
-function RegisterButtonActions() {
 
-	/** BUTTON W,A,S,D */
+/** PLAYER BUTTONS */
+
+
+/** button_W, button_A, button_S, button_D, button_I, button_J, button_K, button_L */
+function RegisterPlayerButtons() {
 
 	for( var key in mapSelectionsObjects ) {
 				
@@ -666,7 +186,7 @@ function RegisterButtonActions() {
 			//OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectselect', 'val1': 'icono' } );
 			if (shiftSelected() || ctrlSelected()) {
 				selectEffect( mkey );
-				RegisterButtonPreconfigs();
+				RegisterPlayerPreconfigsButton();
 			} else {
 				if ( !classActivated( event.target, "object_enabled") ) {
 					OscMoldeoSend( { 'msg': '/moldeo','val0': 'effectenable', 'val1': mapSelectionsObjects[mkey] } );
@@ -681,7 +201,40 @@ function RegisterButtonActions() {
 		
 	}
 	
-	/** ============== */
+	RegisterCursorButtons();
+	RegisterCursorSliders();
+	
+	RegisterPlayStopSpaceButtons();
+	
+	RegisterKeyboardControl();
+	RegisterActiveEditorButton();
+
+}
+
+/** button_1, button_2, button_3 */
+function RegisterPlayerPreconfigsButton() {
+	
+	/** BUTTON 1,2,3 */
+	document.getElementById("button_1").addEventListener( "click", function(event) {
+		console.log("button_1");
+		selectPlayerPreconfig( Player.ObjectSelected, 0 );
+	});
+
+	document.getElementById("button_2").addEventListener( "click", function(event) {
+		console.log("button_2");
+		selectPlayerPreconfig( Player.ObjectSelected, 1 );
+	});
+
+	document.getElementById("button_3").addEventListener( "click", function(event) {
+		console.log("button_3");
+		selectPlayerPreconfig( Player.ObjectSelected, 2 );
+	});
+
+}
+
+/** button_LEFT, button_RIGHT, button_TOP, button_BOTTOM */
+function RegisterCursorButtons() {
+
 	for( var key in mapSelectionStateMod ) {
 				
 		document.getElementById("button_"+key).addEventListener( "mousedown", function(event) {
@@ -705,14 +258,36 @@ function RegisterButtonActions() {
 		});
 		
 	}
+		
+}
+
+/** SLIDE CONTROLS: ALPHA , TEMPO */
+function RegisterCursorSliders() {
+
+	var sH = document.getElementById("slide_HORIZONTAL_channel_alpha");
 	
-	/*
-	document.getElementById("button_X").addEventListener( "click", function(event) {
-			//console.log(event);
-			OscMoldeoSend( { 'msg': '/moldeo','val0': 'effectdisable', 'val1': selectedEffect } );
-	});
-	*/
+	sH.updateValue = updateSliderHorizontalValue;
+	sH.addEventListener( "change",
+		function(event) {
+			console.log("slide_HORIZONTAL_channel_alpha" + event.target.value );
+			event.target.updateValue( event.target.value, event.target, true );	
+		}
+	);
+	sH.updateValue( 0 , sH );
 	
+	var sV = document.getElementById("slide_VERTICAL_channel_tempo");
+	sV.updateValue = updateSliderVerticalValue;
+	sV.addEventListener( "change",
+		function(event) {
+			console.log("slide_VERTICAL_channel_tempo" + event.target.value );
+			event.target.updateValue( event.target.value, event.target, true );	
+		}
+	);
+	sV.updateValue( 0 , sV );
+}
+
+/** editor_button > activate Editor Panel */
+function RegisterActiveEditorButton() {
 	document.getElementById("editor_button").addEventListener( "click", function(event) {
 			//document.getElementById("editor_panel").display = "block";
 			if (!classActivated(document.getElementById("editor_panel"),"editor_opened")) {
@@ -726,9 +301,11 @@ function RegisterButtonActions() {
 				
 			}
 	});
-	
-	
-	
+}
+
+
+function RegisterPlayStopSpaceButtons() {
+
 	document.getElementById("button_TAB").addEventListener( "click", function(event) {
 		//OscMoldeoSend( { 'msg': '/moldeo','val0': 'consoleplay', 'val1': selectedEffect } );
 		/** cehck if wwe PLAY the SELECTED EFFECT > haria un boton de PLAY GENERAL*/
@@ -747,16 +324,26 @@ function RegisterButtonActions() {
 		OscMoldeoSend( { 'msg': '/moldeo', 'val0': 'effectsetstate', 'val1': Player.ObjectSelected, 'val2': 'tempo', 'val3': 'beatpulse' } );
 	});
 	
-	
-	document.onkeydown = function(evt) {
-	/*
-	
-    left = 37
-    up = 38
-    right = 39
-    down = 40
+}
 
-	*/
+/** left = 37, up = 38, right = 39, down = 40 */
+function startSend( tkey ) {
+	
+	var dataCommand = mapSelectionStateMod[ tkey ]["command"];
+	
+	OscMoldeoSend( dataCommand );
+	
+	if (mapSelectionStateMod[ tkey ]["pressed"] == true ) {
+		setTimeout( function() { startSend( tkey ); } , 40 );
+	}
+}
+
+var keycount = 0;
+
+function RegisterKeyboardControl() {
+
+	document.onkeydown = function(evt) {
+
 		evt = evt || window.event;
 				
 		if (evt.ctrlKey && evt.keyCode == 90) {
@@ -811,6 +398,7 @@ function RegisterButtonActions() {
 		console.log("Simulate a click please! key: " + key);
 		keyU = key.toUpperCase();
 		
+		//mapped keys trigger click in buttons (button_W,button_S,etc...)
 		if (mapSelectionsObjects[keyU]) {
 			document.getElementById("button_"+keyU ).click();
 		}
@@ -839,35 +427,17 @@ function RegisterButtonActions() {
 			deactivateClass( document.getElementById("button_CTRL"), "ctrlEnabled" );
 		}
 	};
-	
-/*EDITORS*/
-	if (editor_active) {
-		
-		activateEditor();
-		
-		for( var key in mapSelectionsObjects ) {
-		 
-					
-			document.getElementById("buttonED_"+key).addEventListener( "click", function(event) {
-				//console.log(event);
-				
-				var mkey = event.target.getAttribute("key");
-				
-				console.log("buttonED_"+mkey+" event:" + event.target.getAttribute("id") );
-				/*
-				OscMoldeoSend( { 'msg': '/moldeo','val0': 'effectenable', 'val1': mapselections[mkey] } );
-				*/
-				
-				OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectget', 'val1': '' + mapSelectionsObjects[mkey] + '' } ); //retreive all parameters
-				//send a request to get full object info...ASYNC
-				
-				
-			});
-			
-		}
-		
-		/*
-		for( var key in mapSelectionsFx ) {
+
+}
+
+
+
+/** EDITOR BUTTONS */
+
+
+function RegisterEditorButtons() {
+
+	for( var key in mapSelectionsObjects ) {
 	 
 				
 		document.getElementById("buttonED_"+key).addEventListener( "click", function(event) {
@@ -876,92 +446,67 @@ function RegisterButtonActions() {
 			var mkey = event.target.getAttribute("key");
 			
 			console.log("buttonED_"+mkey+" event:" + event.target.getAttribute("id") );
+			/*
+			OscMoldeoSend( { 'msg': '/moldeo','val0': 'effectenable', 'val1': mapselections[mkey] } );
+			*/
 			
-			OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectget', 'val1': mapSelectionsFx[mkey] } ); //retreive all parameters
+			OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectget', 'val1': '' + mapSelectionsObjects[mkey] + '' } ); //retreive all parameters
 			//send a request to get full object info...ASYNC
 			
-			selectedEditorEffect = mapSelectionsFx[mkey];
-			selectEditorEffect( mkey );
-			
-			
-			if (selectedEditorEffect!="") 
-				document.getElementById('object_label').innerHTML = selectedEditEffect;
 			
 		});
 		
 	}
-	*/
-		
-		
+	
+	RegisterEditorProjectButtons();
+	
+	RegisterEditorPreconfigButtons();
+	
+	RegisterEditorEnableButton();
+	RegisterEditorImageButtons();
+	RegisterEditorColorButtons();	
+	RegisterInspectorButtons();
+	
+	
+	
+}
 
-		
-		
-		document.getElementById("buttonED_1").addEventListener( "click", function(event) {
-				console.log("buttonED_1 > ");
-				selectEditorPreconfig(0);
-		});
-		document.getElementById("buttonED_2").addEventListener( "click", function(event) {
-				console.log("buttonED_2 > ");
-				selectEditorPreconfig(1);
-		});
-		document.getElementById("buttonED_3").addEventListener( "click", function(event) {
-				console.log("buttonED_3 > ");
-				selectEditorPreconfig(2);
-		});
-		
-		var sH = document.getElementById("slide_HORIZONTAL_channel_alpha");
-		
-		sH.updateValue = updateSliderHorizontalValue;
-		sH.addEventListener( "change",
-			function(event) {
-				console.log("slide_HORIZONTAL_channel_alpha" + event.target.value );
-				event.target.updateValue( event.target.value, event.target, true );	
-			}
-		);
-		sH.updateValue( 0 , sH );
-		
-		var sV = document.getElementById("slide_VERTICAL_channel_tempo");
-		sV.updateValue = updateSliderVerticalValue;
-		sV.addEventListener( "change",
-			function(event) {
-				console.log("slide_VERTICAL_channel_tempo" + event.target.value );
-				event.target.updateValue( event.target.value, event.target, true );	
-			}
-		);
-		sV.updateValue( 0 , sV );
+function RegisterEditorPreconfigButtons() {
+	document.getElementById("buttonED_1").addEventListener( "click", function(event) {
+			console.log("buttonED_1 > ");
+			selectEditorPreconfig(0);
+	});
+	document.getElementById("buttonED_2").addEventListener( "click", function(event) {
+			console.log("buttonED_2 > ");
+			selectEditorPreconfig(1);
+	});
+	document.getElementById("buttonED_3").addEventListener( "click", function(event) {
+			console.log("buttonED_3 > ");
+			selectEditorPreconfig(2);
+	});
+}
 
-		/*
+function RegisterEditorEnableButton() {
+	document.getElementById("button_object_onoff").addEventListener( "click", function(event) {
+		console.log("button_object_onoff");
 		
-		document.getElementById("buttonED_previous_preconfig").addEventListener( "click", function(event) {
-				//console.log(event);
+		var mob_label = event.target.getAttribute("moblabel");
+		if (mob_label=="" || mob_label==undefined) {
+			alert("Debe seleccionar un efecto para poder editarlo.");
+			return;
+		}
+		
+		if ( !classActivated( event.target, "object_onoff_on") ) {
+			OscMoldeoSend( { 'msg': '/moldeo','val0': 'effectenable', 'val1': mob_label } );
+		} else {
+			OscMoldeoSend( { 'msg': '/moldeo','val0': 'effectdisable', 'val1': mob_label } );
+		}
+		
+	});
+}
 
-				console.log("buttonED_previous_preconfig > ");
-		});
-		
-		document.getElementById("buttonED_next_preconfig").addEventListener( "click", function(event) {
-				//console.log(event);
-
-				console.log("buttonED_next_preconfig > ");
-		});
-*/		
-		document.getElementById("button_object_onoff").addEventListener( "click", function(event) {
-			console.log("button_object_onoff");
-			
-			var mob_label = event.target.getAttribute("moblabel");
-			if (mob_label=="" || mob_label==undefined) {
-				alert("Debe seleccionar un efecto para poder editarlo.");
-				return;
-			}
-			
-			if ( !classActivated( event.target, "object_onoff_on") ) {
-				OscMoldeoSend( { 'msg': '/moldeo','val0': 'effectenable', 'val1': mob_label } );
-			} else {
-				OscMoldeoSend( { 'msg': '/moldeo','val0': 'effectdisable', 'val1': mob_label } );
-			}
-			
-		});
-		
-		/*INSPECTORS*/
+function RegisterInspectorButtons() {
+/*INSPECTORS*/
 		/*POSITIONS*/
 		document.getElementById("selector_POSITION_translatex").addEventListener("click", function(event) {
 			UnselectSelectorPositions(event.target.parentNode);
@@ -1025,6 +570,10 @@ function RegisterButtonActions() {
 		
 		document.getElementById("MOTION_slide").addEventListener("change", ExecuteSliderInspector );
 		
+}
+
+function RegisterEditorProjectButtons() {
+
 		/** OBJECT/IMAGE EDIT */
 		
 		document.getElementById("object_edit").addEventListener( "click", function(event) {
@@ -1041,19 +590,7 @@ function RegisterButtonActions() {
 			
 		});
 		
-		var choosefile = document.getElementById("importfile");		
-		choosefile.addEventListener( "change", function(event) {
-			
-			var moblabel = event.target.importobject.getAttribute("moblabel");
-			var preconfig = event.target.importobject.getAttribute("preconfig");
-			var paramname = event.target.importobject.getAttribute("paramname");
-			
-			var filename = event.target.value;			
-			console.log("choosefile > " + filename );
-			
-			ImportFile( moblabel, paramname, preconfig, filename );
-			
-		});
+		
 		
 		var saveasfile = document.getElementById("saveasfile");		
 		saveasfile.addEventListener( "change", function(event) {
@@ -1098,25 +635,7 @@ function RegisterButtonActions() {
 			
 		});
 				
-		document.getElementById("object_import").addEventListener( "click", function(event) {
-		
-			console.log("IMPORT IMAGE/OBJECT");
-			
-			if (Editor.ObjectSelected=="" || Editor.ObjectSelected==undefined) {
-				alert("Debe seleccionar un efecto antes de importar una imagen.");
-				return;
-			}
-			
-			var cfile = document.getElementById("importfile");			
-			
-			if (cfile) {
-				//cfile.setAttribute();
-				cfile.setAttribute("importobject","object_edition");
-				cfile.importobject = event.target.parentNode;
-				cfile.click();
-			}
-			
-		});
+
 		
 		document.getElementById("buttonED_OpenProject").addEventListener( "click", function(event) {
 			//console.log(event);
@@ -1174,6 +693,47 @@ function RegisterButtonActions() {
 		});
 		
 
+		
+		
+}
+
+function RegisterEditorImageButtons() {
+	var choosefile = document.getElementById("importfile");		
+	choosefile.addEventListener( "change", function(event) {
+		
+		var moblabel = event.target.importobject.getAttribute("moblabel");
+		var preconfig = event.target.importobject.getAttribute("preconfig");
+		var paramname = event.target.importobject.getAttribute("paramname");
+		
+		var filename = event.target.value;			
+		console.log("choosefile > " + filename );
+		
+		ImportFile( moblabel, paramname, preconfig, filename );
+		
+	});
+
+	document.getElementById("object_import").addEventListener( "click", function(event) {
+	
+		console.log("IMPORT IMAGE/OBJECT");
+		
+		if (Editor.ObjectSelected=="" || Editor.ObjectSelected==undefined) {
+			alert("Debe seleccionar un efecto antes de importar una imagen.");
+			return;
+		}
+		
+		var cfile = document.getElementById("importfile");			
+		
+		if (cfile) {
+			//cfile.setAttribute();
+			cfile.setAttribute("importobject","object_edition");
+			cfile.importobject = event.target.parentNode;
+			cfile.click();
+		}
+		
+	});
+}
+
+function RegisterEditorColorButtons() {
 		/*OBJECT COLOR*/
 		canvaspalette = document.getElementById("object_color_palette");
 		ctxpalette = canvaspalette.getContext("2d");
@@ -1248,13 +808,34 @@ function RegisterButtonActions() {
 			  //App.selectColor( App.color );
 			  //activateTool("tool_07");
 		});
+}
+
+function RegisterEditorLabelObject() {
+	document.getElementById('object_label').innerHTML = Editor.ObjectSelected;
+}
+
+function RegisterAllButtonActions() {
+	
+	RegisterPlayerButtons();
+	
+	/*EDITORS*/
+	if (editor_active) {
 		
+		activateEditor();
+		
+		RegisterEditorButtons();
+
 		//INITIALIZE CONSOLE (get INFO)
 		OscMoldeoSend( { 'msg': '/moldeo','val0': 'consoleget', 'val1': '' } );
 		
 	}
 
 }
+
+
+
+
+
 
 function UnselectSelectorPositions( parent ) {
 	var buttonsPos = parent.getElementsByTagName("button");
@@ -1264,61 +845,6 @@ function UnselectSelectorPositions( parent ) {
 	}
 	
 }
-
-
-var Translations = {
-	"POSITION": "POSICION",
-	"MOTION": "MOVIMIENTO",
-	"SCALE": "ESCALA",
-	"ABERRATION": "VELOCIDAD",
-	"RANDOMMOTION": "DESCONTROLADO"
-};
-
-function TR( label ) {
-	return Translations[label];
-}
-
-
-var Editor = {
-	"ObjectSelected": "",
-	"PreconfigSelected": 0,
-	"SaveNeeded": false,
-	
-	"Objects": {},
-	"States": {},
-	"Preconfigs": {},
-	"PreconfigsSelected": {},
-	
-	"Parameters": {},
-	"Inspectors": {},
-	
-	"Images": {},
-	"Sounds": {},
-	"Models": {},
-	
-	"CustomInspectors": {
-		"POSITION": {
-			"translatex": true,
-			"translatey": true,
-			"translatez": true
-		},
-		"SCALE": {
-			"scalex": true,
-			"scaley": true,
-			"scalez": true
-		},
-		"MOTION": {
-			"translatex": true,
-			"translatey": true,
-			"translatez": true,
-			"rotatex": true,
-			"rotatey": true,
-			"rotatez": true,
-			"rotate": true
-		}
-		
-	}
-};
 
 function UpdateEditor( MOB_label, fullobjectInfo ) {
 
@@ -1330,7 +856,7 @@ function UpdateEditor( MOB_label, fullobjectInfo ) {
 	}
 	
 	selectEditorEffectByLabel( MOB_label );							
-	RegisterEditorButtonObject();
+	RegisterEditorLabelObject();
 				
 	Editor.PreconfigSelected = fullobjectInfo["object"]["objectconfig"]["currentpreconfig"];
 	
@@ -1690,11 +1216,6 @@ function UpdatePreconfigs( MOB_label ) {
 	}
 	
 	/** changed Object, repopulate parameters!!! */
-	/*
-	ActivatePreconfigsParameters(0);
-	ActivatePreconfigsParameters(1);
-	ActivatePreconfigsParameters(2);
-	*/
 	selectEditorPreconfig( Editor.PreconfigSelected );
 	
 }
@@ -1703,8 +1224,13 @@ function SetInspectorMode( group, parammode ) {
 
 	if (group=="POSITION") {
 		var slider = group+"_slide";
+		
+		//the slider (one slider per group, N selectors )
 		var sliderEl  = document.getElementById( slider );
+		
+		//the input field
 		var inputEl = document.getElementById( "selector_"+group+"_"+parammode+"_input" );
+		
 		sliderEl.setAttribute("min", "-1" );
 		sliderEl.setAttribute("max", "1.0" );
 		sliderEl.setAttribute("step", "0.01" );
