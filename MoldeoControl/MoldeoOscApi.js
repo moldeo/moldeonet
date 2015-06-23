@@ -1,4 +1,4 @@
-/*
+Ôªø/*
 	needs
 	MoldeoObjects.js
 
@@ -10,179 +10,219 @@ var osc = require('node-osc');
 
 var oscServer, oscClient;
 var configOsc = {
-				/*MoldeoControl listen to MoldeoPlayer Server in port 3335*/
-                server: {
-                    port: 3335,
-                    host: '127.0.0.1'
-                },
-				
-				/**MoldeoControl Speak to MoldeoPlayer as a Client in port 3334*/
-                client: {
-                    port: 3334,
-                    host: '127.0.0.1'
-                }
-            };
+	/*MoldeoControl listen to MoldeoPlayer Server in port 3335*/
+	server: {
+		port: 3335,
+		host: '127.0.0.1'
+	},
+	
+	/**MoldeoControl Speak to MoldeoPlayer as a Client in port 3334*/
+	client: {
+		port: 3334,
+		host: '127.0.0.1'
+	}
+};
 
 oscServer = new osc.Server( configOsc.server.port, configOsc.server.host);
 oscClient = new osc.Client( configOsc.client.host, configOsc.client.port);
 
-oscServer.on('message', function(msg, rinfo) {
-  //console.log( "oscServer.on('message'.....) receive ! msg: " + msg, ' rinfo:' + rinfo);  
-  console.log( "oscServer.on('message'.....) receive ! msg: " +JSON.stringify(msg[2],"", "\n") );
-  //socket.emit("message", msg);
-  var object_regexp = /({.*})/i
-  //var data = msg.match( object_regexp );
-  var  moldeoapimessage = msg[2];
-  var moldeo_message_int = moldeoapimessage[0];
-  var moldeo_message_code = moldeoapimessage[1];
-  var moldeo_message_target = moldeoapimessage[2];
-  var objectinfo = moldeoapimessage[3];
-  
-  var moldeo_message_int = moldeoapimessage[0];
-  var moldeo_message_code = moldeoapimessage[1];
-  var moldeo_message_target = moldeoapimessage[2];
-  var objectinfo = moldeoapimessage[3];
-  var moldeo_message_info;
-  
-  if (objectinfo) {
-	objectinfo = objectinfo.replace( /\'/g , '"');
-	objectinfo = objectinfo.replace( /\\/g , '\\\\');
-	console.log( "oscServer.on('message'.....) objectinfo:"+objectinfo);
-	moldeo_message_info = JSON.parse( objectinfo );
-  }
-  
-  console.log( "\n" + "moldeoapimessage: moldeo_message_int:"+ moldeo_message_int
-			+	"\n" + "moldeo_message_code: " + moldeo_message_code
-			+	"\n" + "moldeo_message_target: " + moldeo_message_target
-			+	"\n" + "moldeo_message_info: " + moldeo_message_info ); 
-			
-	if (moldeo_message_code=="effectgetstate") {
+
+var MoldeoApiReceiver = {
+
+	/** CONSOLE */
+	"consoleget": function( message ) {
+		if (config.log.full) console.log("processing api message: consoleget > ", message);
+		Console.UpdateConsole( message["target"], message["info"] );
+		
+		if (Editor.ObjectRequested!=undefined
+			&& Editor.ObjectRequested!="")
+			OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectget', 'val1': '' + Editor.ObjectRequested + '' } );
+
+	},
+	"consolegetstate": function( message ) {
+		if (config.log.full) console.log("processing api message: consolegetstate > message: ",  message);		
+		Console.UpdateState( message["info"] );
+	},
+	"consolesaveas": function( message ) {
+		deactivateClass( document.getElementById("buttonED_SaveProject"), "saveneeded" );
+		deactivateClass( document.getElementById("buttonED_SaveProjectAs"), "saveneeded" );
+		var info = message["info"];
+		if (message["target"]=="success") {
+			if (info && info["projectfullpath"])
+				alert("Se guard√≥ el nuevo proyecto en: "+info["projectfullpath"]);
+			else
+				alert("Se guard√≥ el nuevo proyecto");
+			Editor.SaveNeeded = false;
+		}
+	},
+	"consolesave": function( message ) {
+
+		deactivateClass( document.getElementById("buttonED_SaveProject"), "saveneeded" );
+		deactivateClass( document.getElementById("buttonED_SaveProjectAs"), "saveneeded" );
+		
+		if (message["target"]=="success") {
+			alert("Se guard√≥ el proyecto");
+			Editor.SaveNeeded = false;
+		}	
 	
-		console.log("processing api message: effectgetstate" );
+	},
+	"consolescreenshot": function( message ) {
+		var info = message["info"];
+		if (message["target"]=="success") {
+			if (info && info["lastscreenshot"]) {
+			
+				var fullscreenshotpath = info["lastscreenshot"];
+				if (config.log.full) console.log("fullscreenshotpath: ",fullscreenshotpath);
+
+				var saveasscreenshot = document.getElementById("saveasscreenshot");
+				saveasscreenshot.setAttribute("lastscreenshot",fullscreenshotpath);
+				saveasscreenshot.click();
+				
+			}
+		}
+	},
+	
+	/** EFFECT */
+	"effectgetstate": function( message ) {
+
+		if (config.log.full) console.log("processing api message: effectgetstate: ",message );
+		var info = message["info"];
 		// use moldeo_message_target, 
 		// to update all controls that 
 		// are observers of the object states
-		var effect_label_name = moldeo_message_target;
-		var effect_activated = moldeo_message_info["Activated"];
+		var effect_label_name = message["target"];
+		var effect_activated = info["Activated"];
 		var fxbuttons = document.getElementsByClassName(effect_label_name);
 		
-		console.log( "fxbuttons:"  + fxbuttons);
+		if (config.log.full) console.log( "fxbuttons:", fxbuttons);
 		for( var i=0; i<fxbuttons.length; i++ ) {
 			var fxbutton = fxbuttons[i];
-			console.log( "fxbutton: i: "  + i + " html: " + fxbutton.outerHTML );
+			if (config.log.full) console.log( "fxbutton: i: " ,i, " html: ",fxbutton.outerHTML );
 			if (fxbutton) {
-				console.log( "fxbutton: is activated ? " + effect_activated );
+				if (config.log.full) console.log( "fxbutton: is activated ? ", effect_activated );
 				if ( effect_activated == '1' ) {
-					console.log( "activating fxbutton:" );
+					if (config.log.full) console.log( "activating fxbutton:" );
 					activateClass( fxbutton, "object_enabled" );
 				} else { /* -1 */
-					console.log( "deactivating fxbutton:" );
+					if (config.log.full) console.log( "deactivating fxbutton:" );
 					deactivateClass( fxbutton, "object_enabled" );
 				}
-				//recombineClasses( fxbutton );
 			}
 		}
 		
-		Editor.States[effect_label_name] = moldeo_message_info;
+		Editor.States[effect_label_name] = info;
 		
 		if (Editor.ObjectSelected==effect_label_name) {			
 			UpdateState(effect_label_name);
 		}
 		
-		//update Player objects
-		if (Player.ObjectSelected==effect_label_name) {
-			var alphav = moldeo_message_info["alpha"]*100;
-			
-			console.log("alpha:"+alphav);
-			
-			var sH = document.getElementById("slide_HORIZONTAL_channel_alpha");
-			sH.disabled = false;
-			sH.setAttribute("moblabel", effect_label_name);
-			sH.updateValue( alphav, sH );
-			
-			var sV  = document.getElementById("slide_VERTICAL_channel_tempo");
-			sV.disabled = false;
-			sV.setAttribute("moblabel", effect_label_name);
-			sV.updateValue( moldeo_message_info["tempo"]["delta"]*50, sV );
+		//update Control objects
+		if (Control.ObjectSelected==effect_label_name) {
+			UpdateControl( effect_label_name );
 		}
 		
-	}
-	
-	
-	if (moldeo_message_code=="objectget") {
-		console.log("processing api message: objectget > " +  moldeo_message_info);
+		if (Scenes.ObjectSelected==effect_label_name) {
+			UpdateScene( effect_label_name );
+		}
 				
-		UpdateEditor( moldeo_message_target, moldeo_message_info );
+	},
+	
+	/** PARAM */
+	"paramget": function( message ) {
+		if (config.log.full) console.log("paramget: ", message );
+		UpdateEditorParam( message["target"], message["info"] )
+	},
+	
+	/** VALUE */
+	"valueget": function( message ) {
+		if (config.log.full) console.log("valueget rec: message: ", message);
+		valuegetResponse( message["target"], message["param"], message["preconf"], message["info"]);
 		
-	}
+	},
 	
-	if (moldeo_message_code=="consoleget") {
-	
-		console.log("processing api message: consoleget > " +  moldeo_message_info);
-		Console.UpdateConsole( moldeo_message_info );
-		
-		if (Editor.ObjectRequested!=undefined
-			&& Editor.ObjectRequested!="")
-			OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectget', 'val1': '' + Editor.ObjectRequested + '' } );
-		
-	}
-	
-	if (moldeo_message_code=="consolesave") {
-		deactivateClass( document.getElementById("buttonED_SaveProject"), "saveneeded" );
-		deactivateClass( document.getElementById("buttonED_SaveProjectAs"), "saveneeded" );
-		if (moldeo_message_target=="success") {
-			alert("Se guardÛ el proyecto");
-			Editor.SaveNeeded = false;
-		}
-	}
-	if (	moldeo_message_code=="consolesaveas"
-			&& moldeo_message_target=="success") {
-		deactivateClass( document.getElementById("buttonED_SaveProject"), "saveneeded" );
-		deactivateClass( document.getElementById("buttonED_SaveProjectAs"), "saveneeded" );
-		if (moldeo_message_target=="success") {
-			if (moldeo_message_info && moldeo_message_info["projectfullpath"])
-				alert("Se guardÛ el nuevo proyecto en: "+moldeo_message_info["projectfullpath"]);
-			else
-				alert("Se guardÛ el nuevo proyecto");
-			Editor.SaveNeeded = false;
-		}
-	}
-	
-	if ( moldeo_message_code=="consolesaveas"
-		&& moldeo_message_target!="success") {
-		alert("OcurriÛ un problema al guardar el proyecto.");
-	}
-	
-	if (	moldeo_message_code=="consolescreenshot"
-		&& moldeo_message_target=="success") {
-		//moldeo_message_info
-		//alert("OcurriÛ un problema al guardar el proyecto.");
-		if (moldeo_message_info && moldeo_message_info["lastscreenshot"]) {
-			var fullscreenshotpath = moldeo_message_info["lastscreenshot"];
-			console.log("fullscreenshotpath: "+fullscreenshotpath);
-			//alert("Se capturÛ la pantalla en : " + fullscreenshotpath);
-			/**
-			var new_win = gui.Window.get(
-			  window.open( fullscreenshotpath, {
-				  position: 'center',
-				  toolbar: false,
-				  width: 400,
-				  height: 300
-				} )
-			);
-			*/
-			var saveasscreenshot = document.getElementById("saveasscreenshot");
-			saveasscreenshot.setAttribute("lastscreenshot",fullscreenshotpath);
-			saveasscreenshot.click();
-		}
-	}
+	/** OBJECT */
+	"objectget": function( message ) {
+		UpdateEditor( message["target"], message["info"] );
+	},
+
+};
+var history = [];
+var historyobj = [];
+var nhis = 0;
+
+oscServer.on('message', function(msg, rinfo) {
+
+	try {
+		//console.log( "oscServer.on('message'.....) receive ! msg: " + msg, ' rinfo:' + rinfo);  
+		if (config.log.full) console.log( "oscServer.on('message'.....) receive ! msg: ",msg );
+		//socket.emit("message", msg);
+		var object_regexp = /({.*})/i
+		//var data = msg.match( object_regexp );
+		var  moldeoapimessage = msg[2];
+		var moldeo_message = {};
+
+		moldeo_message["int"] = moldeoapimessage[0];
+		moldeo_message["code"] = moldeoapimessage[1];
+		moldeo_message["target"] = moldeoapimessage[2];
+
+		var objectinfo = moldeoapimessage[3];
+		moldeo_message["info"] = undefined;
+
+		history[nhis] = msg[2];
+
+		if (objectinfo!=undefined) {
+
+			//console.log( "oscServer.on('message'.....) objectinfo:" + JSON.stringify( objectinfo,"", "\n") );
+			if (config.log.full) console.log( "oscServer.on('message',...)");
+			//console.log( "oscServer.on('message'.....) objectinfo:",objectinfo );
 			
+			if ( moldeo_message["int"]>3) {		
+				//console.error("objectinfo: is an array");
+				moldeo_message["param"] = moldeoapimessage[3];
+				moldeo_message["preconf"] = moldeoapimessage[4];
+				objectinfo = moldeoapimessage[5];
+			}
+
+			if (config.log.full) console.log( "oscServer.on('message',...) replacing line return: \\n by nothing");
+			objectinfo = objectinfo.replace( /\n/g , '');
+			//objectinfo = objectinfo.replace( /\"/g , '##quote##');
+
+			if (config.log.full) console.log( "oscServer.on('message',...) replacing apostrophe: \\' by \"");
+			objectinfo = objectinfo.replace( /\'/g , '"');
+			if (config.log.full) console.log( "oscServer.on('message',...) replacing slash: \\ by double slash \\\\");
+			objectinfo = objectinfo.replace( /\\/g , '\\\\');
+			//objectinfo = objectinfo.replace( /##quote##/g , '\\\"');
+			if (config.log.full) console.log( "oscServer.on('message',...) parsing:");
+			if (config.log.full) console.log( "objetinfo:",objectinfo);
+			moldeo_message["info"] = JSON.parse( objectinfo );
+		}
+	  
+		if (config.log.full) console.log( "moldeo_message > ",moldeo_message ); 
+
+		var CallingApiFunction = false;
+		if (moldeo_message["code"])
+			CallingApiFunction = MoldeoApiReceiver[ moldeo_message["code"] ];
+
+		if (CallingApiFunction) {
+			CallingApiFunction( moldeo_message );		
+		} else {
+			console.error("No Moldeo Osc Api function registered for calling code:", moldeo_message["code"] );
+		}
   
+	} catch(err) {
+		console.error("oscServer > on message: ",err);
+		alert("Error en el formato de recepci√≥n de datos",err);
+	}
 });
 	
 
 function OscMoldeoSend( obj ) {
-	//console.log("obj:"+JSON.stringify(obj));
+	if (config.log.full) console.log("obj:",obj);
+	var str = "";
+	for(var xx in obj) {
+		str+= obj[xx];
+	}
+	if (config.log.full) console.log("obj:",str);
 	if (obj.msg!=undefined) {
 		if (obj.val0!=undefined) {
 			if (obj.val1!=undefined) {

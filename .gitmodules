@@ -1,0 +1,9 @@
+[submodule "libmoldeo"]
+	path = libmoldeo
+	url = https://www.github.com/moldeo/libmoldeo.git
+[submodule "moldeoplayer"]
+	path = moldeoplayer
+	url = https://www.github.com/moldeo/moldeoplayer.git
+[submodule "moldeoplugins"]
+	path = moldeoplugins
+	url = https://www.github.com/moldeo/moldeoplugins.git

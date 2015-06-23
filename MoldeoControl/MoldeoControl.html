@@ -1,108 +1,126 @@
-<html>
+﻿<html>
 
 <head>
-
+<meta http-equiv="content-type" content="text/html; charset=UTF8">
 <title>Moldeo Control</title>
 
 <link rel="stylesheet" type="text/css" href="moldeocontrols.css" />
+ <link rel="stylesheet" href="css/tinyscrollbar.css" type="text/css" media="screen"/>
+<script src="js/jquery-1.8.0.min.js"></script>
+<script src="js/jquery.tinyscrollbar.js"></script>
 
 <script src="config.js"></script>
+<script src="config.init.js"></script>
 <script src="tools.js"></script>
 <script src="translations.js"></script>
 <script src="app.js"></script>
-
+<script src="moldeo.js"></script>
+<script src="js/d3-master/d3.js"></script>
+<script src="js/d3_tree_navigator.js"></script>
 <script src="MoldeoObjects.js"></script>
 <script src="MoldeoOscApi.js"></script>
 <script src="MoldeoControl.js"></script>
 
 
+
 </head>
 
-<body >
+<body class="nox-browser">
 
 <div class="titlebar">MOLDEO CONTROL <button id="close-window-button" class="top-titlebar-close-button" title="cerrar"></button></div>
 
 <div id="container">
+	
+	<div id="control_panel" class="control_panel">
+		<div style="display: none;">
+			<input id="openproject" type="file" accept=".mol" />
+			<input id="importfile" type="file" accept=".jpg,.png" />
+			<input id="saveasfile" type="file" nwsaveas />
+			<input id="saveasproject" type="file" nwdirectory />
+			<input id="saveasscreenshot" type="file" nwsaveas accept=".png,.jpg" />
+		</div>
 
-	<div style="display: none;">
-		<input id="openproject" type="file" accept=".mol" />
-		<input id="importfile" type="file" accept=".jpg,.png" />
-		<input id="saveasfile" type="file" nwsaveas />
-		<input id="saveasproject" type="file" nwdirectory />
-		<input id="saveasscreenshot" type="file" nwsaveas accept=".png" />
-	</div>
-	
-	<div class="channel_controls preconfigs_selector_panel">
-		<button id="button_Object" class="button_indicat indicat_VOID circle_button"></button>
-		<button id="button_1" key="1" class="button_1 circle_button"></button>
-		<button id="button_2" key="2" class="button_2 circle_button"></button>
-		<button id="button_3" key="3" class="button_3 circle_button"></button>
-	</div>
-	
-	<div class="channel_controls object_selectors">
-		<button id="button_SHIFT" key="1" class="button_SHIFT key_button"></button>
-		<button id="button_CTRL" key="2" class="button_CTRL key_button"></button>
-	</div>
-	
-	<div class="channel_controls channel_navigator">
-		<button id="button_PGUP" key="1" class="button_PGUP key_button"></button>
-		<button id="button_PGDOWN" key="2" class="button_PGDOWN key_button"></button>
-	</div>
-	
-	<div class="first_effects objects_selector_panel">
-		<button id="button_W"  key="W" class="button_W key_button"></button>
-		<button id="button_A" key="A" class="button_A key_button"></button>
-		<button id="button_S"  key="S" class="button_S key_button"></button>
-		<button id="button_D" key="D" class="button_D key_button"></button>
-	</div>
-	
-	
-	<div class="second_effects objects_selector_panel">
-		<button id="button_I"  key="I" class="button_I key_button"></button>
-		<button id="button_J"  key="J" class="button_J key_button"></button>
-		<button id="button_K"  key="K" class="button_K key_button"></button>
-		<button id="button_L"  key="L" class="button_L key_button"></button>
-	</div>
-	
-	<div class="channel_controls play_panel">
-		<button id="button_TAB" class="button_TAB special_button"></button>
-		<button id="button_ENTER" class="button_ENTER special_button"></button>
-	</div>
-	
-	<div class="channel_controls beat_panel">
-		<button id="button_SPACE" class="button_SPACE space_button"></button>
-	</div>
-	
-	<div class="channel_controls channel_selectors">
-		<button id="button_F1" class="button_F1 circle_button"></button>
-		<button id="button_F2" class="button_F2 circle_button"></button>
-		<button id="button_F3" class="button_F3 circle_button"></button>
-	</div>
-		
-	<div class="channel_controls cursor_panel">
-		<button id="button_LEFT" key="LEFT" class="button_LEFT key_button"></button>
-		<button id="button_UP"  key="UP" class="button_UP key_button"></button>
-		<button id="button_RIGHT"  key="RIGHT" class="button_RIGHT key_button"></button>
-		<button id="button_DOWN"  key="DOWN" class="button_DOWN key_button"></button>
-	</div>
-	
-	<div id="slide_channel_alpha" class="slide_H_back">
-		<input id="slide_HORIZONTAL_channel_alpha" msg="channel_alpha" moblabel="" class="slide_H slide_controls" type="range"  min="0" max="100" disabled/>
-	</div>
-	<div id="slide_channel_tempo" class="slide_V_back">
-		<input id="slide_VERTICAL_channel_tempo" msg="channel_tempo" moblabel="" class="slide_V slide_controls" type="range" min="0" max="100" disabled/>
+		<button id="buttonED_OpenProject" key="O" class="button_OpenProject key_button" title="Abrir un nuevo proyecto Moldeo"></button>
+		<div id="control_project_panel" class="project_panel  collapsed">
+			<div id="control_project_header" class="header">				
+			</div> 
+			<div id="control_project_content" class="content">
+			</div>
+		</div>
+
+		<div class="channel_controls preconfigs_selector_panel">
+			<button id="button_Object" class="button_indicat indicat_VOID circle_button"></button>
+			<button id="button_1" key="1" class="button_1 circle_button"></button>
+			<button id="button_2" key="2" class="button_2 circle_button"></button>
+			<button id="button_3" key="3" class="button_3 circle_button"></button>
+		</div>
+
+		<div class="channel_controls object_selectors">
+			<button id="button_SHIFT" key="1" class="button_SHIFT key_button"></button>
+			<button id="button_CTRL" key="2" class="button_CTRL key_button"></button>
+		</div>
+
+		<div class="channel_controls channel_navigator">
+			<button id="button_PGUP" key="1" class="button_PGUP key_button"></button>
+			<button id="button_PGDOWN" key="2" class="button_PGDOWN key_button"></button>
+		</div>
+
+		<div class="first_effects objects_selector_panel">
+			<button id="button_W"  key="W" class="button_W key_button"></button>
+			<button id="button_A" key="A" class="button_A key_button"></button>
+			<button id="button_S"  key="S" class="button_S key_button"></button>
+			<button id="button_D" key="D" class="button_D key_button"></button>
+		</div>
+
+
+		<div class="second_effects objects_selector_panel">
+			<button id="button_I"  key="I" class="button_I key_button"></button>
+			<button id="button_J"  key="J" class="button_J key_button"></button>
+			<button id="button_K"  key="K" class="button_K key_button"></button>
+			<button id="button_L"  key="L" class="button_L key_button"></button>
+		</div>
+
+		<div class="channel_controls play_panel">
+			<button id="button_TAB" class="button_TAB special_button"></button>
+			<button id="button_ENTER" class="button_ENTER special_button"></button>
+		</div>
+
+		<div class="channel_controls beat_panel">
+			<button id="button_SPACE" class="button_SPACE space_button"></button>
+		</div>
+
+		<div class="channel_controls channel_selectors">
+			<button id="button_F1" class="button_F1 circle_button"></button>
+			<button id="button_F2" class="button_F2 circle_button"></button>
+			<button id="button_F3" class="button_F3 circle_button"></button>
+		</div>
+			
+		<div class="channel_controls cursor_panel">
+			<button id="button_LEFT" key="LEFT" class="button_LEFT key_button"></button>
+			<button id="button_UP"  key="UP" class="button_UP key_button"></button>
+			<button id="button_RIGHT"  key="RIGHT" class="button_RIGHT key_button"></button>
+			<button id="button_DOWN"  key="DOWN" class="button_DOWN key_button"></button>
+		</div>
+
+		<div id="slide_channel_alpha" class="slide_H_back">
+			<input id="slide_HORIZONTAL_channel_alpha" msg="channel_alpha" moblabel="" class="slide_H slide_controls" type="range"  min="0" max="100" disabled/>
+		</div>
+		<div id="slide_channel_tempo" class="slide_V_back">
+			<input id="slide_VERTICAL_channel_tempo" msg="channel_tempo" moblabel="" class="slide_V slide_controls" type="range" min="0" max="100" disabled/>
+		</div>
 	</div>
 </div>
-<div id="editor_panel" class="window_panel">
+
+<div id="editor_panel" class="window_panel ">
 		
 	<button id="editor_button"></button>
-	<button id="buttonED_OpenProject" key="O" class="button_OpenProject key_button" title="Abrir un nuevo proyecto Moldeo">
-	</button>
+	
 	<button id="buttonED_SaveProject" class="button_SaveProject" title="Guardar"></button>
 	<button id="buttonED_SaveProjectAs" class="button_SaveProjectAs"  title="Guardar Como / Clonar"></button>
 	
-	<button id="buttonED_Presentation"  class="button_Presentation" title="Cambiar Modo de Presentaci�n"></button>
+	<button id="buttonED_Presentation"  class="button_Presentation" title="Cambiar Modo de Presentación"></button>
 	<button id="buttonED_Screenshot"  class="button_Screenshot" title="Capturar Pantalla"></button>
+	<button id="buttonED_PreviewShot"  class="button_PreviewShot" title="Capturar Previsualización"></button>
 		
 	<div class="first_editor_effects">
 		
@@ -123,23 +141,36 @@
 	
 		<div id="object_selected" class="object_selected">
 
-			<button id="button_object_onoff" moblabel="" class="button_object_onoff button_object_off"></button>
+			
 			<!--<button id="buttonED_previous_preconfig" class="button_previous_preconfig"></button>-->
 
-			<div id="object_preconfigs" class="object_preconfigs">
-				<button id="buttonED_1" moblabel="" key="1" class="button_1 circle_button circle_selected"></button>
-				<button id="buttonED_2" moblabel=""  key="2" class="button_2 circle_button"></button>
-				<button id="buttonED_3" moblabel=""  key="3" class="button_3 circle_button"></button>
-			</div>
-
-			
-			<label id="object_label" class="object_label">icono</label>
+			<label id="object_label" class="object_label">
+				<button id="button_object_onoff" moblabel="" class="button_object_onoff button_object_off"></button>
+				<span id="object_label_text">icono</span>
+				<div id="object_preconfigs" class="object_preconfigs">
+					<button id="buttonED_1" moblabel="" key="1" class="button_1 circle_button circle_selected"></button>
+					<button id="buttonED_2" moblabel=""  key="2" class="button_2 circle_button"></button>
+					<button id="buttonED_3" moblabel=""  key="3" class="button_3 circle_button"></button>
+				</div>
+			</label>
 			<!--<button id="buttonED_next_preconfig" class="button_next_preconfig"></button>-->
 			
 			<div id="object_edition" class="object_edition">
-				<canvas id="object_edition_image"></canvas>
-				<button id="object_edit" class="object_edit" title="Editar"></button>
-				<button id="object_import" class="object_import"  title="Importar"></button>
+				<canvas id="object_edition_image" class="object_edition_image"></canvas>				
+				<button id="object_edit" class="object_edit" title="Editar Imagen"></button>
+				<button id="object_import" class="object_import"  title="Importar Imagen"></button>
+			</div>			
+			
+			<div id="audio_edition" class="object_edition audio_edition">
+				<canvas id="audio_edition_image" class="audio_edition_image"></canvas>				
+				<button id="audio_edit" class="object_edit audio_edit" title="Editar Audio"></button>
+				<button id="audio_import" class="object_import audio_import"  title="Importar Audio"></button>
+			</div>
+			
+			<div id="video_edition" class="object_edition video_edition">
+				<canvas id="video_edition_image" class="video_edition_image"></canvas>				
+				<button id="video_edit" class="object_edit video_edit" title="Editar Video"></button>
+				<button id="video_import" class="object_import video_import"  title="Importar Video"></button>
 			</div>
 			
 			<div id="object_color" class="object_color">
@@ -148,121 +179,413 @@
 			</div>
 			
 		</div>
+
+		<div id="object_selected_parameters" class="object_parameters">		
+			<div id="parameters_side" class="parameters_side">
+				<!-- list parameters here!!! CHECK Update... -->
+				<!-- if parameter is grouped, show group -->
+			</div>
 		
-		<div id="parameters_side" class="parameters_side">
-			<!-- list parameters here!!! CHECK Update... -->
-			<!-- if parameter is grouped, show group -->
-			
+			<div id="parameter_inspector_side" class="parameter_inspector_side" 
+				moblabel="" preconfig="">
+				
+				<div id="parameter_inspector_HEADER" class="parameter_inspector_HEADER">
+					
+				</div>
+				<div id="parameter_inspector_BODY" class="parameter_inspector_BODY">
+				<div id="parameter_inspector_CONTAINER" class="parameter_inspector_CONTAINER">	
+					<!-- GROUPED START -->
+					
+					<div id="parameter_inspector_POSITION" group="POSITION" 
+						moblabel="" preconfig="" class="parameter_inspector">
+						<label>POSITION</label>
+						<button id="selector_POSITION_translatex" class="parameter_selector " selector="translatex"></button>
+						<input title="X" id="selector_POSITION_translatex_input" selector="translatex" class="param_input" type="text" value=""/>
+						
+						<button id="selector_POSITION_translatey" class="parameter_selector " selector="translatey"></button>
+						<input title="Y"  id="selector_POSITION_translatey_input" selector="translatey" class="param_input"  type="text" value=""/>
+						
+						<button id="selector_POSITION_translatez" class="parameter_selector " selector="translatez"></button>
+						<input title="Z"  id="selector_POSITION_translatez_input" selector="translatez"  class="param_input" type="text" value=""/>
+						
+						<div class="parameter_selector_xy" selector="translatexy">
+							<label>XY</label>
+							<button id="parameter_selector_xy_centre">CENTRO</button>
+							<button id="parameter_selector_xy_amply1">x1</button>
+							<button id="parameter_selector_xy_amply1">x2</button>
+							<button id="parameter_selector_xy_amply1">x3</button>
+							<canvas id="selector_POSITION_translatexy" ></canvas>
+						</div>
+						
+						<div class="parameter_selector_zy" selector="translatezy">
+							<label>ZY</label>
+							<button id="parameter_selector_xy_centre">CENTRO</button>
+							<button id="parameter_selector_xy_amply1">x1</button>
+							<button id="parameter_selector_xy_amply1">x2</button>
+							<button id="parameter_selector_xy_amply1">x3</button>
+							<canvas id="selector_POSITION_translatezy" ></canvas>
+						</div>
+						
+						
+						<div id="POSITION_slide_back" class="slide_H_back parameter_slide_back">
+							<label id="POSITION_slide_label">slider</label>
+							<input id="POSITION_slide" selector="" class="parameter_slide slide_H slide_controls" type="range" min="0" max="100" step="1" value="0"/>
+						</div>
+					</div>
+					
+					<div id="parameter_inspector_SCALE"  group="SCALE" moblabel="" preconfig="" class="parameter_inspector">
+						<label>SCALE</label>
+						<button id="selector_SCALE_scaley" class="parameter_selector " selector="scaley"></button>
+						<input title="scaley" id="selector_SCALE_scaley_input" class="param_input" selector="scaley" type="text" value=""/>
+						
+						<button id="selector_SCALE_scalex" class="parameter_selector " selector="scalex"></button>
+						<input title="scalex" id="selector_SCALE_scalex_input" class="param_input" selector="scalex" type="text" value=""/>
+						
+						<button id="selector_SCALE_zoom" class="parameter_selector " selector="zoom"></button>
+						
+						<div id="SCALE_slide_back" class="slide_H_back parameter_slide_back">
+							<label id="SCALE_slide_label">slider</label>
+							<input id="SCALE_slide" class="parameter_slide slide_H slide_controls" type="range" min="0" max="100" step="1" value="0"/>
+						</div>
+					</div>
+					
+					<div id="parameter_inspector_SCALEPARTICLE"  group="SCALEPARTICLE" moblabel="" preconfig="" class="parameter_inspector">
+						<label>SCALEPARTICLE</label>
+						<button id="selector_SCALEPARTICLE_scaley_particle" class="parameter_selector " selector="scaley_particle"></button>
+						<input title="scaley" id="selector_SCALEPARTICLE_scaley_particle_input" class="param_input" selector="scaley_particle" type="text" value=""/>
+						
+						<button id="selector_SCALEPARTICLE_scalex_particle" class="parameter_selector " selector="scalex_particle"></button>
+						<input title="scalex" id="selector_SCALEPARTICLE_scalex_particle_input" class="param_input" selector="scalex_particle" type="text" value=""/>
+						
+						<button id="selector_SCALEPARTICLE_zoom" class="parameter_selector " selector="zoom"></button>
+						
+						<div id="SCALEPARTICLE_slide_back" class="slide_H_back parameter_slide_back">
+							<label id="SCALEPARTICLE_slide_label">slider</label>
+							<input id="SCALEPARTICLE_slide" class="parameter_slide slide_H slide_controls" type="range" min="0" max="100" step="1" value="0"/>
+						</div>
+					</div>
+					
+					<div id="parameter_inspector_MOTION"  group="MOTION" moblabel="" preconfig="" class="parameter_inspector">
+						<label>MOTION</label>
+						<button id="selector_MOTION_Vertical"  class="parameter_selector "  selector="translatey"></button>
+						<input title="X" id="selector_MOTION_translatey_input" class="param_input"  selector="translatey" type="text" value=""/>
+						
+						<button id="selector_MOTION_Horizontal" class="parameter_selector " selector="translatex"></button>
+						<input title="X" id="selector_MOTION_translatex_input" class="param_input" selector="translatex" type="text" value=""/>
+						
+						<button id="selector_MOTION_Circular" class="parameter_selector " selector="rotate"></button>
+						
+						<div id="MOTION_slide_back" class="slide_H_back parameter_slide_back">
+							<label id="MOTION_slide_label">slider</label>
+							<input id="MOTION_slide" class="parameter_slide slide_H slide_controls"  type="range" min="0" max="100" step="1" value="0"/>
+						</div>
+					</div>
+					
+					<div id="parameter_inspector_EMITTER" group="EMITTER" 
+						moblabel="" preconfig="" class="parameter_inspector">
+						<label>EMITTER</label>
+						<button id="selector_EMITTER_maxage" selector="maxage" class="parameter_selector ">maxage</button>
+						<input title="maxage" id="selector_EMITTER_maxage_input" selector="maxage" class="param_input" type="text" value=""/>
+						
+						<button id="selector_EMITTER_emitionperiod" selector="emitionperiod" class="parameter_selector ">emitionperiod</button>
+						<input title="emitionperiod"  id="selector_EMITTER_emitionperiod_input" selector="emitionperiod" class="param_input"  type="text" value=""/>
+						
+						<button id="selector_EMITTER_emitionrate"  selector="emitionrate" class="parameter_selector ">emitionrate</button>
+						<input title="emitionrate"  id="selector_EMITTER_emitionrate_input" selector="emitionrate"  class="param_input" type="text" value=""/>
+
+						<button id="selector_EMITTER_emittertype"   selector="emittertype"  class="parameter_selector ">emittertype</button>
+						<input title="emittertype" id="selector_EMITTER_emittertype_input" selector="emittertype" class="param_input" type="text" value=""/>
+						<select title="emittertype" id="selector_EMITTER_emittertype_select" selector="emittertype" class="param_input" type="text" value=""></select>
+						
+						<button id="selector_EMITTER_emittervectorx"   selector="emittervectorx" class="parameter_selector ">emittervectorx</button>
+						<input title="X" id="selector_EMITTER_emittervectorx_input" selector="emittervectorx" class="param_input" type="text" value=""/>
+						
+						<button id="selector_EMITTER_emittervectory"   selector="emittervectory" class="parameter_selector ">emittervectory</button>
+						<input title="Y" id="selector_EMITTER_emittervectory_input" selector="emittervectory" class="param_input" type="text" value=""/>
+						
+						<button id="selector_EMITTER_emittervectorz"   selector="emittervectorz" class="parameter_selector ">emittervectorz</button>
+						<input title="Z" id="selector_EMITTER_emittervectorz_input" selector="emittervectorz" class="param_input" type="text" value=""/>
+
+						<button id="selector_EMITTER_randommethod"    selector="randommethod" class="parameter_selector ">randommethod</button>
+						<input title="Z" id="selector_EMITTER_randommethod_input" selector="randommethod" class="param_input" type="text" value=""/>
+
+						<button id="selector_EMITTER_creationmethod"  selector="creationmethod" class="parameter_selector ">creationmethod</button>
+						<input title="Z" id="selector_EMITTER_creationmethod_input" selector="creationmethod" class="param_input" type="text" value=""/>
+						
+						<div id="EMITTER_slide_back" class="slide_H_back parameter_slide_back">
+							<label id="EMITTER_slide_label">slider</label>
+							<input id="EMITTER_slide" selector="" class="parameter_slide slide_H slide_controls" type="range" min="0" max="100" step="1" value="0"/>
+						</div>
+					</div>
+					
+					<div id="parameter_inspector_BEHAVIOUR" group="BEHAVIOUR" 
+						moblabel="" preconfig="" class="parameter_inspector">
+						<label>BEHAVIOUR</label>
+
+						<button id="selector_BEHAVIOUR_randomvelocity" selector="randomvelocity" class="parameter_selector ">randomvelocity</button>
+						<input title="randomvelocity" id="selector_BEHAVIOUR_randomvelocity_input" selector="randomvelocity" class="param_input" type="text" value=""/>
+
+						<button id="selector_BEHAVIOUR_randomvelocityx" selector="randomvelocityx" class="parameter_selector ">randomvelocityx</button>
+						<input title="randomvelocityx" id="selector_BEHAVIOUR_randomvelocityx_input" selector="randomvelocityx" class="param_input" type="text" value=""/>				
+
+						<button id="selector_BEHAVIOUR_randomvelocityy" selector="randomvelocityy" class="parameter_selector ">randomvelocityy</button>
+						<input title="randomvelocityy" id="selector_BEHAVIOUR_randomvelocityy_input" selector="randomvelocityy" class="param_input" type="text" value=""/>				
+
+						<button id="selector_BEHAVIOUR_randomvelocityz" selector="randomvelocityz" class="parameter_selector ">randomvelocityz</button>
+						<input title="randomvelocityz" id="selector_BEHAVIOUR_randomvelocityz_input" selector="randomvelocityz" class="param_input" type="text" value=""/>				
+						
+						<button id="selector_BEHAVIOUR_randommotion" selector="randommotion" class="parameter_selector ">randommotion</button>
+						<input title="randommotion" id="selector_BEHAVIOUR_randommotion_input" selector="randommotion" class="param_input" type="text" value=""/>
+
+						<button id="selector_BEHAVIOUR_randommotionx" selector="randommotionx" class="parameter_selector ">randommotionx</button>
+						<input title="randommotionx" id="selector_BEHAVIOUR_randommotionx_input" selector="randommotionx" class="param_input" type="text" value=""/>				
+
+						<button id="selector_BEHAVIOUR_randommotiony" selector="randommotiony" class="parameter_selector ">randommotiony</button>
+						<input title="randommotiony" id="selector_BEHAVIOUR_randommotiony_input" selector="randommotiony" class="param_input" type="text" value=""/>				
+
+						<button id="selector_BEHAVIOUR_randommotionz" selector="randommotionz" class="parameter_selector ">randommotionz</button>
+						<input title="randommotionz" id="selector_BEHAVIOUR_randommotionz_input" selector="randommotionz" class="param_input" type="text" value=""/>				
+						
+						<div id="BEHAVIOUR_slide_back" class="slide_H_back parameter_slide_back">
+							<label id="BEHAVIOUR_slide_label">slider</label>
+							<input id="BEHAVIOUR_slide" selector="" class="parameter_slide slide_H slide_controls" type="range" min="0" max="100" step="1" value="0"/>
+						</div>
+					</div>
+					
+					<div id="parameter_inspector_ATTRACTOR" group="ATTRACTOR" 
+						moblabel="" preconfig="" class="parameter_inspector">
+						<label>ATTRACTOR</label>
+						
+						<button id="selector_ATTRACTOR_attractormode" selector="attractormode" class="parameter_selector ">attractormode</button>
+						<input title="attractormode" id="selector_ATTRACTOR_attractormode_input" selector="attractormode" class="param_input" type="text" value=""/>
+
+						<button id="selector_ATTRACTOR_attractortype" selector="attractortype" class="parameter_selector ">attractortype</button>
+						<input title="attractortype" id="selector_ATTRACTOR_attractortype_input" selector="attractortype" class="param_input" type="text" value=""/>
+
+						<button id="selector_ATTRACTOR_gravity" selector="gravity" class="parameter_selector ">gravity</button>
+						<input title="gravity" id="selector_ATTRACTOR_gravity_input" selector="gravity" class="param_input" type="text" value=""/>
+						
+						<button id="selector_ATTRACTOR_viscosity" selector="viscosity" class="parameter_selector ">viscosity</button>
+						<input title="viscosity" id="selector_ATTRACTOR_viscosity_input" selector="viscosity" class="param_input" type="text" value=""/>
+						
+						
+						<button id="selector_ATTRACTOR_attractorvectorx" selector="attractorvectorx" class="parameter_selector ">attractorvectorx</button>
+						<input title="attractorvectorx" id="selector_ATTRACTOR_attractorvectorx_input" selector="attractorvectorx" class="param_input" type="text" value=""/>
+
+						<button id="selector_ATTRACTOR_attractorvectory" selector="attractorvectory" class="parameter_selector ">attractorvectory</button>
+						<input title="attractorvectory" id="selector_ATTRACTOR_attractorvectory_input" selector="attractorvectory" class="param_input" type="text" value=""/>
+						
+						<button id="selector_ATTRACTOR_attractorvectorz" selector="attractorvectorz" class="parameter_selector ">attractorvectorz</button>
+						<input title="attractorvectorz" id="selector_ATTRACTOR_attractorvectorz_input" selector="attractorvectorz" class="param_input" type="text" value=""/>
+						
+						<div id="ATTRACTOR_slide_back" class="slide_H_back parameter_slide_back">
+							<label id="ATTRACTOR_slide_label">slider</label>
+							<input id="ATTRACTOR_slide" selector="" class="parameter_slide slide_H slide_controls" type="range" min="0" max="100" step="1" value="0"/>
+						</div>				
+					</div>
+					
+					<div id="parameter_inspector_CONFIGURATION" group="CONFIGURATION" moblabel="" preconfig="" class="parameter_inspector">
+					</div>
+					<!-- GROUPED END -->
+					
+					<!-- COLOR START -->
+					<div id="parameter_inspector_ALPHA" class="parameter_inspector" paramtype="ALPHA">
+						<label>ALPHA</label>
+						<input id="selector_ALPHA_input" class="param_input" selector="alpha"  type="text" value="0"/>
+						<div id="ALPHA_slide_back" class="slide_H_back parameter_slide_back">
+							<label id="ALPHA_slide_label">ALPHA</label>
+							<input id="ALPHA_slide" class="parameter_slide slide_H slide_controls"  type="range" min="0.0" max="1.0" step="0.01" value="0"/>
+						</div>
+					</div>
+					<div id="parameter_inspector_COLOR" class="parameter_inspector" paramtype="COLOR">
+						<label>COLOR</label>
+						<div id="COLOR_object_color" class="object_color">
+							<div id="COLOR_object_color_sel" title="Color seleccionado"></div>
+							<canvas id="COLOR_object_color_palette"></canvas>
+						</div>
+						<button id="selector_COLOR_color" selector="color" class="parameter_selector ">RED</button>
+						<input title="RED" id="selector_COLOR_color_input" class="param_input param_input_color_red" selector="color:0" type="text" value="0"/>
+						
+						<button id="selector_COLOR_color_1" selector="color_1" class="parameter_selector ">GREEN</button>
+						<input title="GREEN" id="selector_COLOR_color_1_input" class="param_input param_input_color_green" selector="color_1" type="text" value="0"/>
+						
+						<button id="selector_COLOR_color_2" selector="color_2" class="parameter_selector ">BLUE</button>
+						<input title="BLUE" id="selector_COLOR_color_2_input" class="param_input param_input_color_blue" selector="color_2" type="text" value="0"/>
+						
+						<button id="selector_COLOR_color_3" selector="color_3" class="parameter_selector ">ALPHA</button>
+						<input title="ALPHA" id="selector_COLOR_color_3_input" class="param_input param_input_color_alpha" selector="color_3" type="text" value="0"/>
+						
+						<div id="COLOR_slide_back" class="slide_H_back parameter_slide_back">
+							<label id="COLOR_slide_label">color</label>
+							<input id="COLOR_slide" class="parameter_slide slide_H slide_controls"  type="range" min="0.0" max="1.0" step="0.01" value="0"/>
+						</div>
+					</div>
+					<!-- COLOR END -->
+					
+					<!-- TEMPO CONFIGURATION START-->
+					<div id="parameter_inspector_SYNC" class="parameter_inspector"  paramtype="SYNC">
+						<label>SYNC</label>
+						<input id="selector_SYNC_input" class="param_input" selector="syncro" type="text" value="0"/>
+						<div id="SYNC_slide_back" class="slide_H_back parameter_slide_back">
+							<label id="SYNC_slide_label">syncro</label>
+							<input id="SYNC_slide" class="parameter_slide slide_H slide_controls"  type="range" min="-5.0" max="5.0" step="0.01" value="0"/>
+						</div>
+					</div>
+					<div id="parameter_inspector_PHASE" class="parameter_inspector"  paramtype="PHASE">
+						<label>PHASE</label>
+						<input id="selector_PHASE_input" class="param_input" selector="phase" type="text" value="0"/>
+						<div id="PHASE_slide_back" class="slide_H_back parameter_slide_back">
+							<label id="PHASE_slide_label">phase</label>
+							<input id="PHASE_slide" class="parameter_slide slide_H slide_controls"  type="range" min="-5.0" max="5.0" step="0.01" value="0"/>
+						</div>
+					</div>
+					<!-- TEMPO CONFIGURATION END -->
+
+					<!-- OBJECT IMPORT START -->
+					<div id="parameter_inspector_TEXTURE" class="parameter_inspector">
+						<label>TEXTURE</label>
+					</div>			
+					<div id="parameter_inspector_SOUND" class="parameter_inspector">
+						<label>SOUND</label>
+					</div>
+					<div id="parameter_inspector_OBJECT" class="parameter_inspector">
+						<label>OBJECT</label>
+					</div>
+					<div id="parameter_inspector_3DMODEL" class="parameter_inspector">
+						<label>#DMODEL</label>
+					</div>
+					
+					<div id="parameter_inspector_SCRIPT" class="parameter_inspector">
+						<label>SCRIPT</label>
+					</div>
+					<div id="parameter_inspector_TEXT" class="parameter_inspector">
+						<label>TEXT</label>
+					</div>
+					<!-- OBJECT IMPORT END -->
+					
+					
+					<!-- GENERIC START -->
+					<div id="parameter_inspector_FUNCTION" class="parameter_inspector" paramtype="FUNCTION">
+						<label>FUNCTION</label>
+						<input id="selector_FUNCTION_input" class="param_input" selector="xxx"  type="text" value="0"/>
+						<div id="FUNCTION_slide_back" class="slide_H_back parameter_slide_back">
+							<label id="FUNCTION_slide_label">FUNCTION</label>
+							<input id="FUNCTION_slide" class="parameter_slide slide_H slide_controls"  type="range" min="-5.0" max="5.0" step="0.01" value="0"/>
+						</div>
+					</div>
+					
+					<div id="parameter_inspector_NUM" class="parameter_inspector"  paramtype="NUM">
+						<label>NUMERIC</label>
+						<input id="selector_NUM_input" class="param_input" selector="xxx"  type="text" value="0"/>
+						<div id="NUM_slide_back" class="slide_H_back parameter_slide_back">
+							<label id="NUM_slide_label">NUM</label>
+							<input id="NUM_slide" class="parameter_slide slide_H slide_controls"  type="range" min="0" max="10" step="1" value="0"/>
+						</div>
+					</div>
+					
+					<div id="parameter_inspector_BLENDING" class="parameter_inspector"  paramtype="BLENDING">
+						<label>BLENDING</label>
+						<input id="selector_BLENDING_input" class="param_input" selector="blending"  type="text" value="0"/>
+						<div id="BLENDING_slide_back" class="slide_H_back parameter_slide_back">
+							<label id="BLENDING_slide_label">BLENDING</label>
+							<input id="BLENDING_slide" class="parameter_slide slide_H slide_controls"  type="range" min="0" max="10" step="1" value="0"/>
+						</div>
+					</div>
+					<!-- GENERIC END -->
+					
+					<!-- TRANSFORM START-->
+					<div id="parameter_inspector_TRANSLATEX" class="parameter_inspector" paramtype="TRANSLATEX">
+						<label>TRANSLATEX</label>
+						<input id="selector_TRANSLATEX_input" class="param_input" selector="xxx"  type="text" value="0"/>
+						
+						<div id="TRANSLATEX_slide_back" class="slide_H_back parameter_slide_back">
+							<label id="TRANSLATEX_slide_label">TRANSLATEX</label>
+							<input id="TRANSLATEX_slide" class="parameter_slide slide_H slide_controls"  type="range" min="-5.0" max="5.0" step="0.01" value="0"/>
+						</div>
+					</div>
+					<div id="parameter_inspector_TRANSLATEY" class="parameter_inspector" paramtype="TRANSLATEY">
+						<label>TRANSLATEY</label>
+						<input id="selector_TRANSLATEY_input" class="param_input" selector="xxx"  type="text" value="0"/>
+						
+						<div id="TRANSLATEY_slide_back" class="slide_H_back parameter_slide_back">
+							<label id="TRANSLATEY_slide_label">TRANSLATEY</label>
+							<input id="TRANSLATEY_slide" class="parameter_slide slide_H slide_controls"  type="range" min="-5.0" max="5.0" step="0.01" value="0"/>
+						</div>
+					</div>
+					<div id="parameter_inspector_TRANSLATEZ" class="parameter_inspector" paramtype="TRANSLATEZ">
+						<label>TRANSLATEZ</label>
+						<input id="selector_TRANSLATEZ_input" class="param_input" selector="xxx"  type="text" value="0"/>
+						
+						<div id="TRANSLATEZ_slide_back" class="slide_H_back parameter_slide_back">
+							<label id="TRANSLATEZ_slide_label">TRANSLATEZ</label>
+							<input id="TRANSLATEZ_slide" class="parameter_slide slide_H slide_controls"  type="range" min="-5.0" max="5.0" step="0.01" value="0"/>
+						</div>
+					</div>
+					
+					<div id="parameter_inspector_ROTATEX" class="parameter_inspector" paramtype="ROTATEX">
+						<label>ROTATEX</label>
+						<input id="selector_ROTATEX_input" class="param_input" selector="xxx"  type="text" value="0"/>
+						
+						<div id="ROTATEX_slide_back" class="slide_H_back parameter_slide_back">
+							<label id="ROTATEX_slide_label">ROTATEX</label>
+							<input id="ROTATEX_slide" class="parameter_slide slide_H slide_controls"  type="range" min="-5.0" max="5.0" step="0.01" value="0"/>
+						</div>
+					</div>
+					<div id="parameter_inspector_ROTATEY" class="parameter_inspector" paramtype="ROTATEY">
+						<label>ROTATEY</label>
+						<input id="selector_ROTATEY_input" class="param_input" selector="xxx"  type="text" value="0"/>
+						
+						<div id="ROTATEY_slide_back" class="slide_H_back parameter_slide_back">
+							<label id="ROTATEY_slide_label">ROTATEY</label>
+							<input id="ROTATEY_slide" class="parameter_slide slide_H slide_controls"  type="range" min="-5.0" max="5.0" step="0.01" value="0"/>
+						</div>
+					</div>
+					<div id="parameter_inspector_ROTATEZ" class="parameter_inspector" paramtype="ROTATEZ">
+						<label>ROTATEZ</label>
+						<input id="selector_ROTATEZ_input" class="param_input" selector="xxx"  type="text" value="0"/>
+						
+						<div id="ROTATEZ_slide_back" class="slide_H_back parameter_slide_back">
+							<label id="ROTATEZ_slide_label">ROTATEZ</label>
+							<input id="ROTATEZ_slide" class="parameter_slide slide_H slide_controls"  type="range" min="-5.0" max="5.0" step="0.01" value="0"/>
+						</div>
+					</div>
+					
+					
+					<div id="parameter_inspector_SCALEX" class="parameter_inspector" paramtype="SCALEX">
+						<label>SCALEX</label>
+						<input id="selector_SCALEX_input" class="param_input" selector="xxx"  type="text" value="0"/>
+						
+						<div id="SCALEX_slide_back" class="slide_H_back parameter_slide_back">
+							<label id="SCALEX_slide_label">SCALEX</label>
+							<input id="SCALEX_slide" class="parameter_slide slide_H slide_controls"  type="range" min="-5.0" max="5.0" step="0.01" value="0"/>
+						</div>
+					</div>
+					<div id="parameter_inspector_SCALEY" class="parameter_inspector" paramtype="SCALEY">
+						<label>SCALEY</label>
+						<input id="selector_SCALEY_input" class="param_input" selector="xxx"  type="text" value="0"/>
+						
+						<div id="SCALEY_slide_back" class="slide_H_back parameter_slide_back">
+							<label id="SCALEY_slide_label">SCALEY</label>
+							<input id="SCALEY_slide" class="parameter_slide slide_H slide_controls"  type="range" min="-5.0" max="5.0" step="0.01" value="0"/>
+						</div>
+					</div>
+					<div id="parameter_inspector_SCALEZ" class="parameter_inspector" paramtype="SCALEZ">
+						<label>SCALEZ</label>
+						<input id="selector_SCALEZ_input" class="param_input" selector="xxx"  type="text" value="0"/>
+						
+						<div id="SCALEZ_slide_back" class="slide_H_back parameter_slide_back">
+							<label id="SCALEZ_slide_label">SCALEZ</label>
+							<input id="SCALEZ_slide" class="parameter_slide slide_H slide_controls"  type="range" min="-5.0" max="5.0" step="0.01" value="0"/>
+						</div>
+					</div>
+					<!-- TRANSFORM END-->
+
+				</div>
+				</div>
+
+
+			</div>
 		</div>
-		
-		<div id="parameter_inspector_side" class="parameter_inspector_side" 
-			moblabel="" preconfig="">
-			<!-- GROUPED START -->
-			<div id="parameter_inspector_POSITION" group="POSITION" class="parameter_inspector">
-				<button id="selector_POSITION_translatex" class="parameter_selector "></button>
-				<input title="X" id="selector_POSITION_translatex_input" class="param_input" type="text" value=""/>
-				
-				<button id="selector_POSITION_translatey" class="parameter_selector "></button>
-				<input title="Y"  id="selector_POSITION_translatey_input" class="param_input"  type="text" value=""/>
-				
-				<button id="selector_POSITION_translatez" class="parameter_selector "></button>
-				<input title="Z"  id="selector_POSITION_translatez_input"  class="param_input" type="text" value=""/>
-				
-				<input id="POSITION_slide" selector="" class="parameter_slide" type="range" min="0" max="100" step="1" value="0"/>
-			</div>
-			
-			<div id="parameter_inspector_SCALE"  group="SCALE" class="parameter_inspector">
-				<button id="selector_SCALE_scaley" class="parameter_selector "></button>
-				<input title="X" id="selector_SCALE_scaley_input" class="param_input" type="text" value=""/>
-				
-				<button id="selector_SCALE_scalex" class="parameter_selector "></button>
-				<input title="X" id="selector_SCALE_scalex_input" class="param_input" type="text" value=""/>
-				
-				<button id="selector_SCALE_Zoom" class="parameter_selector "></button>
-				<input id="SCALE_slide" class="parameter_slide" type="range" min="0" max="100" step="1" value="0"/>
-			</div>
-			
-			<div id="parameter_inspector_MOTION"  group="MOTION" class="parameter_inspector">
-				<button id="selector_MOTION_Vertical"  class="parameter_selector "></button>
-				<input title="X" id="selector_MOTION_translatey_input" class="param_input" type="text" value=""/>
-				
-				<button id="selector_MOTION_Horizontal" class="parameter_selector "></button>
-				<input title="X" id="selector_MOTION_translatex_input" class="param_input" type="text" value=""/>
-				
-				<button id="selector_MOTION_Circular" class="parameter_selector "></button>
-				<input id="MOTION_slide" class="parameter_slide"  type="range" min="0" max="100" step="1" value="0"/>
-			</div>
-			<div id="parameter_inspector_CONFIGURATION" class="parameter_inspector">
-			</div>
-			<!-- GROUPED END -->
-			
-			<!-- COLOR START -->
-			<div id="parameter_inspector_COLOR" class="parameter_inspector">
-			</div>
-			<!-- COLOR END -->
-			
-			<!-- TEMPO CONFIGURATION START-->
-			<div id="parameter_inspector_ALPHA" class="parameter_inspector">
-			</div>
-			<div id="parameter_inspector_SYNCRO" class="parameter_inspector">
-			</div>
-			<div id="parameter_inspector_PHASE" class="parameter_inspector">
-			</div>
-			<!-- TEMPO CONFIGURATION END -->
-
-			<!-- OBJECT IMPORT START -->
-			<div id="parameter_inspector_TEXTURE" class="parameter_inspector">
-			</div>			
-			<div id="parameter_inspector_SOUND" class="parameter_inspector">
-			</div>
-			<div id="parameter_inspector_OBJECT" class="parameter_inspector">
-			</div>
-			<div id="parameter_inspector_3DMODEL" class="parameter_inspector">
-			</div>
-			
-			<div id="parameter_inspector_SCRIPT" class="parameter_inspector">
-			</div>
-			<div id="parameter_inspector_TEXT" class="parameter_inspector">
-			</div>
-			<!-- OBJECT IMPORT END -->
-			
-			
-			<!-- GENERIC START -->
-			<div id="parameter_inspector_FUNCTION" class="parameter_inspector">
-				<input id="selector_FUNCTION_input" class="param_input"  type="text" value="0"/>
-				<input id="FUNCTION_slide" class="parameter_slide"  type="range" min="-5.0" max="5.0" step="0.01" value="0"/>
-			</div>
-			<div id="parameter_inspector_NUMERIC" class="parameter_inspector">
-			</div>			
-			<!-- GENERIC END -->
-			
-			<!-- TRANSFORM START-->
-			<div id="parameter_inspector_TRANSLATEX" class="parameter_inspector">
-			</div>
-			<div id="parameter_inspector_TRANSLATEY" class="parameter_inspector">
-			</div>
-			<div id="parameter_inspector_TRANSLATEZ" class="parameter_inspector">
-			</div>
-			<div id="parameter_inspector_ROTATEX" class="parameter_inspector">
-			</div>
-			<div id="parameter_inspector_ROTATEY" class="parameter_inspector">
-			</div>
-			<div id="parameter_inspector_ROTATEZ" class="parameter_inspector">
-			</div>
-			
-			<div id="parameter_inspector_SCALEX" class="parameter_inspector">
-			</div>
-			<div id="parameter_inspector_SCALEY" class="parameter_inspector">
-			</div>
-			<div id="parameter_inspector_SCALEZ" class="parameter_inspector">
-			</div>
-			<!-- TRANSFORM END-->
-
-			
-
-
-		</div>
-
 	</div>
 	
 	

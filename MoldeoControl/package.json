@@ -1,5 +1,5 @@
 {
-  "name": "Moldeo Control",
+  "name": "MoldeoControl",
   "description": "Moldeo 1.0 Controller for Moldeo Player",
   "main": "MoldeoControl.html",
   "single-instance": false,
@@ -11,6 +11,7 @@
     "position": "center",
     "width": 834,
     "height": 164,
+	"heightx": 544,
     "min_width": 834,
     "min_height": 164
   }

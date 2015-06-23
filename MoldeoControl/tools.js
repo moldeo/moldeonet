@@ -6,14 +6,22 @@
 
 
 var fs = require('fs');
+var path = require('path');
 var moment = require('moment');
 var gui = require('nw.gui');
 var today = moment();
 var execFile = require('child_process').execFile, 
 exec = require('child_process').exec,
+spawn = require('child_process').spawn,
 child;
+var  out = fs.openSync('./out.log', 'a'),
+     err = fs.openSync('./out.log', 'a');
+var win = gui.Window.get();
 
 fs.copyFile = function(source, target, cb) {
+	
+  if (config.log.full) console.log("called fs.copyFile from source: " + source + " to:" + target + " cb:" + cb);
+	
   var cbCalled = false;
 
   var rd = fs.createReadStream(source);
@@ -39,46 +47,76 @@ fs.copyFile = function(source, target, cb) {
 
 
 fs.callProgram = function( programrelativepath, programarguments, callback ) {
-	
-	console.log("Call Program:" + programrelativepath
-				+ " arguments:" + programarguments );
-				
-	child = exec( programrelativepath + " "+ programarguments,
-		function(error,stdout,stderr) { 
-			if (error) {
-				console.log(error.stack); 
-				console.log('Error code: '+ error.code); 
-				console.log('Signal received: '+ 
-				error.signal);
-			} 
-			console.log('Child Process stdout: '+ stdout);
-			console.log('Child Process stderr: '+ stderr);
-			if (callback) {
-				callback();
+	try {
+		ConsoleInterface.console.log("Call Program: programrelativepath:",programrelativepath
+					," programarguments:",programarguments );
+					
+		
+		child = exec( programrelativepath + " "+ programarguments,
+			function(error,stdout,stderr) { 
+				if (error) {
+					//console.log(error.stack); 
+					//console.log('Error code: '+ error.code); 
+					//console.log('Signal received: '+ 
+					//error.signal);
+				} 
+				//console.log('Child Process stdout: '+ stdout);
+				//console.log('Child Process stderr: '+ stderr);
+				if (callback) {
+					callback();
+				}
 			}
-		}
-	);
-	child.on('exit', function (code) { 
-		console.log('Child process exited '+'with exit code '+ code);
-	});
+		);
+		
+		child.on('exit', function (code) { 
+			//ConsoleInterface.console.log('Child process exited '+'with exit code '+ code);
+		});
+		
+		programarguments = programarguments.trim();
+		var args = programarguments.split(" ");
+		ConsoleInterface.console.log("Program:",programrelativepath," args:",args);
+		
+		//child = spawn( programrelativepath, []);
+		
+		child.unref();
+	} catch(err) {
+		ConsoleInterface.console.error("fs.callProgram > ", err);
+		alert(err);
+	}
 }
 
 fs.launchFile = function( file_open_path ) {
 
-	console.log("Launching file:" + file_open_path );
+	ConsoleInterface.console.log("Launching file:" + file_open_path );
 	
-	fs.callProgram( file_open_path );
+	ConsoleInterface.fs.callProgram( file_open_path );
 	
 }
 
 fs.launchPlayer = function( project_file ) {
+	if (config.player_full_path==undefined || config.player_full_path=="") {
+		ConsoleInterface.console.error("fs.launchPlayer > config.player_full_path is undefined");
+		return false;
+	}
+	ConsoleInterface.console.log("fs.launchPlayer > player_full_path:",config.player_full_path," project_file:",project_file );
 	
-	console.log("Launching player: "+player_full_path+" " + project_file );
-	
-	fs.callProgram( '"'+player_full_path+'"', project_file, function() {
-		console.log("Calling callback for: project_file: " + project_file);
+	return ConsoleInterface.fs.callProgram( '"'+config.player_full_path+'"', project_file, function() {
+		//console.log("Calling callback for: project_file: " + project_file);
 	} );
 	
+}
+
+fs.walk = function (currentDirPath, callback) {
+    ConsoleInterface.fs.readdirSync(currentDirPath).forEach(function(name) {
+        var filePath = path.join(currentDirPath, name);
+        var stat = ConsoleInterface.fs.statSync(filePath);
+        if (stat.isFile()) {
+            callback(filePath, stat);
+        } else if (stat.isDirectory()) {
+			callback(filePath, stat);
+            ConsoleInterface.fs.walk(filePath, callback);
+        }
+    });
 }
 
 
@@ -99,7 +137,7 @@ function recombineClasses( element ) {
 */
 if (error==undefined) {
 	function error(msg) {
-		console.log("--ERROR-- " + msg );
+		console.error("--ERROR-- ",msg );
 	}
 }
 
@@ -120,11 +158,16 @@ function activateClass( element, class_name, trigger_time, trigger_callback  ) {
 	
 }
 
+var elementclassError;
 function classActivated( element, class_name ) {
-	if (!element) return error("classActivated() > Element not defined: " + element + " class_name:" + class_name );
+	if (!element) return console.error("classActivated() > Element not defined: " + element + " class_name:" + class_name );
 	var actual_class = element.getAttribute("class");
-	var is_on = (actual_class.indexOf(class_name)>=0);
-	return is_on;
+	//console.log("actual_class:"+actual_class);
+	if (actual_class!=undefined && actual_class!="") {
+		var is_on = (actual_class.indexOf(class_name)>=0);
+		return is_on;
+	}
+	return false;
 }
 
 function deactivateClass( element, class_name, trigger_time, trigger_callback  ) {
@@ -143,7 +186,7 @@ function deactivateClass( element, class_name, trigger_time, trigger_callback  )
 
 				actual_class = actual_class.replace( new RegExp(" "+class_name+" ","g"), " " );				
 				element.setAttribute( "class", actual_class );
-				console.log( "actual_class: " + actual_class );
+				if (console.log.full) console.log( "actual_class: " + actual_class );
 			}
 	} else element.setAttribute( "class", class_name );
 	
@@ -165,4 +208,27 @@ function rgbToHex2(rgb){
 
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function showdiv( ID ) {						
+	var el = document.getElementById(ID);
+	if (el) {
+		el.style.display = 'block';
+	} else alert( "div undefined: "+ID );
+}
+	
+function hidediv( ID ) {						
+	var el = document.getElementById(ID);
+	if (el) {
+		el.style.display = 'none';
+	} else alert( "div undefined: "+ID );
+}
+
+function togglediv( ID ) {						
+	var el = document.getElementById(ID);
+	if (el.style.display == 'block') {
+		el.style.display = 'none'
+	} else {
+		el.style.display = 'block'
+	}
 }
