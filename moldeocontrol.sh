@@ -1,1 +1,2 @@
-bin/linux/nw MoldeoControl
+#bin/linux/nw MoldeoControl
+nwjs/nw MoldeoControl
