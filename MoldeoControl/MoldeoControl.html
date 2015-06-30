@@ -267,13 +267,16 @@
 					
 					<div id="parameter_inspector_MOTION"  group="MOTION" moblabel="" preconfig="" class="parameter_inspector">
 						<label>MOTION</label>
-						<button id="selector_MOTION_Vertical"  class="parameter_selector "  selector="translatey"></button>
-						<input title="X" id="selector_MOTION_translatey_input" class="param_input"  selector="translatey" type="text" value=""/>
 						
+						<button id="selector_MOTION_Vertical"  class="parameter_selector "  selector="translatey"></button>						
 						<button id="selector_MOTION_Horizontal" class="parameter_selector " selector="translatex"></button>
-						<input title="X" id="selector_MOTION_translatex_input" class="param_input" selector="translatex" type="text" value=""/>
+
 						
-						<button id="selector_MOTION_Circular" class="parameter_selector " selector="rotate"></button>
+						<input title="translatey" id="selector_MOTION_translatey_input" class="param_input"  selector="translatey" type="text" value=""/>
+						<input title="translatex" id="selector_MOTION_translatex_input" class="param_input" selector="translatex" type="text" value=""/>
+						
+						<button id="selector_MOTION_Circular" class="parameter_selector " selector="translatex,translatey"></button>
+												
 						
 						<div id="MOTION_slide_back" class="slide_H_back parameter_slide_back">
 							<label id="MOTION_slide_label">slider</label>

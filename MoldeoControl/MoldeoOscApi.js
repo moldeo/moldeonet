@@ -7,7 +7,6 @@
 
 var osc = require('node-osc');
 //var ioserver = require('socket.io').listen(8081);
-
 var oscServer, oscClient;
 var configOsc = {
 	/*MoldeoControl listen to MoldeoPlayer Server in port 3335*/
@@ -23,16 +22,13 @@ var configOsc = {
 	}
 };
 
-oscServer = new osc.Server( configOsc.server.port, configOsc.server.host);
-oscClient = new osc.Client( configOsc.client.host, configOsc.client.port);
-
-
 var MoldeoApiReceiver = {
 
 	/** CONSOLE */
 	"consoleget": function( message ) {
 		if (config.log.full) console.log("processing api message: consoleget > ", message);
-		Console.UpdateConsole( message["target"], message["info"] );
+		
+		moCI.UpdateConsole( message["target"], message["info"] );
 		
 		if (Editor.ObjectRequested!=undefined
 			&& Editor.ObjectRequested!="")
@@ -41,7 +37,7 @@ var MoldeoApiReceiver = {
 	},
 	"consolegetstate": function( message ) {
 		if (config.log.full) console.log("processing api message: consolegetstate > message: ",  message);		
-		Console.UpdateState( message["info"] );
+		moCI.UpdateState( message["info"] );
 	},
 	"consolesaveas": function( message ) {
 		deactivateClass( document.getElementById("buttonED_SaveProject"), "saveneeded" );
@@ -144,13 +140,18 @@ var MoldeoApiReceiver = {
 	"objectget": function( message ) {
 		UpdateEditor( message["target"], message["info"] );
 	},
-
+	
 };
-var history = [];
-var historyobj = [];
-var nhis = 0;
 
-oscServer.on('message', function(msg, rinfo) {
+var MoldeoMessenger = {
+	"subscribers": [{
+		"name": "this",
+		"subscriptions": {},
+		"object": null,
+	}]	
+};
+
+var ReceiverFunction = function(msg, rinfo) {
 
 	try {
 		//console.log( "oscServer.on('message'.....) receive ! msg: " + msg, ' rinfo:' + rinfo);  
@@ -213,10 +214,9 @@ oscServer.on('message', function(msg, rinfo) {
 		console.error("oscServer > on message: ",err);
 		alert("Error en el formato de recepción de datos",err);
 	}
-});
-	
+};
 
-function OscMoldeoSend( obj ) {
+var OscMoldeoSend = function( obj ) {
 	if (config.log.full) console.log("obj:",obj);
 	var str = "";
 	for(var xx in obj) {
@@ -237,4 +237,14 @@ function OscMoldeoSend( obj ) {
 			} else oscClient.send( obj.msg, obj.val0 );
 		} else oscClient.send( obj.msg );
 	} else oscClient.send( obj );
-}
+};
+
+var history = [];
+var historyobj = [];
+var nhis = 0;
+
+oscServer = new osc.Server( configOsc.server.port, configOsc.server.host);
+oscClient = new osc.Client( configOsc.client.host, configOsc.client.port);
+oscServer.on('message', ReceiverFunction );
+
+

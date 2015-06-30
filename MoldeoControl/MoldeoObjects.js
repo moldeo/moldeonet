@@ -9,7 +9,7 @@ var ConsoleInterface = {
 	
 	"State": {},
 	
-	"Info": {},
+	"Project": {},
 	
 	"Player": {
 		'Display': {
@@ -82,37 +82,37 @@ var ConsoleInterface = {
 			"button_1": {
 				"click": function(event) {
 					if (config.log.full) console.log("button_1 > click");
-					selectPlayerPreconfig( Control.ObjectSelected, 0 );
+					Control.Functions.selectControlPreconfig( Control.ObjectSelected, 0 );
 				},
 			},
 			"button_2": {
 				"click": function(event) {
 					if (config.log.full) console.log("button_2 > click");
-					selectPlayerPreconfig( Control.ObjectSelected, 1 );
+					Control.Functions.selectControlPreconfig( Control.ObjectSelected, 1 );
 				}
 			},
 			"button_3": {
 				"click": function(event) {
 					if (config.log.full) console.log("button_3 > click");
-					selectPlayerPreconfig( Control.ObjectSelected, 2 );
+					Control.Functions.selectControlPreconfig( Control.ObjectSelected, 2 );
 				}
 			},
 			"button_F1": {
 				"click": function(event) {
 					if (config.log.full) console.log("button_F1");
-					selectPlayerPreset( 0 );
+					Control.Functions.selectControlPreset( 0 );
 				},
 			},
 			"button_F2": {
 				"click": function(event) {
 					if (config.log.full) console.log("button_F2");
-					selectPlayerPreset( 1 );
+					Control.Functions.selectControlPreset( 1 );
 				}
 			},
 			"button_F3": {
 				"click": function(event) {
 					if (config.log.full) console.log("button_F3");
-					selectPlayerPreset( 2 );
+					Control.Functions.selectControlPreset( 2 );
 				}
 			}
 		},
@@ -158,6 +158,78 @@ var ConsoleInterface = {
 					if (Control.mapCursorStateMod[mkey])
 						Control.mapCursorStateMod[mkey]["pressed"] = false;
 			},
+			"KeyActivation": function(event) {
+				//console.log(event);
+				
+				var mkey = event.target.getAttribute("key");
+				var mid = event.target.getAttribute("id");
+				if (mkey) {
+					if (config.log.full) console.log("RegisterPlayerButtons > button_",mkey," event:",event.target.getAttribute("id") );
+					
+					//OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectselect', 'val1': 'icono' } );
+					if (shiftSelected() || ctrlSelected()) {
+						selectEffect( mkey );
+						//RegisterPlayerPreconfigsButton();
+					} else {
+						if ( !classActivated( event.target, "object_enabled") ) {
+							OscMoldeoSend( { 'msg': '/moldeo','val0': 'effectenable', 'val1': moCI.mapSelectionsObjects[mkey] } );
+						} else {
+							OscMoldeoSend( { 'msg': '/moldeo','val0': 'effectdisable', 'val1': moCI.mapSelectionsObjects[mkey] } );
+						}			
+					}
+				} else console.error("RegisterPlayerButtons > no key attribute in "+mid);
+			},
+			"selectControlPreconfig": function( object_selection, preconfig_selection, forceselect ) { 
+	
+				if (config.log.full) console.log("selectControlPreconfig > object_selection: ",object_selection," preconfig_selection:",preconfig_selection );
+							
+				
+				if (object_selection==undefined) object_selection = Control.ObjectSelected;
+				if (object_selection==undefined) {
+					console.error("selectControlPreconfig > no object selected");		
+					return false;
+				}
+				
+				if (object_selection!=undefined) {
+				
+					if (preconfig_selection==undefined) preconfig_selection = 0;
+					
+					var APIObj = { 
+									'msg': '/moldeo',
+									'val0': 'preconfigset', 
+									'val1': object_selection, 
+									'val2': preconfig_selection 
+								};
+								
+					Control.PreconfigSelected[object_selection] = preconfig_selection;
+					
+					if (forceselect==true) {
+						var key = moCI.mapSelectionsObjectsByLabel[object_selection];
+						if (key) {
+							selectEffect( key );
+						} else {
+							console.error("selectControlPreconfig > no key for: " + object_selection);
+						}
+							
+					}
+					
+					if (object_selection==Control.ObjectSelected) {
+						UnselectButtonsCircle();
+						var di = document.getElementById("button_" + (preconfig_selection+1) );
+						if (di) activateClass( di, "circle_selected" );
+					}
+					
+						
+					OscMoldeoSend( APIObj );
+				}
+			},
+			"selectControlPreset": function( preconfig_selection ) { 
+				if (config.log.full) console.log("selectControlPreset > ",preconfig_selection);
+				for( var object_label in moCI.mapSelectionsObjectsByLabel) {
+					if (config.log.full) console.log("object_label:",object_label);
+					Control.Functions.selectControlPreconfig( object_label, preconfig_selection );
+				}
+			},
 		},
 		"mapCursorStateMod": {
 			"LEFT": { "member": "alpha", "value": "decrement", "pressed": false },
@@ -165,8 +237,53 @@ var ConsoleInterface = {
 			
 			"UP": { "member": "tempo", "value": "increment", "pressed": false },
 			"DOWN": { "member": "tempo", "value": "decrement", "pressed": false }
-		}
-		
+		},		
+		"Register": function() {
+			if (config.log.full) console.log("RegisterPlayerButtons");
+	
+			for( var key in moCI.mapSelectionsObjects ) {
+				var keyBtn = document.getElementById("button_"+key);
+				if (config.log.full) console.log("RegisterPlayerButtons > key button: ","button_",key);
+				if (keyBtn) {
+					keyBtn.addEventListener( "click", Control.Functions.KeyActivation );
+					if (moCI.mapSelectionsObjects[key])
+						activateClass( keyBtn, moCI.mapSelectionsObjects[key] );
+				} else {
+					console.error("RegisterPlayerButtons > button_"+key+" NOT FOUND!");
+				}
+				
+			}
+			
+			//buttons and cursors
+			if (config.log.full) console.log("RegisterPlayerButtons > all buttons with events"); 
+			for( var button in Control.Buttons) {
+				var dd = document.getElementById(button);
+				for( var eventname in Control.Buttons[button]) {
+					if (dd) dd.addEventListener( eventname, Control.Buttons[button][eventname]);
+				}		
+			}
+			
+			//sliders
+			var sH = document.getElementById("slide_HORIZONTAL_channel_alpha");
+	
+			if (sH) {
+				sH.updateValue = updateSliderHorizontalValue;
+				sH.addEventListener( "change", Control.Sliders["slide_HORIZONTAL_channel_alpha"]["change"]);
+				sH.updateValue( 0 , sH );
+			}
+
+			var sV = document.getElementById("slide_VERTICAL_channel_tempo");
+
+			if (sV) {
+				sV.updateValue = updateSliderVerticalValue;
+				sV.addEventListener( "change", Control.Sliders["slide_VERTICAL_channel_tempo"]["change"]);
+				sV.updateValue( 0 , sV );
+
+			};	
+			
+			//keyboard
+			RegisterKeyboardControl();
+		},
 	},
 	
 	"Editor": {
@@ -436,7 +553,6 @@ var ConsoleInterface = {
 			"SCALE": {
 				"scalex": { "scalex": true, },
 				"scaley": { "scaley": true, },
-				"scalez": { "scalez": true, },
 				"zoom": { "scalex": true, "scaley": true },
 			},
 			"SCALEPARTICLE": {
@@ -572,29 +688,33 @@ var ConsoleInterface = {
 						cfile.click();
 					}
 					*/
-					ConsoleInterface.Browser.Open();
+					moCI.Browser.Open();
 				},
 			},
 			"buttonED_SaveProject": {
-				"click": function(event) { ConsoleInterface.Save(); },
+				"click": function(event) { moCI.Save(); },
 			},
 			"buttonED_SaveProjectAs": {
 				"click": function(event) {
 					if (config.log.full) console.log("buttonED_SaveProjectAs > SaveAsDialog");
 					var saveasproject = document.getElementById("saveasproject");			
-					if (saveasproject) {
+					var clone_name = prompt("Ingresa el nuevo nombre del proyecto (sin acentos ni caracteres especiales por favor)","mi_clon");
+					if (saveasproject && clone_name) {
+						saveasproject.setAttribute("clone_name", clone_name );
+						saveasproject.setAttribute("value", "" );
+						saveasproject.value = "";
 						saveasproject.click();
 					}
 				}
 			},
 			"buttonED_Presentation": {
-				"click": function(event) { ConsoleInterface.Presentation(); },
+				"click": function(event) { moCI.Presentation(); },
 			},
 			"buttonED_Screenshot": {
-				"click": function(event) { ConsoleInterface.Screenshot(); },
+				"click": function(event) { moCI.Screenshot(); },
 			},
 			"buttonED_PreviewShot": {
-				"click": function(event) { ConsoleInterface.PreviewShot(); },
+				"click": function(event) { moCI.PreviewShot(); },
 			},
 			"importfile": {
 				"change": function(event) {
@@ -717,15 +837,16 @@ var ConsoleInterface = {
 					var filename = event.target.value;			
 					if (config.log.full) console.log("saveasfile > ", filename );
 					
-					ConsoleInterface.SaveProjectAs( filename );		
+					moCI.SaveProjectAs( filename );		
 				},
 			},
 			"saveasproject": {
 				"change": function(event) {
-					var dirname = event.target.value;			
+					
+					var dirname = event.target.value+"/" + event.target.getAttribute("clone_name");			
 					if (config.log.full) console.log("saveasproject > ", dirname );
 					
-					ConsoleInterface.SaveProjectAs( dirname );		
+					moCI.SaveProjectAs( dirname );		
 				},
 			},
 			"openproject": {
@@ -733,7 +854,7 @@ var ConsoleInterface = {
 					var filename = event.target.value;			
 					if (config.log.full) console.log("openproject > ", filename );
 		
-					ConsoleInterface.OpenProject( filename );
+					moCI.OpenProject( filename );
 				},
 			},
 			"saveasscreenshot": {
@@ -743,7 +864,7 @@ var ConsoleInterface = {
 					var	screenshot = event.target.getAttribute("lastscreenshot");
 					console.log("saveasscreenshot > screenshot:", screenshot," filename:", filename );
 					
-					ConsoleInterface.SaveScreenshotAs( screenshot, filename );				
+					moCI.SaveScreenshotAs( screenshot, filename );				
 				},
 			},
 			"action_param_unpublished": {
@@ -769,7 +890,7 @@ var ConsoleInterface = {
 				},
 			},
 			"reload_interface_button": function(event) {
-				return ConsoleInterface.Editor.Functions["reload"]();
+				return moCI.Editor.Functions["reload"]();
 			}
 		},
 		"Functions": {
@@ -787,16 +908,16 @@ var ConsoleInterface = {
 								);
 			},
 			"reload": function() {
-				ConsoleInterface.ReloadInterface();
+				moCI.ReloadInterface();
 			},
 			"edit_button_click": function(event) {
 				try {
 					var mkey = event.target.getAttribute("key");
 					
 					if (config.log.full) console.log("buttonED_",mkey," event:", event.target.getAttribute("id") );
-					if (ConsoleInterface.mapSelectionsObjects)
-						if (ConsoleInterface.mapSelectionsObjects[mkey]) {
-							OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectget', 'val1': '' + ConsoleInterface.mapSelectionsObjects[mkey] + '' } ); //retreive all parameters
+					if (moCI.mapSelectionsObjects)
+						if (moCI.mapSelectionsObjects[mkey]) {
+							OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectget', 'val1': '' + moCI.mapSelectionsObjects[mkey] + '' } ); //retreive all parameters
 							//send a request to get full object info...ASYNC
 						}
 				} catch(err) {
@@ -804,6 +925,53 @@ var ConsoleInterface = {
 					alert(err);					
 				}
 			},
+		},
+		"Register": function() {
+			if (config.log.full) console.log("RegisterEditorButtons");
+
+			for( var key in moCI.mapSelectionsObjects ) {
+				var selObject = document.getElementById("buttonED_"+key);
+				if (selObject) selObject.addEventListener( "click", Editor.Functions["edit_button_click"]);
+			}
+
+			for( var button in Editor.Buttons ) {
+				var dd = document.getElementById(button);
+				for( var eventname in Editor.Buttons[button]) {
+					if (dd) dd.addEventListener( eventname, Editor.Buttons[button][eventname]);
+				}		
+			}
+			RegisterEditorColorButtons();
+			
+			for(var groupName in Editor.CustomInspectors) {
+			
+				//CUSTOMSELECTORS > define special events! (like a canvas por 2d position)
+				for(var paramName in Editor.CustomSelectors[groupName]) {
+					var selector = document.getElementById("selector_"+groupName+"_"+paramName );
+					if (selector) {
+						var events = Editor.CustomSelectors["POSITION"][paramName]["events"];
+						if (events)
+							for( var eventname in events) {
+								selector.addEventListener( eventname, events[eventname] );
+							}
+					}
+				}
+				
+				//EACH GROUP SELECTOR calls > on click > ActivateInspectorSelector(...)
+				for(var paramName in Editor.CustomInspectors[groupName]) {
+					var selector = document.getElementById("selector_"+groupName+"_"+paramName );
+					if (selector) {
+						if ( Editor.CustomSelectors[groupName]==undefined
+							||
+							Editor.CustomSelectors[groupName][paramName]==undefined) {
+							selector.addEventListener("click", ActivateInspectorSelector );
+						}
+					}
+				}
+				
+				if (document.getElementById(groupName+"_slide"))
+					document.getElementById(groupName+"_slide").addEventListener("change", ExecuteSliderInspector );
+			}		
+			
 			
 		},
 	},
@@ -882,18 +1050,18 @@ var ConsoleInterface = {
 					],
 				};
 
-				var preeffect = ConsoleInterface.Info.config.parameters["preeffect"].paramvalues;
-				var effect = ConsoleInterface.Info.config.parameters["effect"].paramvalues;
-				var posteffect = ConsoleInterface.Info.config.parameters["posteffect"].paramvalues;
-				var mastereffect = ConsoleInterface.Info.config.parameters["mastereffect"].paramvalues;
-				var resources = ConsoleInterface.Info.config.parameters["resources"].paramvalues;
+				var preeffect = moCI.Project.config.parameters["preeffect"].paramvalues;
+				var effect = moCI.Project.config.parameters["effect"].paramvalues;
+				var posteffect = moCI.Project.config.parameters["posteffect"].paramvalues;
+				var mastereffect = moCI.Project.config.parameters["mastereffect"].paramvalues;
+				var resources = moCI.Project.config.parameters["resources"].paramvalues;
 				/* TODO: do it right, searching full objects, with moldeo ids*/
 				var moldeo_ids = 0;
 				
 				for( var group_i in console_tree.children  ) {
 				
 					var node = console_tree.children[group_i];
-					var moldeo_objects_values = ConsoleInterface.Info.config.parameters[ node.name ].paramvalues;
+					var moldeo_objects_values = moCI.Project.config.parameters[ node.name ].paramvalues;
 					
 					for( var index in moldeo_objects_values  ) {
 						
@@ -915,10 +1083,10 @@ var ConsoleInterface = {
 						);
 					}
 				}
-				ConsoleInterface.Connectors.Tree = console_tree;
-				if (config.log.full) console.log("ObjectsToTree", ConsoleInterface.Connectors.Tree );
+				moCI.Connectors.Tree = console_tree;
+				if (config.log.full) console.log("ObjectsToTree", moCI.Connectors.Tree );
 				
-				ConsoleInterface.Connectors.FRib = new FractalRibosome( ConsoleInterface.Connectors.Tree, window.innerWidth, window.innerHeight,
+				moCI.Connectors.FRib = new FractalRibosome( moCI.Connectors.Tree, window.innerWidth, window.innerHeight,
 							{ 
 								'glowopacity': 0.2,/*0.3*/
 								'glowscalexy': 1.0,/*1.03*/
@@ -941,9 +1109,18 @@ var ConsoleInterface = {
 								*/
 							});
 
-				ConsoleInterface.Connectors.FRib.Init( "connector_panel" );	
+				moCI.Connectors.FRib.Init( "connector_panel" );	
 			},
-		}
+		},
+		"Register": function() {
+			if (config.log.full) console.log("RegisterConnectorButtons > all buttons with events");
+			for( var button in Connectors.Buttons) {
+				var dd = document.getElementById(button);
+				for( var eventname in Connectors.Buttons[button]) {
+					if (dd) dd.addEventListener( eventname, Connectors.Buttons[button][eventname]);
+				}		
+			}
+		},
 	},
 	
 	"Scenes": {
@@ -962,7 +1139,7 @@ var ConsoleInterface = {
 		"OpenFile": function() {
 			if (config.log.full) console.log("Browser::OpenFile > ");
 			try {
-			if ( ConsoleInterface.Editor.SaveNeeded==true  ) {
+			if ( moCI.Editor.SaveNeeded==true  ) {
 				if (confirm( "Tiene cambios sin guardar. ¿Está seguro que quiere abrir otro proyecto? " )) {
 					
 				} else {
@@ -971,7 +1148,7 @@ var ConsoleInterface = {
 				}
 			}			
 			
-			var cfile = ConsoleInterface.document.getElementById("openproject");			
+			var cfile = moCI.document.getElementById("openproject");			
 			
 			if (cfile) {
 				cfile.value = "";
@@ -985,25 +1162,25 @@ var ConsoleInterface = {
 		"initBrowser": function() {
 			if (config.log.full) console.log("initBrowser()");
 			try {
-				if (ConsoleInterface.Browser.initialized) {
+				if (moCI.Browser.initialized) {
 					if (config.log.full) console.log("initBrowser > already initialized. returning.");
 					return;
 				}
-				if (ConsoleInterface.Browser.winBrowser) {
-					ConsoleInterface.Browser.winBrowser.ConsoleInterface = ConsoleInterface;
-					if (ConsoleInterface.Browser.winBrowser.window) {
-						ConsoleInterface.Browser.winBrowser.window.ConsoleInterface = ConsoleInterface;
-						ConsoleInterface.Browser.winBrowser.window.opener = gui.Window.get();
+				if (moCI.Browser.winBrowser) {
+					moCI.Browser.winBrowser.moCI = moCI;
+					if (moCI.Browser.winBrowser.window) {
+						moCI.Browser.winBrowser.window.moCI = moCI;
+						moCI.Browser.winBrowser.window.opener = gui.Window.get();
 						if (config.log.full) console.log(this);
-						ConsoleInterface.Browser.document = ConsoleInterface.Browser.winBrowser.window.document;
-						ConsoleInterface.Browser.document.getElementById("close-window-button").onclick = function() {
-							ConsoleInterface.Browser.Close();							
+						moCI.Browser.document = moCI.Browser.winBrowser.window.document;
+						moCI.Browser.document.getElementById("close-window-button").onclick = function() {
+							moCI.Browser.Close();							
 						}
 					} else console.error("initBrowser > no .window");
-					ConsoleInterface.Browser.updateBrowser();					
-					ConsoleInterface.Browser.initialized = true;
+					moCI.Browser.updateBrowser();					
+					moCI.Browser.initialized = true;
 				} else {
-					ConsoleInterface.Browser.initialized = false;
+					moCI.Browser.initialized = false;
 				}
 			} catch(err) {
 				console.error("initBrowser:",err);
@@ -1011,8 +1188,8 @@ var ConsoleInterface = {
 		},
 		"Open": function() {
 			try { 
-				if (ConsoleInterface.Browser.winBrowser==null) {
-					ConsoleInterface.Browser.winBrowser = gui.Window.open('MoldeoBrowser.html', {
+				if (moCI.Browser.winBrowser==null) {
+					moCI.Browser.winBrowser = gui.Window.open('MoldeoBrowser.html', {
 						icon: "moldeocontrol.png",
 						focus: false,
 						position: 'center',
@@ -1021,41 +1198,41 @@ var ConsoleInterface = {
 						width: 834,
 						height: 328,
 					});
-					if (ConsoleInterface.Browser.winBrowser) {
-						if (config.log.full) console.log("ConsoleInterface.Browser.Open > registering events.");
-						ConsoleInterface.Browser.winVisible	= true;
-						//ConsoleInterface.Browser.winBrowser.opener = gui.Window.get();
-						ConsoleInterface.Browser.winBrowser.on('loaded', ConsoleInterface.Browser.initBrowser);
-						//ConsoleInterface.Browser.winBrowser.on('focus', ConsoleInterface.Browser.initBrowser);
-						ConsoleInterface.Browser.winBrowser.on('closed', function() {
+					if (moCI.Browser.winBrowser) {
+						if (config.log.full) console.log("moCI.Browser.Open > registering events.");
+						moCI.Browser.winVisible	= true;
+						//moCI.Browser.winBrowser.opener = gui.Window.get();
+						moCI.Browser.winBrowser.on('loaded', moCI.Browser.initBrowser);
+						//moCI.Browser.winBrowser.on('focus', moCI.Browser.initBrowser);
+						moCI.Browser.winBrowser.on('closed', function() {
 							console.log("Browser closed!");
-							ConsoleInterface.Browser.winBrowser = null;
-							ConsoleInterface.Browser.initialized = false;
+							moCI.Browser.winBrowser = null;
+							moCI.Browser.initialized = false;
 						});
-						ConsoleInterface.Browser.winBrowser.on('close', function() {
+						moCI.Browser.winBrowser.on('close', function() {
 							console.log("Browser closing!");
-							ConsoleInterface.Browser.winBrowser = null;
-							ConsoleInterface.Browser.initialized = false;
+							moCI.Browser.winBrowser = null;
+							moCI.Browser.initialized = false;
 							this.close(true);
 						});
-						//setTimeout( ConsoleInterface.Browser.initBrowser, 1000 );
+						//setTimeout( moCI.Browser.initBrowser, 1000 );
 						
 					} else {
-						console.error("ConsoleInterface.Browser.Open > ConsoleInterface.Browser.winBrowser NULL: ", ConsoleInterface.Browser.winBrowser);
+						console.error("moCI.Browser.Open > moCI.Browser.winBrowser NULL: ", moCI.Browser.winBrowser);
 					}
 				} else {
-					if (config.log.full) console.log("Browser.Open() > just show it",ConsoleInterface.Browser.winBrowser.window);
+					if (config.log.full) console.log("Browser.Open() > just show it",moCI.Browser.winBrowser.window);
 										
-					if (ConsoleInterface.Browser.winBrowser.window==undefined) {
+					if (moCI.Browser.winBrowser.window==undefined) {
 						if (config.log.full) console.log("Browser.Open() > re-open");
-						ConsoleInterface.Browser.winBrowser.close(true);
-						ConsoleInterface.Browser.winBrowser = null;
-						ConsoleInterface.Browser.initialized = false;
-						ConsoleInterface.Browser.Open();
+						moCI.Browser.winBrowser.close(true);
+						moCI.Browser.winBrowser = null;
+						moCI.Browser.initialized = false;
+						moCI.Browser.Open();
 					}
 					
-					ConsoleInterface.Browser.winVisible = !ConsoleInterface.Browser.winVisible;
-					var result = ConsoleInterface.Browser.winBrowser.show( ConsoleInterface.Browser.winVisible );					
+					moCI.Browser.winVisible = !moCI.Browser.winVisible;
+					var result = moCI.Browser.winBrowser.show( moCI.Browser.winVisible );					
 					
 				}		
 			} catch(err) {
@@ -1065,21 +1242,21 @@ var ConsoleInterface = {
 			
 		},
 		"Close": function() {
-			if (ConsoleInterface.Browser.winBrowser == null) return;
-			ConsoleInterface.Browser.winVisible	= false;
-			ConsoleInterface.Browser.initialized = false;			
-			ConsoleInterface.Browser.winBrowser.show( ConsoleInterface.Browser.winVisible );
+			if (moCI.Browser.winBrowser == null) return;
+			moCI.Browser.winVisible	= false;
+			moCI.Browser.initialized = false;			
+			moCI.Browser.winBrowser.show( moCI.Browser.winVisible );
 		},
 		"scanProjectsFolder": function(base_folder) {
 			//* check: https://nodejs.org/api/path.html*/
 		
 			if (config.log.full) console.log("loadBrowserFolder(",base_folder,") check https://nodejs.org/api/path.html");
-			var bProjects = ConsoleInterface.Browser.Projects;
+			var bProjects = moCI.Browser.Projects;
 			
 			if (bProjects[base_folder]==undefined)
 				bProjects[base_folder] = {};
 			try {
-				ConsoleInterface.fs.walk( base_folder, function( filepath, stat ) {
+				moCI.fs.walk( base_folder, function( filepath, stat ) {
 					//console.log("walk call:", filepath);
 					if (stat.isFile()) {
 						//check if it's a .mol project
@@ -1099,7 +1276,7 @@ var ConsoleInterface = {
 		},
 		"createProjectItem": function( base_mol_file ) {
 			if (config.log.full) console.log("createProjectItem > ",base_mol_file);
-			var CIB = ConsoleInterface.Browser;
+			var CIB = moCI.Browser;
 			var broDOM = CIB.document;
 			var molEle = broDOM.createElement("DIV");
 			
@@ -1112,7 +1289,7 @@ var ConsoleInterface = {
 				var project_preview_shot = project_preview_path+"/preview_shot_000000"+i+".jpg";
 				if (config.log.full) console.log("project_preview_shot:",project_preview_shot);
 				project_previews[ project_preview_shot ] = false;
-				if (ConsoleInterface.fs.existsSync( project_preview_shot )) {
+				if (moCI.fs.existsSync( project_preview_shot )) {
 					preview_shot_url = project_preview_shot;
 					project_previews[ project_preview_shot ] = true;
 					if (config.log.full) console.log("project_preview_shot FOUND:",project_preview_shot);
@@ -1140,7 +1317,7 @@ var ConsoleInterface = {
 					var ele = event.target;
 					var ele_file = ele.getAttribute("mol");
 					if (ele_file) {
-						ConsoleInterface.OpenProject( ele_file );
+						moCI.OpenProject( ele_file );
 					} else {
 						console.error("opening ele_file:",ele_file,event);
 					}
@@ -1167,7 +1344,7 @@ var ConsoleInterface = {
 			
 			try {
 				//base 
-				var CIB = ConsoleInterface.Browser;
+				var CIB = moCI.Browser;
 				var broDOM = CIB.document;
 				
 				folderEle = broDOM.createElement("DIV");
@@ -1185,11 +1362,12 @@ var ConsoleInterface = {
 				var folderLabel = broDOM.createElement("LABEL");
 				folderLabel.setAttribute( "base_id", base_id );
 				folderLabel.setAttribute( "title", base_folder_path );
+				folderLabel.setAttribute( "class", "category_folder_label" );
 				folderLabel.innerHTML = path.basename(base_folder_path );
 				
 				folderLabel.addEventListener( "click", function(event) {
 				
-					var CIB = ConsoleInterface.Browser;
+					var CIB = moCI.Browser;
 					var broDOM = CIB.document;
 					var bid = event.target.getAttribute("base_id");
 					var container_name_id = "base_folder_"+bid+"_container";
@@ -1233,7 +1411,7 @@ var ConsoleInterface = {
 		},
 		"updateBrowser": function() {
 			try {
-				var CIB = ConsoleInterface.Browser;
+				var CIB = moCI.Browser;
 				var broDOM = CIB.document;
 				if (config.log.full) console.log("updateBrowser() browser DOM: ", broDOM);
 				if (broDOM==undefined) {
@@ -1249,25 +1427,26 @@ var ConsoleInterface = {
 				
 				var check_for = [ config.sample_path, config.moldeouser_path ];
 				
-				/*FIRST CHECK EVERY FOLDER, RECURSIVELY FOR PROJECTS:....*/
-				/*from: config.sample_path*/
-				/*from: config.moldeouser_path*/
-				/*from: config.recent projects ???*/	
+				/* SCAN FOLDERS */
 				for( var i in check_for ) {
 					var base_folder = check_for[i];
 					//iterate over
 					CIB.scanProjectsFolder( base_folder );
 				}
 				
-				//iterate over the projects folders and mols
-				//CREATE HTML divs
-				//var base_id = 0;	
+				/* CREATE PROJECTS LAUNCHERS */
+				var base_id = 0;	
 				for( var base_folder_name in CIB.Projects ) {
 									
-					var folderEle = CIB.createProjectFolderView( base_folder_name );				
-					//base_id+= 1;
+					var folderEle = CIB.createProjectFolderView( base_folder_name );
+					base_id+= 1;
 					browser_div.appendChild( folderEle );
 				}
+				
+				/* LEAVE OPEN THE "RECENT" FOLDER */
+				var categories = browser_div.getElementsByClassName("category_folder_label");
+				if (categories.length) $(categories[0]).click();
+				
 			} catch(err) {
 				console.error("updateBrowser() > error",err);
 			}
@@ -1280,7 +1459,8 @@ var ConsoleInterface = {
 			"Samples": {},
 			*/
 		},
-		"SaveRecents": function() {
+		"SaveRecents": function( filename ) {
+			if (filename) moCI.Browser.Projects.Recents.push( filename );
 			for( var mol_index in Browser.Projects.Recents ) {
 				var recent_mol_file = Browser.Projects.Recents[mol_index];
 				
@@ -1305,13 +1485,13 @@ var ConsoleInterface = {
 	},
 	/**GENERAL CONSOLE FUNCTIONS*/
 	"UpdateState": function( info ) {
-		ConsoleInterface.State = info;
-		if (ConsoleInterface.State==undefined) return;
-		if (config.log.full) console.log("ConsoleInterface.UpdateState > "+info);
-		if (config.log.full) console.log("ConsoleInterface.State[tempo]:" + ConsoleInterface.State["tempo"]);
-		var gtimerstate = ConsoleInterface.State["tempo"]["globaltimer_state"];
-		var gtimerclock = ConsoleInterface.State["tempo"]["globaltimer_duration"];
-		if (config.log.full) console.log("ConsoleInterface.UpdateState: gtimerstate:" + gtimerstate + " gtimerclock:" + gtimerclock );
+		moCI.State = info;
+		if (moCI.State==undefined) return;
+		if (config.log.full) console.log("moCI.UpdateState > "+info);
+		if (config.log.full) console.log("moCI.State[tempo]:" + moCI.State["tempo"]);
+		var gtimerstate = moCI.State["tempo"]["globaltimer_state"];
+		var gtimerclock = moCI.State["tempo"]["globaltimer_duration"];
+		if (config.log.full) console.log("moCI.UpdateState: gtimerstate:" + gtimerstate + " gtimerclock:" + gtimerclock );
 		var bENTER = document.getElementById("button_ENTER");
 		var button_classes = { "playing": "button_PAUSE", "stopped": "button_ENTER", "paused": "button_ENTER" }
 		if (bENTER && gtimerstate) {
@@ -1323,56 +1503,56 @@ var ConsoleInterface = {
 	"UpdateConsole": function( target, info ) {
 
 		if (this.Log) 
-			if (config.log.full) console.log( "ConsoleInterface.UpdateConsole() > info: ",info );
+			if (config.log.full) console.log( "moCI.UpdateConsole() > info: ",info );
 		
 		if (target=="__console__")
 			if (config.log.full) console.log("OK: __console__ info message: ", info );
 		if (info==undefined) return;
 		
-		ConsoleInterface.Info = info;
-		ConsoleInterface.mapSelectionsObjectsByLabel = {};
-		ConsoleInterface.mapSelectionsObjects = {};
+		moCI.Project = info;
+		moCI.mapSelectionsObjectsByLabel = {};
+		moCI.mapSelectionsObjects = {};
 
-		if (ConsoleInterface.Info.MapEffects==undefined) return;
+		if (moCI.Project.MapEffects==undefined) return;
 		
-		for(var label in ConsoleInterface.Info.MapEffects) {
-			keyname = ConsoleInterface.Info.MapEffects[label];
+		for(var label in moCI.Project.MapEffects) {
+			keyname = moCI.Project.MapEffects[label];
 			
-			if (ConsoleInterface.mapSelectionsObjectsByLabel)
-				ConsoleInterface.mapSelectionsObjectsByLabel[ label ]  = keyname;
+			if (moCI.mapSelectionsObjectsByLabel)
+				moCI.mapSelectionsObjectsByLabel[ label ]  = keyname;
 				
-			if (keyname!="" && ConsoleInterface.mapSelectionsObjects)
-				ConsoleInterface.mapSelectionsObjects[ keyname ] = label;
+			if (keyname!="" && moCI.mapSelectionsObjects)
+				moCI.mapSelectionsObjects[ keyname ] = label;
 		}
 
 		RegisterAllButtonActions();
 
 		OscMoldeoSend( { 'msg': '/moldeo','val0': 'consolegetstate', 'val1': '__console__' } );
 		
-		//if (ConsoleInterface.Info["
+		//if (moCI.Project["
 		//.setAttribute("class","button_PAUSE special_button");
 		
 		//update every object states
-		for(var label in ConsoleInterface.Info.MapEffects) {
+		for(var label in moCI.Project.MapEffects) {
 			OscMoldeoSend( { 'msg': '/moldeo','val0': 'effectgetstate', 'val1': label } );
 		}
 		
-		ConsoleInterface.Control.Functions.ObjectsToProjectPanel( ConsoleInterface.Info );
+		moCI.Control.Functions.ObjectsToProjectPanel( moCI.Project );
 		
-		ConsoleInterface.Connectors.Functions.ObjectsToTree();
+		moCI.Connectors.Functions.ObjectsToTree();
 	
 	},
 	"OpenProject": function( filename ) {
-		ConsoleInterface.filename = ' -mol "'+filename+'" ';
+		moCI.filename = ' -mol "'+filename+'" ';
 		//filename = filename.replace( /\'/g , '"');
 		//filename = filename.replace( /\\/g , '\\\\');
 	
-		console.log( "OpenProject:" , ConsoleInterface.filename);
+		console.log( "OpenProject:" , moCI.filename);
 	
-		ConsoleInterface.fs.launchPlayer( ConsoleInterface.filename );
-		ConsoleInterface.Browser.Projects.Recents.push( filename );
-		ConsoleInterface.Browser.SaveRecents();
-		ConsoleInterface.ReloadInterface();
+		moCI.fs.launchPlayer( moCI.filename );
+		
+		moCI.Browser.SaveRecents( filename );
+		moCI.ReloadInterface();
 	},
 	"Save": function() {			
 		if (config.log.full) console.log("buttonED_Presentation > ");
@@ -1408,9 +1588,13 @@ var ConsoleInterface = {
 		if (config.log.full) console.log("buttonED_PreviewShot > ");
 		OscMoldeoSend( { 'msg': '/moldeo','val0': 'consolepreviewshot', 'val1': '' } );		
 	},
-	"GetValuesToData": function( Param, preconfig) {
+	"GetValuesToStr": function( moblabel, paramName, preconfig) {
 		var data = '';
 		var coma = '';
+		var Params = moCI.GetParams( moblabel );
+		if (Params==undefined) return false;
+		
+		var Param = Params[ paramName ];
 		if (Param==undefined) return;
 		var paramValue = Param.paramvalues[preconfig];
 		if (paramValue && paramValue.length) {
@@ -1422,16 +1606,86 @@ var ConsoleInterface = {
 		}
 		return data;
 	},
+	
+	/**
+	* TOOLS:
+
+	*	retreive "paramvalues"
+	*/
+	"GetParamValues": function( moblabel, paramName, preconfig ) {
+		
+		var Params = moCI.GetParams( moblabel );
+		if (Params==undefined) return false;
+		
+		var Param = Params[ paramName ];					
+		if ( Param == undefined) return false;
+		if ( Param.paramvalues==undefined ) return false;
+			
+		var pvals = Param.paramvalues[preconfig];
+		if ( pvals ) 
+			return pvals
+			
+		return false;
+
+	},
+	/**
+	*	Retreive Parameters object of a Moldeo Object named [moblabel]
+	*/
+	"GetParams": function( moblabel ) {
+		return Editor.Parameters[moblabel];
+	},
+	// Save preconfig for moblabel
+	"MemorizePreconfigSelection": function( moblabel, preconfig ) {
+		Editor.PreconfigsSelected[ moblabel ] = preconfig;
+	},
+	// Get last preconfig for moblabel
+	"RememberPreconfigSelection": function( moblabel ) {
+		return Editor.PreconfigsSelected[ moblabel ];
+	},
+	// Set the inspector htmlElement with attributes so it can inspect the Object:
+	// moblabel and preconfig
+	"SubscribeInspectorToMob": function( inspEle, moblabel, preconfig ) {
+		
+		//SET inspectorElement with attributes: moblabel // preconfig
+		if (inspEle && moblabel && preconfig>=0) {
+		
+			inspEle.setAttribute("moblabel", moblabel);
+			inspEle.setAttribute("preconfig", preconfig );
+			
+			//remember the preconfig selection!
+			moCI.MemorizePreconfigSelection( moblabel, preconfig );
+		}
+		
+	},	
+	
+	
 	"AddValue": function( moblabel, param, preconfig, value ) {
 		if (config.log.full) console.log("AddValue: moblabel:",moblabel, "param:",param, "preconfig:",preconfig,"value:",value );
-Editor.SaveNeeded = true;
+		Editor.SaveNeeded = true;
 		if (value==undefined) 
 			return OscMoldeoSend( { 'msg': '/moldeo','val0': 'valueadd', 'val1': moblabel, 'val2': param, 'val3': preconfig } );
 		OscMoldeoSend( { 'msg': '/moldeo','val0': 'valueadd', 'val1': moblabel, 'val2': param, 'val3': preconfig, 'val4': value } );
+		OscMoldeoSend( { 'msg': '/moldeo','val0': 'preconfigset', 'val1': moblabel, 'val2': preconfig } );
+		OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectget', 'val1': moblabel } );		
+		if (Editor.SaveNeeded) {
+			activateClass( document.getElementById("buttonED_SaveProject"), "saveneeded" );
+			activateClass( document.getElementById("buttonED_SaveProjectAs"), "saveneeded" );
+		}
+	},
+	"AddPreconfig": function( moblabel, preconfig ) {		
+		if (config.log.full) console.log("AddPreconfig: moblabel:",moblabel, "preconfig:",preconfig );
+		Editor.SaveNeeded = true;
+		OscMoldeoSend( { 'msg': '/moldeo','val0': 'preconfigadd', 'val1': moblabel, 'val2': preconfig } );		
+		OscMoldeoSend( { 'msg': '/moldeo','val0': 'preconfigset', 'val1': moblabel, 'val2': preconfig } );
+		OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectget', 'val1': moblabel } );		
+		if (Editor.SaveNeeded) {
+			activateClass( document.getElementById("buttonED_SaveProject"), "saveneeded" );
+			activateClass( document.getElementById("buttonED_SaveProjectAs"), "saveneeded" );
+		}
 	},
 	"ReloadInterface": function() {
-		if (ConsoleInterface.Browser.winBrowser)
-			ConsoleInterface.Browser.winBrowser.close();
+		if (moCI.Browser.winBrowser)
+			moCI.Browser.winBrowser.close();
 		
 		if (config.log.full) console.log("Console::ReloadInterface()",win);
 		//setTimeout( function() { win.reloadDev(); }, 2000 );
@@ -1440,9 +1694,9 @@ Editor.SaveNeeded = true;
 	"console": console,
 };
 
-var Console = ConsoleInterface;
-ConsoleInterface.document = document;
-var moCI = Console;
+var MCI = ConsoleInterface;
+MCI.document = document;
+var moCI = MCI;
 /** SHORTCUTS */
 var Player = moCI.Player;
 var Browser = moCI.Browser;

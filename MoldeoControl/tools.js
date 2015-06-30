@@ -48,7 +48,7 @@ fs.copyFile = function(source, target, cb) {
 
 fs.callProgram = function( programrelativepath, programarguments, callback ) {
 	try {
-		ConsoleInterface.console.log("Call Program: programrelativepath:",programrelativepath
+		moCI.console.log("Call Program: programrelativepath:",programrelativepath
 					," programarguments:",programarguments );
 					
 		
@@ -69,52 +69,52 @@ fs.callProgram = function( programrelativepath, programarguments, callback ) {
 		);
 		
 		child.on('exit', function (code) { 
-			//ConsoleInterface.console.log('Child process exited '+'with exit code '+ code);
+			//moCI.console.log('Child process exited '+'with exit code '+ code);
 		});
 		
 		programarguments = programarguments.trim();
 		var args = programarguments.split(" ");
-		ConsoleInterface.console.log("Program:",programrelativepath," args:",args);
+		moCI.console.log("Program:",programrelativepath," args:",args);
 		
 		//child = spawn( programrelativepath, []);
 		
 		child.unref();
 	} catch(err) {
-		ConsoleInterface.console.error("fs.callProgram > ", err);
+		moCI.console.error("fs.callProgram > ", err);
 		alert(err);
 	}
 }
 
 fs.launchFile = function( file_open_path ) {
 
-	ConsoleInterface.console.log("Launching file:" + file_open_path );
+	moCI.console.log("Launching file:" + file_open_path );
 	
-	ConsoleInterface.fs.callProgram( file_open_path );
+	moCI.fs.callProgram( file_open_path );
 	
 }
 
 fs.launchPlayer = function( project_file ) {
 	if (config.player_full_path==undefined || config.player_full_path=="") {
-		ConsoleInterface.console.error("fs.launchPlayer > config.player_full_path is undefined");
+		moCI.console.error("fs.launchPlayer > config.player_full_path is undefined");
 		return false;
 	}
-	ConsoleInterface.console.log("fs.launchPlayer > player_full_path:",config.player_full_path," project_file:",project_file );
+	moCI.console.log("fs.launchPlayer > player_full_path:",config.player_full_path," project_file:",project_file );
 	
-	return ConsoleInterface.fs.callProgram( '"'+config.player_full_path+'"', project_file, function() {
+	return moCI.fs.callProgram( '"'+config.player_full_path+'"', project_file, function() {
 		//console.log("Calling callback for: project_file: " + project_file);
 	} );
 	
 }
 
 fs.walk = function (currentDirPath, callback) {
-    ConsoleInterface.fs.readdirSync(currentDirPath).forEach(function(name) {
+    moCI.fs.readdirSync(currentDirPath).forEach(function(name) {
         var filePath = path.join(currentDirPath, name);
-        var stat = ConsoleInterface.fs.statSync(filePath);
+        var stat = moCI.fs.statSync(filePath);
         if (stat.isFile()) {
             callback(filePath, stat);
         } else if (stat.isDirectory()) {
 			callback(filePath, stat);
-            ConsoleInterface.fs.walk(filePath, callback);
+            moCI.fs.walk(filePath, callback);
         }
     });
 }
