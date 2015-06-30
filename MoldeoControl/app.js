@@ -9,9 +9,9 @@ window.onblur = function() {
 }
 
 window.onresize = function() {
-	if (Console.Connectors) {
-		if (Console.Connectors.FRib) {
-			Console.Connectors.FRib.Resize( window.innerWidth, window.innerHeight );
+	if (moCI.Connectors) {
+		if (moCI.Connectors.FRib) {
+			moCI.Connectors.FRib.Resize( window.innerWidth, window.innerHeight );
 		}
 	}
 }
@@ -28,8 +28,8 @@ window.onload = function() {
 
 	win.on("close", function() {
 		try {
-			if (ConsoleInterface.Browser.winBrowser)
-				ConsoleInterface.Browser.winBrowser.close(true);
+			if (moCI.Browser.winBrowser)
+				moCI.Browser.winBrowser.close(true);
 			this.close(true);
 		} catch(err) {
 			alert(err);
@@ -38,7 +38,7 @@ window.onload = function() {
 			
 	});
 
-	if (Console) {
+	if (moCI) {
 		RegisterAllButtonActions();
 	}
 	OscMoldeoSend( { 'msg': '/moldeo','val0': 'consoleget'} );
