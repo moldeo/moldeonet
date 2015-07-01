@@ -80,6 +80,10 @@ var config = {
 		if( config.IsLinux() ) {
 			config.player_file_path = "";
 			config.player_full_path = config.player_file_path + config.player_sdl2_exe;
+            config.moldeo_path = "/usr/share/moldeo";
+            config.data_path = config.moldeo_path + "/data";
+            config.sample_path = config.data_path + "/samples";
+			config.moldeouser_path = config.home_path+"/Moldeo";
 		}	
 	},
 
