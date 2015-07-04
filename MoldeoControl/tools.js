@@ -14,8 +14,10 @@ var execFile = require('child_process').execFile,
 exec = require('child_process').exec,
 spawn = require('child_process').spawn,
 child;
+/*
 var  out = fs.openSync('./out.log', 'a'),
      err = fs.openSync('./out.log', 'a');
+	 */
 var win = gui.Window.get();
 
 fs.copyFile = function(source, target, cb) {
