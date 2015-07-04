@@ -9,3 +9,6 @@ cp "config.init.js"  "./z/MoldeoControl/config.init.js"
 del MoldeoControl.zip
 7z.exe a MoldeoControl.zip ./z/MoldeoControl
 cp MoldeoControl.zip ../../packages/install/win
+del node_modules.zip
+rmdir z /s /q
+pause
