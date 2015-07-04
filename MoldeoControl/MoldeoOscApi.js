@@ -78,7 +78,22 @@ var MoldeoApiReceiver = {
 		}
 	},
 	
-	/** EFFECT */
+	"consolerendersession": function( message ) {
+		//
+		console.log("consolerendersession");
+		console.log("message:",message["info"] );
+		moCI.RenderSession( message["info"] );
+	},
+	"consolerecordsession": function( message ) {
+		//
+		console.log("consolerecordsession");
+		console.log("message:",message);
+		moCI.RecordSession(message["info"]);
+	},
+		
+	"console": function( message ) {
+	
+	},	/** EFFECT */
 	"effectgetstate": function( message ) {
 
 		if (config.log.full) console.log("processing api message: effectgetstate: ",message );

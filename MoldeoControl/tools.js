@@ -99,11 +99,23 @@ fs.launchPlayer = function( project_file ) {
 		return false;
 	}
 	moCI.console.log("fs.launchPlayer > player_full_path:",config.player_full_path," project_file:",project_file );
-	
+		
 	return moCI.fs.callProgram( '"'+config.player_full_path+'"', project_file, function() {
 		//console.log("Calling callback for: project_file: " + project_file);
 	} );
 	
+}
+
+fs.launchRender = function( render_call, options ) {
+	
+	var new_render_call = config.home_path+"/render_video.bat";
+	
+	fd = fs.openSync( new_render_call,"w" );
+	fs.write( fd, render_call + options );
+	
+	return moCI.fs.callProgram( new_render_call, options, function() {
+		console.log("fs.launchRender > Calling callback for: project_file");
+	} );
 }
 
 fs.walk = function (currentDirPath, callback) {

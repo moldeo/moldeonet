@@ -525,36 +525,84 @@ PRECONFIG SELECTOR  PANEL
 }
 
 .play_panel {
-	width: 40%;
-	left: 30%;
+	width: 20%;
+	left: 59%;
 	height: 23%;
 	top: 50%;
 	z-index: 0;
 }
 .play_panel button {
-	width: 33%;
+	position: relative !important;
+	width: 25%;
 	height: 100%;
 	top: 0%;
+	float: left;
+	left: auto !important;
 }
 
 .button_REFRESH {
 	background-image: url( buttons/button_Circular_off.svg );
-	left: 2%;
+}
+
+.play_panel button:before {
+	display: block;
+	content: "text";
+	position: absolute;
+	left: 0px;
+	right: 0px;
+	border: solid 0px #F00;
+	color: #FFF;
+	font-size: 8px;
+	bottom: -10px;
+	letter-spacing: 2px;
+	font-family: arial;
 }
 
 .button_TAB {
 	background-image: url( buttons/button_TAB_off.svg );
-	left: 2%;
+}
+
+.button_TAB:before {
+	content: "stop" !important;
 }
 
 .button_ENTER {
 	background-image: url( buttons/button_ENTER_off.svg );
-	right: 2%;
+}
+
+.button_ENTER:before {
+	content: "play" !important;
+}
+
+.button_RECORD {
+	background-image: url( buttons/button_RECORD_off.svg );
+}
+
+.button_RECORD:before {
+	content: "rec" !important;
+}
+
+.button_RECORD_on:before {
+	content: "recording" !important;
+}
+
+.button_RECORD_on,
+.button_RECORD:active {
+	background-image: url( buttons/button_RECORD_on.svg );
+}
+
+.button_RENDER {
+	background-image: url( buttons/button_RENDER_off.svg );
+}
+.button_RENDER:active {
+	background-image: url( buttons/button_RENDER_on.svg );
 }
 
 .button_PAUSE {
 	background-image: url( buttons/button_ENTER_pause_off.svg );
-	right: 2%;
+}
+.button_PAUSE:before {
+	content: "playing" !important;
 }
 
 .beat_panel {
@@ -586,6 +634,35 @@ PRECONFIG SELECTOR  PANEL
 .button_PAUSE:active {
 	background-image: url( buttons/button_ENTER_pause_on.svg );
 	right: 2%;
+}
+
+.button_RENDERVIDEO {
+	color: #FFF;
+	width: auto !important;
+	height: auto !important;
+	float: right !important;
+	padding: 5px;
+}
+.button_RENDERVIDEO:before {
+	content: "" !important;
+}
+
+#render_video_name {
+	display: block;
+	width: 100%;
+}
+#render_video_info {
+	display: none;
+	position: absolute;
+	z-index: 40000;
+	width: 80%;
+	height: 50px;
+	border: solid 1px #F00;
+	top: -10px;
+	background-color: rgba(150,0,0,1);
+	border-radius: 5px;
+	padding: 3px;
+	
 }
 
 

@@ -40,6 +40,59 @@ var ConsoleInterface = {
 					}
 				},
 			},
+			"button_RECORD":	{
+				"click": function(event) {
+					/*si tiene el estado es playing: hacer una pausa*/
+					/*
+					if (event.target.getAttribute("class")=="button_RECORD special_button"  ) {
+						OscMoldeoSend( { 'msg': '/moldeo','val0': 'consolerecordsession' } );
+					} else if (event.target.getAttribute("class")=="button_RECORDING special_button"  ) {
+						OscMoldeoSend( { 'msg': '/moldeo','val0': 'consolerendersession' } );
+					} else {
+						//si tiene el estado es pausa: hacer una play
+						OscMoldeoSend( { 'msg': '/moldeo','val0': 'consolerecord' } );
+					}
+					*/
+					if (event.target.getAttribute("class")=="button_RECORD special_button"  ) {
+						OscMoldeoSend( { 'msg': '/moldeo','val0': 'consolerendersession' } );
+					} else {
+						OscMoldeoSend( { 'msg': '/moldeo','val0': 'consolerendersession' } );
+					}
+				},
+			},
+			"button_RENDERVIDEO": {
+				"click": function(event) {
+					try {
+						console.log("button_RENDERVIDEO > show window options ");
+						var wini = document.getElementById("render_video_info");
+						
+						var name = document.getElementById("render_video_info_name");
+						var codec = document.getElementById("render_video_info_codec");					
+						var videoname = name.value;
+						if (videoname=="" || videoname==undefined) {
+							alert("Debe escribir un nombre de archivo para el video");
+							return;
+						}
+						var videocodec = codec.options[codec.selectedIndex].value;
+						var vext = "";
+						
+						if (videocodec=="mp4") vext = ".mp4"
+						if (videocodec=="ogg") vext = ".ogg"
+						if (videocodec=="mjpg") vext = ".avi"
+						
+						console.log("Rendering in "+videoname+" codec ("+videocodec+")");
+						$(wini).hide();
+						frame_path = moCI.Project.datapath+"/temp_render";
+						frame_path = frame_path.replace(/\\\\/g, "/" );
+						frame_path = frame_path.replace(/\\/g, "/" );
+												 
+						moCI.RenderVideo( frame_path, videocodec, videoname );
+					} catch(err) {
+						console.error(err);
+						alert(err);
+					}
+				}
+			},
 			"button_SPACE": {
 				"click": function(event) {
 					//OscMoldeoSend( { 'msg': '/moldeo','val0': 'consoleplay', 'val1': selectedEffect } );
@@ -1485,20 +1538,33 @@ var ConsoleInterface = {
 	},
 	/**GENERAL CONSOLE FUNCTIONS*/
 	"UpdateState": function( info ) {
+		
 		moCI.State = info;
+		
 		if (moCI.State==undefined) return;
 		if (config.log.full) console.log("moCI.UpdateState > "+info);
-		if (config.log.full) console.log("moCI.State[tempo]:" + moCI.State["tempo"]);
-		var gtimerstate = moCI.State["tempo"]["globaltimer_state"];
-		var gtimerclock = moCI.State["tempo"]["globaltimer_duration"];
+		if (config.log.full) console.log("moCI.State[effectstate][tempo]:" + moCI.State["effectstate"]["tempo"]);
+		
+		var gtimerstate = moCI.State["effectstate"]["tempo"]["globaltimer_state"];
+		var gtimerclock = moCI.State["effectstate"]["tempo"]["globaltimer_duration"];
+		
 		if (config.log.full) console.log("moCI.UpdateState: gtimerstate:" + gtimerstate + " gtimerclock:" + gtimerclock );
+		
 		var bENTER = document.getElementById("button_ENTER");
 		var button_classes = { "playing": "button_PAUSE", "stopped": "button_ENTER", "paused": "button_ENTER" }
+
 		if (bENTER && gtimerstate) {
 			bENTER.setAttribute("class",button_classes[gtimerstate]+" special_button");
 		} else {
 			console.error("NO button_ENTER for PLAY action or no 'globaltimer_state/duration' received.");
 		}
+		
+		if ( moCI.State.mode=="rendersession" ) {
+			document.getElementById("button_RECORD").setAttribute("class","button_RECORD_on special_button");
+		} else {
+			document.getElementById("button_RECORD").setAttribute("class","button_RECORD special_button");
+		}
+
 	},	
 	"UpdateConsole": function( target, info ) {
 
@@ -1575,6 +1641,44 @@ var ConsoleInterface = {
 		} catch(bigerr) {
 			alert("Error copiando captura, intente de nuevo."+bigerr);
 		}
+	},
+	"RecordSession": function( info ) {
+		console.log("Record Session");	
+		console.log("Record Session", info);
+		moCI.UpdateState( info );
+	},
+	"RenderSession": function( info ) {
+		console.log("Render Session");
+		console.log("Render Session", info);
+		//$("#button_RECORD").toggleClass("button_RECORD_on");
+		moCI.UpdateState( info );
+		
+		if (info.mode=="live") {
+			//finaliza el render mostrando una ventana para elegir el codec para el video
+			var wini = document.getElementById("render_video_info");
+			$(wini).show();
+		}
+	},
+	"RenderVideo": function( frame_path, videocodec, videoname ) {
+		console.log("RenderVideo:",frame_path,videocodec,videoname);
+		var full_call = "";
+		if (videocodec=="mp4") full_call = config.render_video_pipes["jpg2mp4"];
+		if (videocodec=="ogg") full_call = config.render_video_pipes["jpg2ogg"];
+		if (videocodec=="mjpg") full_call = config.render_video_pipes["jpg2mjpg"];
+		
+		if (full_call=="") {
+			alert("No gstreamer pipeline prepared for codec:" + videocodec );
+			return false; 
+		}
+		//video in same folder!!
+		videoname = frame_path+"/"+videoname;
+		
+		full_call = full_call.replace("{VIDEONAME}", videoname );
+		full_call = full_call.replace("{FRAMEPATH}", frame_path );
+		//fs.write("render_video.bat");
+		console.log("full_call:",full_call);
+		fs.launchRender( full_call, "" );
+		
 	},
 	"Presentation": function() {
 		if (config.log.full) console.log("buttonED_Presentation > ");
