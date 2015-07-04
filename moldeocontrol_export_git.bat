@@ -11,4 +11,3 @@ del MoldeoControl.zip
 cp MoldeoControl.zip ../../packages/install/win
 del node_modules.zip
 rmdir z /s /q
-pause
