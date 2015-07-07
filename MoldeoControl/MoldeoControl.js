@@ -646,7 +646,7 @@ function valueMemorize( moblabel, param, preconf, value ) {
 
 function valuegetResponse( moblabel, param, preconf, value ) {
 	if (config.log.full) console.log("valuegetResponse > mob: ",moblabel," param:",param," preconf:",preconf," value:",value);
-	
+	try {
 	//search all inspectors??? maybe it's better to just subscribe inspectors as active!!!
 	UpdateValue( moblabel, param, preconf, value );
 	
@@ -656,12 +656,16 @@ function valuegetResponse( moblabel, param, preconf, value ) {
 		if (Editor.InspectorTabSelected[moblabel][preconf]) {
 		
 			InspectorTab = Editor.InspectorTabSelected[moblabel][preconf];
-			if (config.log.full) console.log("valuegetResponse > Editor.InspectorTab: ", InspectorTab );
+			if (config.log.full) console.log("valuegetResponse > Editor.InspectorTab" );
 			var labelelem = InspectorTab.getElementsByTagName("label");
 			if (labelelem) if (labelelem[0]) labelelem[0].click();
 			
 		}
 	
+	}
+	} catch(err) {
+		alert(err);
+		console.error("valuegetResponse > ",moblabel, param, preconf, value , err);
 	}
 	
 }
@@ -882,6 +886,7 @@ function SelectScene( MOB_label ) {
 }
 
 var param_groups;
+var gsel;
 
 function selectEditorParameter( preconfig_index ) {
 
@@ -895,27 +900,28 @@ function selectEditorParameter( preconfig_index ) {
 		
 		var group_selected = win_parameters_Preconfig.getElementsByClassName("group_selected");
 		
-		if (config.log.full) console.log("SelectEditorParameter > group_selected: ", group_selected );
+		if (config.log.full) console.log("SelectEditorParameter > group_selected: " );
 		
 		if (group_selected)
 			if (config.log.full) console.log("SelectEditorParameter > group_selected.length: ", group_selected.length );
 		
 		if ( group_selected && group_selected.length>0 ) {
 			
-			if (config.log.full) console.log("SelectEditorParameter > Parameter group already selected: ",group_selected[0] );
+			if (config.log.full) console.log("SelectEditorParameter > Parameter group already selected: " );
 			
+			var gsel = group_selected[0]
 			var item_group_selected = group_selected[0];
-			
-			var item_group_label = item_group_selected.getElementsByTagName("label");
-			
-			if (item_group_label && item_group_label.length>0) {
+			if (item_group_selected) {
+				var item_group_label = item_group_selected.getElementsByTagName("label");
 				
-				var item_group_label_selected = item_group_label[0];
-				if (config.log.full) console.log("SelectEditorParameter > item_group_label_selected.click() ");
-				item_group_label_selected.click();
-				return;
+				if (item_group_label && item_group_label.length>0) {
+					
+					var item_group_label_selected = item_group_label[0];
+					if (config.log.full) console.log("SelectEditorParameter > item_group_label_selected.click() ");
+					item_group_label_selected.click();
+					return;
+				}
 			}
-			
 		} else {
 		
 			if (config.log.full) console.log("SelectEditorParameter > NO SELECTION!, inducing click and selection on first parameter (published) group for: ", Editor.ObjectSelected );
@@ -1141,7 +1147,7 @@ function selectEditorImage( moblabel, param_name, preconfig ) {
 
 		var object_edition = document.getElementById("object_edition");
 		
-		if (fetchImage( moblabel, param_name, preconfig )) {
+		if ( fetchImage( moblabel, param_name, preconfig ) ) {
 
 			object_edition.setAttribute("moblabel", moblabel );
 			object_edition.setAttribute("paramname", param_name );
@@ -2953,6 +2959,16 @@ function ActivatePreconfigsParameters( preconf_index ) {
 	
 }
 
+function hasParam( moblabel, param_name ) {
+	var res = false;
+
+	if (Editor.Parameters[moblabel][param_name]) {
+		res = true;
+	}
+	
+	return res;
+}
+
 /**
 	SET
 	TODO: always select first parameter inspector!!
@@ -3021,14 +3037,16 @@ try {
 	//LOAD IMAGE in canvas for this Preconfig
 	//EN funcion de las imagenes que tenemos en ObjectImages generamos THUMBNAILS
 	// aqui solo para 1	
-	selectEditorImage( Editor.ObjectSelected, "texture", Editor.PreconfigSelected);
-	selectEditorImage( Editor.ObjectSelected, "images", Editor.PreconfigSelected);
+	if (hasParam(Editor.ObjectSelected, "texture"))
+		selectEditorImage( Editor.ObjectSelected, "texture", Editor.PreconfigSelected );
+	if (hasParam(Editor.ObjectSelected, "images"))
+		selectEditorImage( Editor.ObjectSelected, "images", Editor.PreconfigSelected );
 	
-	selectEditorSound(Editor.PreconfigSelected);
+	selectEditorSound( Editor.PreconfigSelected );
 	
-	selectEditorMovie(Editor.PreconfigSelected);
+	selectEditorMovie( Editor.PreconfigSelected );
 	
-	selectEditorColor(Editor.PreconfigSelected);
+	selectEditorColor( Editor.PreconfigSelected );
 	
 	if (CurrentPreconfig!=undefined) {
 		if (config.log.full) console.log( "Preconfig selected: ",CurrentPreconfig );

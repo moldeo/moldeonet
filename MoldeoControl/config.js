@@ -25,6 +25,7 @@ var config = {
 	"plugin_path": "",
 	"moldeouser_path": "",
 	"user_path": "",
+	"desktop_path": "",
     "browser_samples": "",
     "browser_userfolder": "",
     "browser_moldeolab" : "",
@@ -51,7 +52,6 @@ var config = {
 		//config.bin_path = osenv.path();
 		config.user = osenv.user();
 		config.home_path = osenv.home();
-		config.moldeouser_path = config.home_path+"\\Documents\\Moldeo";
 
 		if (options) {
 			for( var option in options ) {
@@ -78,6 +78,8 @@ var config = {
 			config.data_path = config.moldeo_path + "\\data";
 			config.sample_path = config.data_path + "\\samples";
 			config.player_full_path = config.player_file_path + config.player_sdl2_exe;
+			config.moldeouser_path = config.home_path+"\\Documents\\Moldeo";
+			config.desktop_path = config.home_path+"\\Desktop";
 			
 			console.log("fullArgv:"+gui.App.fullArgv+" dataPath:"+gui.App.dataPath+" process.execPath:"+process.execPath);		
 		}
@@ -89,6 +91,7 @@ var config = {
             config.data_path = config.moldeo_path + "/data";
             config.sample_path = config.data_path + "/samples";
 			config.moldeouser_path = config.home_path+"/Moldeo";
+			config.desktop_path = config.home_path+"/Desktop";
 		}	
 	},
 

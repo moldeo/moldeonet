@@ -65,7 +65,7 @@ fs.callProgram = function( programrelativepath, programarguments, callback ) {
 				//console.log('Child Process stdout: '+ stdout);
 				//console.log('Child Process stderr: '+ stderr);
 				if (callback) {
-					callback();
+					callback(error,stdout,stderr);
 				}
 			}
 		);
@@ -102,22 +102,40 @@ fs.launchPlayer = function( project_file ) {
 	}
 	moCI.console.log("fs.launchPlayer > player_full_path:",config.player_full_path," project_file:",project_file );
 		
-	return moCI.fs.callProgram( '"'+config.player_full_path+'"', project_file, function() {
+	return moCI.fs.callProgram( '"'+config.player_full_path+'"', project_file, function(error,stdout,stderr) {
 		//console.log("Calling callback for: project_file: " + project_file);
+		if (error) {
+			moCI.console.error(error);
+		}		
 	} );
 	
 }
 
 fs.launchRender = function( render_call, options ) {
 	
-	var new_render_call = config.home_path+"/render_video.bat";
-	
-	fd = fs.openSync( new_render_call,"w" );
-	fs.write( fd, render_call + options );
-	
-	return moCI.fs.callProgram( new_render_call, options, function() {
-		console.log("fs.launchRender > Calling callback for: project_file");
-	} );
+	var new_render_call = "";
+
+	try {
+		
+		new_render_call = config.home_path+"/render_video.bat";
+		
+		fd = fs.openSync( new_render_call,"w" );
+		fs.write( fd, render_call + options );
+		
+		return moCI.fs.callProgram( new_render_call, options, function(error,stdout,stderr) {
+			//console.log("fs.launchRender > Calling callback for: project_file");
+			if (error) {
+				moCI.console.error(error);
+			}
+			if (stdout) {
+				moCI.console.log(stdout);
+			}
+		} );
+		
+	} catch(err) {
+		alert(err);
+		console.error("fs.launchRender > ",render_call,err);
+	}
 }
 
 fs.walk = function (currentDirPath, callback) {
