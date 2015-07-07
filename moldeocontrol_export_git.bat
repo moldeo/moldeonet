@@ -11,3 +11,4 @@ del MoldeoControl.zip
 7z.exe x -y MoldeoControl.zip -o../bin/win/
 del node_modules.zip
 rmdir z /s /q
+exit
