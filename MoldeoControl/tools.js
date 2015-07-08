@@ -140,7 +140,8 @@ fs.launchRender = function( render_call, options ) {
 
 fs.walk = function (currentDirPath, callback) {
     moCI.fs.readdirSync(currentDirPath).forEach(function(name) {
-        var filePath = path.join(currentDirPath, name);
+	try {
+        var filePath = path.join(currentDirPath, name);		
         var stat = moCI.fs.statSync(filePath);
         if (stat.isFile()) {
             callback(filePath, stat);
@@ -148,6 +149,10 @@ fs.walk = function (currentDirPath, callback) {
 			callback(filePath, stat);
             moCI.fs.walk(filePath, callback);
         }
+	} catch(err) {
+		//alert("fs.walk:", err);
+		console.log("fs.walk: ", err);
+	}
     });
 }
 
