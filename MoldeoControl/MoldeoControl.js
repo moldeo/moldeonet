@@ -963,21 +963,88 @@ function unselectEditorObjects( preconfig_index ) {
 
 }
 
-function selectEditorMovie( preconfig_index ) {
+function fetchMovie( moblabel, param_name, preconfig, remote ) {
+	try {
+		if (remote==true) return fetchMovieRemote( moblabel, param_name, preconfig );
+		
+		var ParamValue = fetchValue( moblabel, param_name, preconfig );
+		if (ParamValue==false)  {
+			console.error("fetchImage > no values for "+preconfig ); 
+			return false; 
+		}
+		
+		var EM = Editor.Movies; if (EM[ moblabel ]==undefined) EM[ moblabel ] = {};
+		var OEM = EM[ moblabel ]; if (OEM[ param_name ]==undefined) OEM[ param_name ] = {};
+		var OEMP = OEM[ param_name ];
+		var preconfidx = "preconf_"+preconfig;
+		var MOVOBJECT = OEMP[preconfidx]; 
+		if (MOVOBJECT==undefined) { OEMP[preconfidx] = {}; MOVOBJECT = OEMP[ preconfidx ]; }
+		
+		if (MOVOBJECT) {
+			MOVOBJECT["src"] = ParamValue[0]["value"];
+			/*			
+			if (MOVOBJECT["img"]==undefined) {
+				MOVOBJECT["img"] = new Image();
+			}
+			MOVOBJECT["img"].moblabel = moblabel;
+			MOVOBJECT["img"].param_name = param_name;
+			MOVOBJECT["img"].preconfig = preconfig;
+			MOVOBJECT["img"].remote = remote;			
+			MOVOBJECT["img"].onload = onloadImage;				
+			//using real-path for this image, if we are in local-control
+			var newsrc = ValueToSrc( ParamValue[0]["value"] );
+			if (MOVOBJECT["img"].filesrc!=newsrc) {
+			
+				MOVOBJECT["filesrc"] = newsrc;
+				MOVOBJECT["img"].filesrc = newsrc;
+				MOVOBJECT["img"].src = newsrc;
+				
+			}
+			*/			
+			return true;
+		}
+	} catch(err) {
+		console.error("fetchMovie > ",err);	
+	}
+	return false;
+}
+
+function drawParamVideo( moblabel, param_name, preconfig ) {
 	
 	var video_edition = document.getElementById("video_edition");
 	if (video_edition==undefined) return;
 	
+	var filesrc = Editor.Movies[moblabel][param_name]["preconf_"+preconfig]["src"];
+	if (video_edition) video_edition.setAttribute("title", filesrc );
+}
+
+function selectEditorMovie( moblabel, param_name, preconfig ) {
+	try {
+		var video_edition = document.getElementById("video_edition");
+		if (video_edition==undefined) return;
+
+		video_edition.setAttribute("moblabel", moblabel );
+		video_edition.setAttribute("paramname", param_name );
+		video_edition.setAttribute("preconfig", preconfig );
+
+		unselectEditorObjects(preconfig);
+		deactivateClass( video_edition, "object_edition_collapsed");		
+		
+		if ( fetchMovie( moblabel, param_name, preconfig ) ) {
+			drawParamVideo( moblabel, param_name, preconfig );
+		}
+	} catch(err) {
+		alert(err);
+	}
+	
+	/*
 	if (video_edition) video_edition.setAttribute("moblabel", Editor.ObjectSelected );
 	if (video_edition) video_edition.setAttribute("preconfig", Editor.PreconfigSelected );
 	
 	if (config.log.full) console.log("selectEditorMovie(",preconfig_index,")");
-
-	
 	
 	var ObjectMovies = Editor.Movies[ Editor.ObjectSelected ];
 	if (preconfig_index==undefined) preconfig_index = Editor.PreconfigSelected;
-	
 
 	for( var paramName in ObjectMovies) {
 		var preconfidx = "preconf_"+preconfig_index;
@@ -989,11 +1056,85 @@ function selectEditorMovie( preconfig_index ) {
 		if (video_edition) video_edition.setAttribute("title", filesrc );
 		
 	}
+	*/
 }
 
-function selectEditorSound( preconfig_index ) {
 
 
+function fetchAudio( moblabel, param_name, preconfig, remote ) {
+	try {
+		if (remote==true) return fetchAudioRemote( moblabel, param_name, preconfig );
+		
+		var ParamValue = fetchValue( moblabel, param_name, preconfig );
+		if (ParamValue==false)  {
+			console.error("fetchImage > no values for "+preconfig ); 
+			return false; 
+		}
+		
+		var ES = Editor.Sounds; if (ES[ moblabel ]==undefined) ES[ moblabel ] = {};
+		var OES = ES[ moblabel ]; if (OES[ param_name ]==undefined) OES[ param_name ] = {};
+		var OESP = OES[ param_name ];
+		var preconfidx = "preconf_"+preconfig;
+		var SNDOBJECT = OESP[preconfidx]; 
+		if (SNDOBJECT==undefined) { OESP[preconfidx] = {}; SNDOBJECT = OESP[ preconfidx ]; }
+		
+		if (SNDOBJECT) {
+			SNDOBJECT["src"] = ParamValue[0]["value"];
+			/*			
+			if (SNDOBJECT["img"]==undefined) {
+				SNDOBJECT["img"] = new Image();
+			}
+			SNDOBJECT["img"].moblabel = moblabel;
+			SNDOBJECT["img"].param_name = param_name;
+			SNDOBJECT["img"].preconfig = preconfig;
+			SNDOBJECT["img"].remote = remote;			
+			SNDOBJECT["img"].onload = onloadImage;				
+			//using real-path for this image, if we are in local-control
+			var newsrc = ValueToSrc( ParamValue[0]["value"] );
+			if (SNDOBJECT["img"].filesrc!=newsrc) {
+			
+				SNDOBJECT["filesrc"] = newsrc;
+				SNDOBJECT["img"].filesrc = newsrc;
+				SNDOBJECT["img"].src = newsrc;
+				
+			}
+			*/			
+			return true;
+		}
+	} catch(err) {
+		console.error("fetchSound > ",err);	
+	}
+	return false;
+}
+
+function drawParamAudio( moblabel, param_name, preconfig ) {
+	
+	var audio_edition = document.getElementById("audio_edition");
+	if (audio_edition==undefined) return;
+	
+	var filesrc = Editor.Sounds[moblabel][param_name]["preconf_"+preconfig]["src"];
+	if (audio_edition) audio_edition.setAttribute("title", filesrc );
+}
+
+function selectEditorSound( moblabel, param_name, preconfig_index ) {
+	try {
+		var audio_edition = document.getElementById("audio_edition");
+		if (audio_edition==undefined) return;
+
+		audio_edition.setAttribute("moblabel", moblabel );
+		audio_edition.setAttribute("paramname", param_name );
+		audio_edition.setAttribute("preconfig", preconfig );
+
+		unselectEditorObjects(preconfig);
+		deactivateClass( audio_edition, "object_edition_collapsed");		
+		
+		if ( fetchSound( moblabel, param_name, preconfig ) ) {
+			drawParamAudio( moblabel, param_name, preconfig );
+		}
+	} catch(err) {
+		alert(err);
+	}
+/*
 	var audio_edition = document.getElementById("audio_edition");
 	if (audio_edition==undefined) return;
 	
@@ -1018,7 +1159,7 @@ function selectEditorSound( preconfig_index ) {
 		if (audio_edition) audio_edition.setAttribute("title", filesrc );
 		
 	}
-	
+	*/
 	
 }
 	
@@ -1610,18 +1751,18 @@ function CreateMovieParameter( MOB_label, param_name, preconfig, prewindow ) {
 
 	if (Editor.Movies[MOB_label]==undefined) Editor.Movies[MOB_label] = {};
 	
-	var ObjectMovies = Editor.Movies[MOB_label];
+	var OM = Editor.Movies[MOB_label];
 	
-	if (ObjectMovies[param_name]==undefined) ObjectMovies[ param_name ] = {};
+	if (OM[param_name]==undefined) OM[ param_name ] = {};
 	
 	var preconfidx = "preconf_"+preconfig;
 	
 	if (ParamValues[preconfig]) {	
 
 		if ( param_name=="movies" ) {
-			if (ObjectMovies[ param_name ][ preconfidx ]==undefined) ObjectMovies[param_name][ preconfidx ] = {};
-			 ObjectMovies[param_name][ preconfidx ]["src"] = ParamValues[preconfig][0]["value"];
-			selectEditorMovie(0);
+			if (OM[ param_name ][ preconfidx ]==undefined) OM[param_name][ preconfidx ] = {};
+			 OM[param_name][ preconfidx ]["src"] = ParamValues[preconfig][0]["value"];
+			selectEditorMovie( MOB_label,param_name, 0);
 		}
 		
 	} else {
@@ -1648,7 +1789,7 @@ function CreateSoundParameter( MOB_label, param_name, preconfig, psideWin ) {
 	if (ParamValues[preconfig]) {
 		if (config.log.full) console.log("CreateSoundParameter > value: ", ParamValues[preconfig][0]["value"] );
 		ObjectSounds[param_name][preconfidx]["src"] = ParamValues[preconfig][0]["value"];
-		selectEditorSound(0);
+		selectEditorSound( MOB_label, param_name, 0);
 	}
 	else
 		console.error("CreateSoundParameter > no paramvalues for "+MOB_label+" param_name: " + param_name+" preconfig:"+preconfig);
@@ -2396,7 +2537,7 @@ function UpdateSound( moblabel, paramname, preconfig, filename ) {
 				//var filesrc = ObjectSounds[paramname]["preconf_"+preconfig]["src"];
 				ObjectSounds[paramname]["preconf_"+preconfig]["src"] = filename;
 				//do something, like loading an audio object...
-				selectEditorSound( preconfig );
+				selectEditorSound( moblabel, paramname, preconfig );
 			}
 		}
 	}
@@ -2404,14 +2545,14 @@ function UpdateSound( moblabel, paramname, preconfig, filename ) {
 
 function UpdateMovie( moblabel, paramname, preconfig, filename ) {
 	if (config.log.full) console.log("UpdateMovie");
-	var ObjectMovies = Editor.Movies[moblabel];
-	if (ObjectMovies!=undefined) {
-		if (ObjectMovies[paramname]!=undefined) {
-			if (ObjectMovies[paramname]["preconf_"+preconfig]!=undefined) {
+	var OM = Editor.Movies[moblabel];
+	if (OM!=undefined) {
+		if (OM[paramname]!=undefined) {
+			if (OM[paramname]["preconf_"+preconfig]!=undefined) {
 				//var filesrc = ObjectSounds[paramname]["preconf_"+preconfig]["src"];
-				ObjectMovies[paramname]["preconf_"+preconfig]["src"] = filename;
+				OM[paramname]["preconf_"+preconfig]["src"] = filename;
 				//do something, like loading an audio object...
-				selectEditorMovie( preconfig );
+				selectEditorMovie( moblabel, paramname, preconfig );
 			}
 		}
 	}
@@ -3042,9 +3183,11 @@ try {
 	if (hasParam(Editor.ObjectSelected, "images"))
 		selectEditorImage( Editor.ObjectSelected, "images", Editor.PreconfigSelected );
 	
-	selectEditorSound( Editor.PreconfigSelected );
+	if (hasParam(Editor.ObjectSelected, "sound"))
+		selectEditorSound( Editor.ObjectSelected, "sound", Editor.PreconfigSelected );
 	
-	selectEditorMovie( Editor.PreconfigSelected );
+	if (hasParam(Editor.ObjectSelected, "movies"))
+		selectEditorMovie( Editor.ObjectSelected, "movies", Editor.PreconfigSelected );
 	
 	selectEditorColor( Editor.PreconfigSelected );
 	
