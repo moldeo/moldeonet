@@ -117,7 +117,15 @@ fs.launchRender = function( render_call, options ) {
 
 	try {
 		
+		if (config.platform.indexOf("win")>=0) {
 		new_render_call = config.home_path+"/render_video.bat";
+		} else if (config.platform=="linux") {
+		new_render_call = config.home_path+"/render_video.sh";
+		} else if (config.platform=="mac" || config.platform=="osx") {
+		new_render_call = config.home_path+"/render_video.sh";
+		} else {
+			alert("platform not recognized");
+		}
 		
 		fd = fs.openSync( new_render_call,"w" );
 		fs.write( fd, render_call + options );

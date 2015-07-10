@@ -34,9 +34,26 @@ var config = {
     "player_glut_exe": "moldeoplayerglut",
     "director_exe": "moldeodirector",
 	"render_video_pipes": {
-		"jpg2ogg": '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! theoraenc ! oggmux ! filesink location="{VIDEONAME}.ogg"',
-		"jpg2mp4": '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! ffenc_mpeg4 ! mp4mux ! filesink location="{VIDEONAME}.mp4"',
-		"jpg2mjpg": '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! theoraenc ! oggmux ! filesink location="{VIDEONAME}.avi"',
+		"linux": {
+			"jpg2ogg": '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! theoraenc ! oggmux ! filesink location="{VIDEONAME}.ogg"',
+			"jpg2mp4": '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! ffenc_mpeg4 ! mp4mux ! filesink location="{VIDEONAME}.mp4"',
+			"jpg2mjpg": '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! theoraenc ! oggmux ! filesink location="{VIDEONAME}.avi"',
+		},
+		"win32": {
+			"jpg2ogg": '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! theoraenc ! oggmux ! filesink location="{VIDEONAME}.ogg"',
+			"jpg2mp4": '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! ffenc_mpeg4 ! mp4mux ! filesink location="{VIDEONAME}.mp4"',
+			"jpg2mjpg": '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! theoraenc ! oggmux ! filesink location="{VIDEONAME}.avi"',
+		},
+		"win64": {
+			"jpg2ogg": '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! theoraenc ! oggmux ! filesink location="{VIDEONAME}.ogg"',
+			"jpg2mp4": '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! ffenc_mpeg4 ! mp4mux ! filesink location="{VIDEONAME}.mp4"',
+			"jpg2mjpg": '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! theoraenc ! oggmux ! filesink location="{VIDEONAME}.avi"',
+		},		
+		"mac": {
+			"jpg2ogg": '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! theoraenc ! oggmux ! filesink location="{VIDEONAME}.ogg"',
+			"jpg2mp4": '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! ffenc_mpeg4 ! mp4mux ! filesink location="{VIDEONAME}.mp4"',
+			"jpg2mjpg": '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! theoraenc ! oggmux ! filesink location="{VIDEONAME}.avi"',
+		},
 	},
 	"IsWindows": function() {
 		return config.platform.indexOf("win")>=0;

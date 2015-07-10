@@ -1660,12 +1660,14 @@ var ConsoleInterface = {
 		}
 	},
 	"RenderVideo": function( frame_path, videocodec, videoname ) {
-		console.log("RenderVideo:",frame_path,videocodec,videoname);
+		console.log("RenderVideo:",frame_path,videocodec,videoname,config.platform);
 		var full_call = "";
-		if (videocodec=="mp4") full_call = config.render_video_pipes["jpg2mp4"];
-		if (videocodec=="ogg") full_call = config.render_video_pipes["jpg2ogg"];
-		if (videocodec=="mjpg") full_call = config.render_video_pipes["jpg2mjpg"];
-		
+		var rvideoplat = config.render_video_pipes[config.platform];
+		if (rvideoplat) {
+			if (videocodec=="mp4") full_call = rvideoplat["jpg2mp4"];
+			if (videocodec=="ogg") full_call = rvideoplat["jpg2ogg"];
+			if (videocodec=="mjpg") full_call = rvideoplat["jpg2mjpg"];
+		} else return;
 		if (full_call=="") {
 			alert("No gstreamer pipeline prepared for codec:" + videocodec );
 			return false; 
