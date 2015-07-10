@@ -133,6 +133,7 @@ fs.launchRender = function( render_call, options ) {
 		if (config.platform=="linux" || config.platform=="mac" || config.platform=="osx") {
 			fs.chmodSync( new_render_call, 0755);
 		}
+		fs.closeSync(fd);
 		
 		return moCI.fs.callProgram( new_render_call, options, function(error,stdout,stderr) {
 			//console.log("fs.launchRender > Calling callback for: project_file");
