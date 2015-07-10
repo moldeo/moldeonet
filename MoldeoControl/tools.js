@@ -124,11 +124,15 @@ fs.launchRender = function( render_call, options ) {
 		} else if (config.platform=="mac" || config.platform=="osx") {
 		new_render_call = config.home_path+"/render_video.sh";
 		} else {
-			alert("platform not recognized");
+			alert("platform not recognized:"+config.platform);
 		}
 		
 		fd = fs.openSync( new_render_call,"w" );
 		fs.write( fd, render_call + options );
+		
+		if (config.platform=="linux" || config.platform=="mac" || config.platform=="osx") {
+			fs.chmodSync( new_render_call, 0755);
+		}
 		
 		return moCI.fs.callProgram( new_render_call, options, function(error,stdout,stderr) {
 			//console.log("fs.launchRender > Calling callback for: project_file");
