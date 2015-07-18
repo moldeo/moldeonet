@@ -35,9 +35,9 @@ var config = {
     "director_exe": "moldeodirector",
 	"render_video_pipes": {
 		"linux": {
-			"jpg2ogg": '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! theoraenc ! oggmux ! filesink location="{VIDEONAME}.ogg"',
-			"jpg2mp4": '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! ffenc_mpeg4 ! mp4mux ! filesink location="{VIDEONAME}.mp4"',
-			"jpg2mjpg": '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! theoraenc ! oggmux ! filesink location="{VIDEONAME}.avi"',
+			"jpg2ogg": '"gst-launch-0.10" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! theoraenc ! oggmux ! filesink location="{VIDEONAME}.ogg"',
+			"jpg2mp4": '"gst-launch-0.10" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! ffenc_mpeg4 ! mp4mux ! filesink location="{VIDEONAME}.mp4"',
+			"jpg2mjpg": '"gst-launch-0.10" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! theoraenc ! oggmux ! filesink location="{VIDEONAME}.avi"',
 		},
 		"win32": {
 			"jpg2ogg": '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! theoraenc ! oggmux ! filesink location="{VIDEONAME}.ogg"',

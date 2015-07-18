@@ -14,6 +14,7 @@ body {
   margin: 0px;
   padding: 0px;
   background-color: transparent;
+  -webkit-user-select: none;
 }
 
 
@@ -22,31 +23,37 @@ body {
 }
 
 .titlebar {	
-	position: fixed;
+	position: absolute;
 	top: 0px;
 	left: 0px;
 	width: 90%;
-	height: 10px;
+	height: 17px;
 	background-color: transparent;
-	-webkit-app-region: drag;
+/*
+    
 	-webkit-user-select: none;
-	text-align: left;
-	padding: 2px;
-	font-size: 7px;
-	font-family: moldeofont;
+*/
+	text-align: center;
+	padding: 0px;
+    padding-left: 17px;
+	font-size: 10px;
 	color: #FFF;
-	z-index: 100;
+	z-index: 1000;
+	font-family: moldeofont;
+    cursor: move;
+    /*-webkit-app-region: drag;*/
 }
 
 .top-titlebar-close-button {
   position: absolute;
-  right: -10%;
-  top: 2px;
-  width: 10px;
-  height: 10px;
+  right: -8% !important;
+  top: 0px;
+  width: 17px;
+  height: 17px;
   -webkit-app-region: no-drag;
   background-color: #000 !important;
   background-image: url(button_close.png);
+  border-radius: 8px;
 }
 
 #container {
@@ -168,6 +175,7 @@ button.fxselected:hover:after {
 	background-size: 100% 100%;
 	background-color: #333;
 	overflow-y: scroll;
+    overflow-x: hidden;
 	
 }
 
@@ -1187,7 +1195,7 @@ input[type=range]::-webkit-slider-thumb:active {
 #buttonED_Presentation {
 	display: block;
 	position: absolute;
-	right: 1%;
+	right: 3%;
 	top: 2%;
 	width: 3%;
 	height: 18%;
@@ -1204,7 +1212,7 @@ input[type=range]::-webkit-slider-thumb:active {
 #buttonED_Screenshot {
 	display: block;
 	position: absolute;
-	right: 5%;
+	right: 7%;
 	top: 2%;
 	width: 3%;
 	height: 18%;
@@ -1221,7 +1229,7 @@ input[type=range]::-webkit-slider-thumb:active {
 #buttonED_PreviewShot {
 	display: block;
 	position: absolute;
-	right: 8.5%;
+	right: 10%;
 	top: 2%;
 	width: 3%;
 	height: 18%;

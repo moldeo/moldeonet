@@ -1244,15 +1244,16 @@ var ConsoleInterface = {
 				if (moCI.Browser.winBrowser==null) {
 					moCI.Browser.winBrowser = gui.Window.open('MoldeoBrowser.html', {
 						icon: "moldeocontrol.png",
-						focus: false,
-						position: 'center',
-						toolbar: true,
+						focus: false,						
+						toolbar: false,
 						frame: true,
-						width: 834,
-						height: 328,
+						width: win.width,
+						height: 300,
+                        position: "center",
 					});
 					if (moCI.Browser.winBrowser) {
 						if (config.log.full) console.log("moCI.Browser.Open > registering events.");
+                        moCI.Browser.winBrowser.moveTo(win.x, win.y-330);
 						moCI.Browser.winVisible	= true;
 						//moCI.Browser.winBrowser.opener = gui.Window.get();
 						moCI.Browser.winBrowser.on('loaded', moCI.Browser.initBrowser);
@@ -1269,7 +1270,7 @@ var ConsoleInterface = {
 							this.close(true);
 						});
 						//setTimeout( moCI.Browser.initBrowser, 1000 );
-						
+						moCI.Browser.winBrowser.focus();
 					} else {
 						console.error("moCI.Browser.Open > moCI.Browser.winBrowser NULL: ", moCI.Browser.winBrowser);
 					}
@@ -1324,7 +1325,7 @@ var ConsoleInterface = {
 				});
 			} catch(err) {
 				console.error("loadBrowserFolder: ",err);
-				alert(err);
+				//alert(err);
 			}
 		},
 		"createProjectItem": function( base_mol_file ) {

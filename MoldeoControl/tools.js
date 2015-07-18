@@ -139,6 +139,7 @@ fs.launchRender = function( render_call, options ) {
 			//console.log("fs.launchRender > Calling callback for: project_file");
 			if (error) {
 				moCI.console.error(error);
+                alert("No se pudo ejecutar el script de rendereo.");
 			}
 			if (stdout) {
 				moCI.console.log(stdout);
