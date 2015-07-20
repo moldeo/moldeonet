@@ -22,6 +22,10 @@ body {
   display: none;
 }
 
+.win32 .titlebar {
+	-webkit-app-region: drag;
+}
+
 .titlebar {	
 	position: absolute;
 	top: 0px;

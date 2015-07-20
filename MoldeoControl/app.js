@@ -70,12 +70,14 @@ function dragWithCustomImage(event) {
   dt.setDragImage(canvas, 25, 25);
 }
 
-win = gui.Window.get();
-win.moveTo( 0, (600-164) );
+
 
 
 window.onload = function() {
-  
+ 
+	win = gui.Window.get();
+	win.moveTo( 0, (600-164) );
+
 	document.getElementById("close-window-button").onclick = function() {
 		//window.close();
 		gui.App.quit();
@@ -83,7 +85,6 @@ window.onload = function() {
 
     
     var drage = document.getElementById("titlebar");
-
     drage.addEventListener('dragstart', handleDragStart, true);
     drage.addEventListener('dragenter', handleDragEnter, true);
     drage.addEventListener('dragover', handleDragOver, true);
@@ -91,6 +92,7 @@ window.onload = function() {
     drage.addEventListener('dragend', handleDragEnd, true);
 
 	gui.Window.get().show();
+	$(document.getElementsByTagName("body")[0]).toggleClass(config.platform);
 
 	win.on("close", function() {
 		try {
@@ -107,7 +109,9 @@ window.onload = function() {
 	if (moCI) {
 		RegisterAllButtonActions();
         moCI.Browser.Open();
+
 	}
+
 	OscMoldeoSend( { 'msg': '/moldeo','val0': 'consoleget'} );
 	
 }

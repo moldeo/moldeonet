@@ -97,7 +97,7 @@ var config = {
 			config.player_full_path = config.player_file_path + config.player_sdl2_exe;
 			config.moldeouser_path = config.home_path+"\\Documents\\Moldeo";
 			config.desktop_path = config.home_path+"\\Desktop";
-			
+					
 			console.log("fullArgv:"+gui.App.fullArgv+" dataPath:"+gui.App.dataPath+" process.execPath:"+process.execPath);		
 		}
 
