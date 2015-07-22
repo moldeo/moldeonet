@@ -459,7 +459,7 @@ PRECONFIG SELECTOR  PANEL
 /*W,A,S,D*/
 	
 .first_effects {
-	top: 24%;
+	top: 31%;
 	left: 8%;
 	width: 16%;
 	height: 60%;
@@ -618,8 +618,8 @@ PRECONFIG SELECTOR  PANEL
 }
 
 .beat_panel {
-	left: 43%;
-	bottom: 10%;
+	left: 53%;
+	bottom: 1%;
 	width: 14%;
 	height: 18%;
 }
@@ -686,7 +686,7 @@ PRECONFIG SELECTOR  PANEL
 	height: 28%;
 	top: 40% !important;
 	*/
-	top: 14%;
+	top: 31%;
 	width: 16%;
 	height: 60%;
 	left: 42%;
@@ -936,6 +936,15 @@ PRECONFIG SELECTOR  PANEL
 	
 }
 
+ 
+.button_ALT {
+	background-image: url( buttons/button_ALT_off.svg );
+	
+}
+.button_ALT:active {
+	background-image: url( buttons/button_ALT_on.svg );
+	
+}
 
 /*
 

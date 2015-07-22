@@ -303,6 +303,9 @@ function RegisterKeyboardControl() {
 		if (evt.ctrlKey) {
 			activateClass( document.getElementById("button_CTRL"), "ctrlEnabled" );
 		}
+		if (evt.altKey) {
+			activateClass( document.getElementById("button_ALT"), "altEnabled" );
+		}
 		
 	};
 	
