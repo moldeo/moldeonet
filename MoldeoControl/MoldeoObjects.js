@@ -1591,6 +1591,7 @@ var ConsoleInterface = {
 			//moCI.Render.renderOptions
 			console.log("SaveAsVideo > filename: ", filename);
 			var fullvideoname = moCI.Render.renderOptions["fullvideoname"];
+			filename+= "." + moCI.Render.renderOptions["videocontainer"];
 			try {
 				fs.copyFile( fullvideoname, filename, function(err) {
 					if (err) {

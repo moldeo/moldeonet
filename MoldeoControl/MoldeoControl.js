@@ -277,51 +277,60 @@ function RegisterKeyboardControl() {
 		
 		elevent = evt;
 		if (evt.target) if (classActivated(evt.target,"param_input")) return;
-				
-		if (evt.ctrlKey && evt.keyCode == 90) {
 		
-			alert("Ctr+Z");		
-			
-		} else {
+		var control_focus = true;
 		
-			if (config.log.full) console.log(evt.charCode);			
-			
-			if ( 37<=evt.keyCode && evt.keyCode<=40 ) {
-				
-				if ( keycount==0 ) {
-				
-				
-					if (config.log.full) console.log("Key down arrow");
-					if (evt.keyCode==37) mkey  = "LEFT";
-					if (evt.keyCode==38) mkey  = "UP";
-					if (evt.keyCode==39) mkey  = "RIGHT";
-					if (evt.keyCode==40) mkey  = "DOWN";
-					if (mkey) {
-						Control.mapCursorStateMod[mkey]["pressed"] = true;
-						Control.mapCursorStateMod[mkey]["command"] = { 'msg': '/moldeo',
-																	'val0': 'effectsetstate', 
-																	 'val1': Control.ObjectSelected, 
-																	 'val2': Control.mapCursorStateMod[mkey]["member"], 
-																	 'val3': Control.mapCursorStateMod[mkey]["value"] };
-									 
-						startSend( 	mkey );
-						keycount+= 1;
-					}
-				
-				}
+		var render_input = document.getElementById("render_video_info_name");
+		if (render_input) {
+			if ($(render_input).is(":focus")) {
+				control_focus = false;
 			}
 		}
 		
-		if (evt.shiftKey) {
-			activateClass( document.getElementById("button_SHIFT"), "shiftEnabled" );
+		if (control_focus) {
+			if (evt.ctrlKey && evt.keyCode == 90) {
+			
+				alert("Ctr+Z");		
+				
+			} else {
+			
+				if (config.log.full) console.log(evt.charCode);			
+				
+				if ( 37<=evt.keyCode && evt.keyCode<=40 ) {
+					
+					if ( keycount==0 ) {
+					
+						if (config.log.full) console.log("Key down arrow");
+						if (evt.keyCode==37) mkey  = "LEFT";
+						if (evt.keyCode==38) mkey  = "UP";
+						if (evt.keyCode==39) mkey  = "RIGHT";
+						if (evt.keyCode==40) mkey  = "DOWN";
+						if (mkey && control_focus ) {
+							Control.mapCursorStateMod[mkey]["pressed"] = true;
+							Control.mapCursorStateMod[mkey]["command"] = { 'msg': '/moldeo',
+																		'val0': 'effectsetstate', 
+																		 'val1': Control.ObjectSelected, 
+																		 'val2': Control.mapCursorStateMod[mkey]["member"], 
+																		 'val3': Control.mapCursorStateMod[mkey]["value"] };
+										 
+							startSend( 	mkey );
+							keycount+= 1;
+						}
+					
+					}
+				}
+			}
+			
+			if (evt.shiftKey) {
+				activateClass( document.getElementById("button_SHIFT"), "shiftEnabled" );
+			}
+			if (evt.ctrlKey) {
+				activateClass( document.getElementById("button_CTRL"), "ctrlEnabled" );
+			}
+			if (evt.altKey) {
+				activateClass( document.getElementById("button_ALT"), "altEnabled" );
+			}
 		}
-		if (evt.ctrlKey) {
-			activateClass( document.getElementById("button_CTRL"), "ctrlEnabled" );
-		}
-		if (evt.altKey) {
-			activateClass( document.getElementById("button_ALT"), "altEnabled" );
-		}
-		
 	};
 	
 	document.onkeyup = function(evt) {
@@ -330,51 +339,67 @@ function RegisterKeyboardControl() {
 		
 		if (evt.target) if (classActivated(evt.target,"param_input")) return;
 		
+		var control_focus = true;
+				
+		var render_input = document.getElementById("render_video_info_name");
+		if (render_input) {
+			if ($(render_input).is(":focus")) {
+				control_focus = false;
+			}
+		}		
+		
 		key = String.fromCharCode(evt.keyCode);
 		if (config.log.full) console.log("Simulate a click please! key: ", key);
 		keyU = key.toUpperCase();
 		
-		//mapped keys trigger click in buttons (button_W,button_S,etc...)
-		if (moCI.mapSelectionsObjects[keyU]) {
-			document.getElementById("button_"+keyU ).click();
-		}
-		if (key=="1" || key=="2" || key=="3") {
-			document.getElementById("button_"+keyU ).click();
-		}
-		
-		if (evt.altKey && keyU == "E" ) {
-			toggleEditor();
-		}
-		if (evt.altKey && keyU == "O" ) {
-			moCI.Browser.Open();
-		}
+		if (control_focus) {
+			//mapped keys trigger click in buttons (button_W,button_S,etc...)
+			if (moCI.mapSelectionsObjects[keyU]) {
+				document.getElementById("button_"+keyU ).click();
+			}
+			if (key=="1" || key=="2" || key=="3") {
+				document.getElementById("button_"+keyU ).click();
+			}
+			
+			if (evt.altKey && keyU == "E" ) {
+				toggleEditor();
+			}
+			if (evt.altKey && keyU == "O" ) {
+				moCI.Browser.Open();
+			}
 
 
-		if (evt.keyIdentifier=="F1" || evt.keyIdentifier=="F2" || evt.keyIdentifier=="F3") {
-			document.getElementById("button_"+evt.keyIdentifier ).click();
-		}
+			if (evt.keyIdentifier=="F1" || evt.keyIdentifier=="F2" || evt.keyIdentifier=="F3") {
+				document.getElementById("button_"+evt.keyIdentifier ).click();
+			}
 		
 		
-		var mkey = undefined;
-		if (evt.keyCode==37) mkey  = "LEFT";
-		if (evt.keyCode==38) mkey  = "UP";
-		if (evt.keyCode==39) mkey  = "RIGHT";
-		if (evt.keyCode==40) mkey  = "DOWN";
-		
-		if (mkey) {
-			if (config.log.full) console.log("Keyup arrow! mkey: ", key);				
-			keycount = 0;				
-			Control.mapCursorStateMod[mkey]["pressed"] = false;
-		}
-		
-		if (!evt.shiftKey) {
-			deactivateClass( document.getElementById("button_SHIFT"), "shiftEnabled" );
-		}
-		if (!evt.ctrlKey) {
-			deactivateClass( document.getElementById("button_CTRL"), "ctrlEnabled" );
-		}
-		if (!evt.altKey) {
-			deactivateClass( document.getElementById("button_ALT"), "altEnabled" );
+			var mkey = undefined;
+			if (evt.keyCode==37) mkey  = "LEFT";
+			if (evt.keyCode==38) mkey  = "UP";
+			if (evt.keyCode==39) mkey  = "RIGHT";
+			if (evt.keyCode==40) mkey  = "DOWN";
+			
+			if (mkey) {
+				if (config.log.full) console.log("Keyup arrow! mkey: ", key);				
+
+				
+				
+				if (control_focus) {
+					keycount = 0;				
+					Control.mapCursorStateMod[mkey]["pressed"] = false;				
+				}
+			}
+			
+			if (!evt.shiftKey) {
+				deactivateClass( document.getElementById("button_SHIFT"), "shiftEnabled" );
+			}
+			if (!evt.ctrlKey) {
+				deactivateClass( document.getElementById("button_CTRL"), "ctrlEnabled" );
+			}
+			if (!evt.altKey) {
+				deactivateClass( document.getElementById("button_ALT"), "altEnabled" );
+			}
 		}
 	};
 
