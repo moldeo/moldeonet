@@ -12,7 +12,7 @@
 
 <script src="config.js"></script>
 <script src="config.init.js"></script>
-<script src="tools.js"></script>
+<script src="browser.js"></script>
 <script src="translations.js"></script>
 <!--
 <script src="moldeo.js"></script>
@@ -22,7 +22,6 @@
 <script src="MoldeoOscApi.js"></script>
 <script src="MoldeoControl.js"></script>
 -->
-
 
 </head>
 
@@ -35,7 +34,7 @@
 	<div id="browser_panel" class="browser_panel">
 		<div class="header">
 			<label id="header_label">Buscar...</label><button id="buttonED_OpenProject" key="O" class="button_OpenProject key_button" title="Abrir un nuevo proyecto Moldeo"
-			onclick="javascript:moCI.Browser.OpenFile(event);"></button>
+			onclick="javascript:LaunchProject(event);"></button>
 			<!--<div id="header_menu" class="header_menu">TODO</div>-->
 		</div>
 	</div>
