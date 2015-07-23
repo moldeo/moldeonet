@@ -38,6 +38,7 @@
 			<input id="saveasfile" type="file" nwsaveas />
 			<input id="saveasproject" type="file" nwdirectory />
 			<input id="saveasscreenshot" type="file" nwsaveas accept=".png,.jpg" />
+			<input id="saveasvideo" type="file"  nwsaveas accept=".avi,.mp4,.ogg,.mov" />
 		</div>
 
 		<button id="buttonED_OpenProject" key="O" class="button_OpenProject key_button" title="Abrir un nuevo proyecto Moldeo"></button>
@@ -81,19 +82,18 @@
 			<button id="button_L"  key="L" class="button_L key_button"></button>
 		</div>
 
+		<div id="render_video_info">
+			<label id="render_video_info_label">GUARDAR VIDEO</label>
+			<input id="render_video_info_name" type="text" size="30" value="" placeholder="ingresar un nombre"/>
+			<select id="render_video_info_container_codec">
+			</select>
+			<button id="button_RENDERVIDEO" class="button_RENDERVIDEO special_button" title="Render video!">OK</button>
+		</div>		
+		
 		<div class="channel_controls play_panel">
 			<button id="button_TAB" class="button_TAB special_button"></button>
 			<button id="button_ENTER" class="button_ENTER special_button"></button>
-			<button id="button_RECORD" class="button_RECORD special_button"></button>
-			<div id="render_video_info">
-				<input id="render_video_info_name" type="text" size="15" value=""/>
-				<select id="render_video_info_codec">
-					<option value="mp4">MP4 (.mp4)</option>
-					<option value="ogg">OGG (.ogg)</option>
-					<option value="mjpg">MJPG (.avi)</option>
-				</select>
-				<button id="button_RENDERVIDEO" class="button_RENDERVIDEO special_button" title="Render video!">OK</button>
-			</div>
+			<button id="button_RECORD" class="button_RECORD special_button"></button>			
 		</div>
 
 		<div class="channel_controls beat_panel">

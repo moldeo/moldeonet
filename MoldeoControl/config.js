@@ -33,26 +33,75 @@ var config = {
     "player_sdl_exe": "moldeoplayersdl",
     "player_glut_exe": "moldeoplayerglut",
     "director_exe": "moldeodirector",
+	"render": {
+		"session": null,/*receive session["rendered_folder"]*/
+	},
 	"render_video_pipes": {
 		"linux": {
-			"jpg2ogg": '"gst-launch-0.10" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! theoraenc ! oggmux ! filesink location="{VIDEONAME}.ogg"',
-			"jpg2mp4": '"gst-launch-0.10" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! ffenc_mpeg4 ! mp4mux ! filesink location="{VIDEONAME}.mp4"',
-			"jpg2mjpg": '"gst-launch-0.10" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! theoraenc ! oggmux ! filesink location="{VIDEONAME}.avi"',
+			"ogg": {
+				ogg: '"gst-launch-0.10" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! theoraenc ! oggmux ! filesink location="{VIDEONAME}.ogg"',
+			},
+			"mp4": {
+				h264low: '"gst-launch-0.10" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=10000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.avi"',
+				
+				h264: '"gst-launch-0.10" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=50000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.avi"',
+				
+				h264high: '"gst-launch-0.10" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=100000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.avi"',
+				
+				msmp4: '"gst-launch-0.10" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! ffenc_msmpeg4 ! avimux ! filesink location="{VIDEONAME}.mp4"',				
+			},
+			"avi": {
+				mjpeg: '"gst-launch-0.10" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! jpegenc ! avimux ! filesink location="{VIDEONAME}.avi"',
+				
+				h264low: '"gst-launch-0.10" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=10000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.avi"',
+				
+				h264: '"gst-launch-0.10" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=50000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.avi"',
+				
+				h264high: '"gst-launch-0.10" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=100000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.avi"',
+				
+				wmv: '"gst-launch-0.10" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! ffenc_wmv2 ! avimux ! filesink location="{VIDEONAME}.avi"',
+			},
+			"mov": {
+				mjpeg: '"gst-launch-0.10" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! jpegenc ! ffmux_mov ! filesink location="{VIDEONAME}.mov"',
+				
+				h264low: '"gst-launch-0.10" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=10000 threads=0 pass=5 ! ffmux_mov ! filesink location="{VIDEONAME}.mov"',
+				
+				h264: '"gst-launch-0.10" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=50000 threads=0 pass=5 ! ffmux_mov ! filesink location="{VIDEONAME}.mov"',
+				
+				h264high: '"gst-launch-0.10" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=100000 threads=0 pass=5 ! ffmux_mov ! filesink location="{VIDEONAME}.mov"',
+			},
 		},
 		"win32": {
-			"jpg2ogg": '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! theoraenc ! oggmux ! filesink location="{VIDEONAME}.ogg"',
-			"jpg2mp4": '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! ffenc_mpeg4 ! mp4mux ! filesink location="{VIDEONAME}.mp4"',
-			"jpg2mjpg": '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! theoraenc ! oggmux ! filesink location="{VIDEONAME}.avi"',
+			"ogg": {
+				ogg: '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! theoraenc ! oggmux ! filesink location="{VIDEONAME}.ogg"',
+			},
+			"mp4": {
+				mp4: '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=100000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.mp4"',				
+			},
+			"avi": {
+				mjpeg: '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! jpegenc ! avimux ! filesink location="{VIDEONAME}.avi"',
+				
+				h264low: '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=10000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.avi"',
+				
+				h264: '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=50000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.avi"',
+				
+				h264high: '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=100000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.avi"',
+				
+				wmv: '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! ffenc_wmv2 ! avimux ! filesink location="{VIDEONAME}.avi"',
+			},
+			"mov": {
+				mjpeg: '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! jpegenc ! ffmux_mov ! filesink location="{VIDEONAME}.mov"',
+				
+				h264low: '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=10000 threads=0 pass=5 ! ffmux_mov ! filesink location="{VIDEONAME}.mov"',
+				
+				h264: '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=50000 threads=0 pass=5 ! ffmux_mov ! filesink location="{VIDEONAME}.mov"',
+				
+				h264high: '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=100000 threads=0 pass=5 ! ffmux_mov ! filesink location="{VIDEONAME}.mov"',
+			},
 		},
-		"win64": {
-			"jpg2ogg": '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! theoraenc ! oggmux ! filesink location="{VIDEONAME}.ogg"',
-			"jpg2mp4": '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! ffenc_mpeg4 ! mp4mux ! filesink location="{VIDEONAME}.mp4"',
-			"jpg2mjpg": '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! theoraenc ! oggmux ! filesink location="{VIDEONAME}.avi"',
+		"win64": {			
 		},		
-		"mac": {
-			"jpg2ogg": '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! theoraenc ! oggmux ! filesink location="{VIDEONAME}.ogg"',
-			"jpg2mp4": '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! ffenc_mpeg4 ! mp4mux ! filesink location="{VIDEONAME}.mp4"',
-			"jpg2mjpg": '"gst-launch" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=24/1 ! jpegdec ! ffmpegcolorspace ! videorate ! theoraenc ! oggmux ! filesink location="{VIDEONAME}.avi"',
+		"mac": {			
 		},
 	},
 	"IsWindows": function() {

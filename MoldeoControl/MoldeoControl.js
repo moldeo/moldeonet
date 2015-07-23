@@ -173,7 +173,22 @@ function activateEditor() {
 }	
 
 function toggleEditor() {
-
+	if (config.log.full) console.log("editor_button click!");
+	
+	var editor_panel = document.getElementById("editor_panel");
+	var editor_button = document.getElementById("editor_button");
+	
+	if (!classActivated( editor_panel,"editor_opened")) {
+		if (config.log.full) console.log("editor opening");
+		activateClass( editor_panel, "editor_opened");
+		
+		activateClass( editor_button, "editor_button_close");
+	} else {
+		if (config.log.full) console.log("editor closing");
+		deactivateClass( editor_button, "editor_button_close");
+		deactivateClass( editor_panel, "editor_opened");
+		
+	}
 }
 
 function shiftSelected() {
@@ -265,7 +280,7 @@ function RegisterKeyboardControl() {
 				
 		if (evt.ctrlKey && evt.keyCode == 90) {
 		
-			alert("Ctr+Z");
+			alert("Ctr+Z");		
 			
 		} else {
 		
@@ -326,6 +341,13 @@ function RegisterKeyboardControl() {
 		if (key=="1" || key=="2" || key=="3") {
 			document.getElementById("button_"+keyU ).click();
 		}
+		
+		if (evt.altKey && keyU == "E" ) {
+			toggleEditor();
+		}
+		if (evt.altKey && keyU == "O" ) {
+			moCI.Browser.Open();
+		}
 
 
 		if (evt.keyIdentifier=="F1" || evt.keyIdentifier=="F2" || evt.keyIdentifier=="F3") {
@@ -350,6 +372,9 @@ function RegisterKeyboardControl() {
 		}
 		if (!evt.ctrlKey) {
 			deactivateClass( document.getElementById("button_CTRL"), "ctrlEnabled" );
+		}
+		if (!evt.altKey) {
+			deactivateClass( document.getElementById("button_ALT"), "altEnabled" );
 		}
 	};
 

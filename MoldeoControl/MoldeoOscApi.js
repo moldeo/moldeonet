@@ -177,10 +177,13 @@ var ReceiverFunction = function(msg, rinfo) {
 		var  moldeoapimessage = msg[2];
 		var moldeo_message = {};
 
+		// how many fields ??
 		moldeo_message["int"] = moldeoapimessage[0];
+		// which command code ??
 		moldeo_message["code"] = moldeoapimessage[1];
+		// object ??
 		moldeo_message["target"] = moldeoapimessage[2];
-
+		// info transmission ??
 		var objectinfo = moldeoapimessage[3];
 		moldeo_message["info"] = undefined;
 

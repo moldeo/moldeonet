@@ -64,31 +64,34 @@ var ConsoleInterface = {
 				"click": function(event) {
 					try {
 						console.log("button_RENDERVIDEO > show window options ");
+						
 						var wini = document.getElementById("render_video_info");
 						
 						var name = document.getElementById("render_video_info_name");
-						var codec = document.getElementById("render_video_info_codec");					
+						var container_codec = document.getElementById("render_video_info_container_codec");
 						var videoname = name.value;
+						
 						if (videoname=="" || videoname==undefined) {
 							alert("Debe escribir un nombre de archivo para el video");
 							return;
 						}
-						var videocodec = codec.options[codec.selectedIndex].value;
-						var vext = "";
-						
-						if (videocodec=="mp4") vext = ".mp4"
-						if (videocodec=="ogg") vext = ".ogg"
-						if (videocodec=="mjpg") vext = ".avi"
+						var videocontainer_codec = container_codec.options[container_codec.selectedIndex].value;
+						var arx = videocontainer_codec.split(" codec:");
+						var videocontainer = arx[0];						
+						var videocodec = arx[1];					
 						
 						console.log("Rendering in "+videoname+" codec ("+videocodec+")");
+						
 						$(wini).hide();
-						frame_path = moCI.Project.datapath+"/temp_render";
+						//moCI.Project.datapath+"/temp_render" + XXXX
+						frame_path = config.render.session["rendered_folder"];
 						frame_path = frame_path.replace(/\\\\/g, "/" );
 						frame_path = frame_path.replace(/\\/g, "/" );
 												 
-						moCI.RenderVideo( frame_path, videocodec, videoname );
+						moCI.RenderVideo( frame_path, videocontainer, videocodec, videoname );
+						
 					} catch(err) {
-						console.error(err);
+						if (moCI.console) moCI.console.error(err);
 						alert(err);
 					}
 				}
@@ -167,7 +170,15 @@ var ConsoleInterface = {
 					if (config.log.full) console.log("button_F3");
 					Control.Functions.selectControlPreset( 2 );
 				}
-			}
+			},
+			"saveasvideo": {
+				"change": function(event) {
+					var filename = event.target.value;			
+					if (config.log.full) console.log("saveasvideo > ", filename );
+					
+					moCI.Render.SaveAsVideo( filename );		
+				},
+			},
 		},
 		"Sliders": {
 			"slide_HORIZONTAL_channel_alpha": {
@@ -665,23 +676,7 @@ var ConsoleInterface = {
 		"Buttons": { 
 			"editor_button": { 
 				"click": function(event) {
-							if (config.log.full) console.log("editor_button click!");
-							
-							var editor_panel = document.getElementById("editor_panel");
-							var editor_button = document.getElementById("editor_button");
-							
-							if (!classActivated( editor_panel,"editor_opened")) {
-								if (config.log.full) console.log("editor opening");
-								activateClass( editor_panel, "editor_opened");
-								
-								activateClass( editor_button, "editor_button_close");
-							} else {
-								if (config.log.full) console.log("editor closing");
-								deactivateClass( editor_button, "editor_button_close");
-								deactivateClass( editor_panel, "editor_opened");
-								
-							}
-						
+							toggleEditor();						
 						}
 			},
 			"button_object_onoff": {
@@ -1531,6 +1526,87 @@ var ConsoleInterface = {
 		}
 	},
 	
+	"Render": {
+		"document": null,
+		"winRender": null,
+		"renderOptions": null,
+		"initialized": false,
+		"Open": function( options ) {
+			moCI.Render.renderOptions = options;			
+			if (moCI.Render.winRender==null) {
+				
+				moCI.Render.winRender = gui.Window.open('MoldeoRender.html', {
+					icon: "moldeocontrol.png",
+					focus: true,						
+					toolbar: false,
+					frame: true,
+					width: win.width,
+					height: 200,
+					position: "center",
+				});
+				if (moCI.Render.winRender) {
+					moCI.Render.winRender.moveTo(win.x, win.y-230);					
+					moCI.Render.winRender.moCI = moCI;
+					moCI.Render.winRender.on('loaded', function() {
+						moCI.Render.document = moCI.Render.winRender.window.document;
+						moCI.Render.initialized = true;
+						moCI.Render.renderOptions["stdout_stream"].resume();
+					});
+					//moCI.Browser.winBrowser.on('focus', moCI.Browser.initBrowser);
+					moCI.Render.winRender.on('closed', function() {
+						console.log("Render closed!");
+						moCI.Render.winRender = null;
+						moCI.Render.initialized = false;
+					});
+					moCI.Render.winRender.on('close', function() {
+						console.log("Render closing!");
+						moCI.Render.winRender = null;
+						moCI.Render.initialized = false;
+						this.close(true);
+					});
+				}
+			}
+		},
+		"ShowVideo": function(error) {
+			if (error==false) {
+				alert("La grabación finalizó correctamente.");
+				moCI.Render.winRender.close();
+			} else {
+				alert("La grabación NO finalizó. Revise el script, o ");
+				return false;
+			}
+			var cfile = moCI.document.getElementById("saveasvideo");			
+			//moCI.Render.renderOptions
+			try {
+				if (cfile) {
+					cfile.value = "";
+					cfile.click();			
+				} 
+			} catch(err) {
+				alert(err);
+				console.error(err);
+			}
+		},
+		"SaveAsVideo": function( filename ) {
+			//moCI.Render.renderOptions
+			console.log("SaveAsVideo > filename: ", filename);
+			var fullvideoname = moCI.Render.renderOptions["fullvideoname"];
+			try {
+				fs.copyFile( fullvideoname, filename, function(err) {
+					if (err) {
+						alert(err);
+						console.error("SaveAsVideo > filename: ",filename, err);
+					} else {
+						alert("Video copiado a :" + filename );
+					}
+				} );
+			} catch(err) {
+				alert(err);
+				console.error("SaveAsVideo > filename: ",filename, err);
+			}
+		},
+	},
+	
 	"mapSelectionsObjects": {
 	},
 	
@@ -1616,7 +1692,7 @@ var ConsoleInterface = {
 	
 		console.log( "OpenProject:" , moCI.filename);
 	
-		moCI.fs.launchPlayer( moCI.filename );
+		moCI.launchPlayer( moCI.filename );
 		
 		moCI.Browser.SaveRecents( filename );
 		moCI.ReloadInterface();
@@ -1649,38 +1725,75 @@ var ConsoleInterface = {
 		moCI.UpdateState( info );
 	},
 	"RenderSession": function( info ) {
-		console.log("Render Session");
-		console.log("Render Session", info);
+		console.log("Render Session", info );
 		//$("#button_RECORD").toggleClass("button_RECORD_on");
-		moCI.UpdateState( info );
+		moCI.UpdateState( info["consolestate"] );
 		
-		if (info.mode=="live") {
+		if (info["consolestate"].mode=="live") {
+			config.render.session = info["session"];
+		
 			//finaliza el render mostrando una ventana para elegir el codec para el video
 			var wini = document.getElementById("render_video_info");
+			var wini_container_codec = document.getElementById("render_video_info_container_codec");
+			//clean options
+			wini_container_codec.innerHTML = "";
+			
+			var rvideoplatform = config.render_video_pipes[config.platform];
+			
+			
+			for( var container in rvideoplatform ) {
+			
+				var codecs = rvideoplatform[ container ];
+				
+				for( var codec in codecs ) {
+				
+					videocontainer_codec = container+" codec:" + codec;
+					
+					var option = document.createElement("option");
+					option.setAttribute("value", videocontainer_codec );
+					option.innerHTML = videocontainer_codec;
+					wini_container_codec.appendChild( option );
+				}				
+			}
 			$(wini).show();
 		}
 	},
-	"RenderVideo": function( frame_path, videocodec, videoname ) {
-		console.log("RenderVideo:",frame_path,videocodec,videoname,config.platform);
-		var full_call = "";
-		var rvideoplat = config.render_video_pipes[config.platform];
+	"RenderVideo": function( frame_path, videocontainer, videocodec, videoname ) {
+		console.log("RenderVideo:",frame_path,videocontainer,videocodec,videoname,config.platform);		
+		
+		//Render Options
+		var rOptions = { 
+			"frame_path": frame_path,
+			"videoname": videoname,
+			"videocontainer": videocontainer,
+			"videocodec": videocodec, 
+			"platform": config.platform,			
+			"full_call":  "",
+			"rendered_folder": config.render.session["rendered_folder"],
+			};
+		var rvideoplat = config.render_video_pipes[ config.platform ];
+		
 		if (rvideoplat) {
-			if (videocodec=="mp4") full_call = rvideoplat["jpg2mp4"];
-			if (videocodec=="ogg") full_call = rvideoplat["jpg2ogg"];
-			if (videocodec=="mjpg") full_call = rvideoplat["jpg2mjpg"];
+			rOptions["full_call"] = rvideoplat[rOptions["videocontainer"]];
+			if (rOptions["full_call"])
+				rOptions["full_call"] = rOptions["full_call"][rOptions["videocodec"]];
+			else return false;
 		} else return;
-		if (full_call=="") {
-			alert("No gstreamer pipeline prepared for codec:" + videocodec );
+		if (rOptions["full_call"]=="") {
+			alert("No gstreamer pipeline prepared for codec:"+rOptions["videocodec"] );
 			return false; 
 		}
 		//video in same folder!!
-		videoname = frame_path+"/"+videoname;
+		rOptions["videoname"] = rOptions["frame_path"]+"/"+rOptions["videoname"];
+		rOptions["fullvideoname"] = rOptions["videoname"]+"."+rOptions["videocontainer"] 
 		
-		full_call = full_call.replace("{VIDEONAME}", videoname );
-		full_call = full_call.replace("{FRAMEPATH}", frame_path );
+		rOptions["full_call"] = rOptions["full_call"].replace("{VIDEONAME}", rOptions["videoname"] );
+		rOptions["full_call"] = rOptions["full_call"].replace("{FRAMEPATH}", rOptions["frame_path"] );
+		
 		//fs.write("render_video.bat");
-		console.log("full_call:",full_call);
-		fs.launchRender( full_call, "" );
+		console.log("full_call:",rOptions["full_call"]);
+		
+		launchRender( rOptions["full_call"], rOptions );
 		
 	},
 	"Presentation": function() {
@@ -1797,6 +1910,7 @@ var ConsoleInterface = {
 		if (config.log.full) console.log("Console::ReloadInterface()",win);
 		//setTimeout( function() { win.reloadDev(); }, 2000 );
 	},
+	"launchPlayer": launchPlayer,
 	"fs": fs,
 	"console": console,
 };
