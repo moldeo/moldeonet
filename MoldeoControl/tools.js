@@ -217,15 +217,19 @@ function OpenExternalPage( URL ) {
 }
 
 fs.walk = function (currentDirPath, callback) {
+	
     moCI.fs.readdirSync(currentDirPath).forEach(function(name) {
 	try {
         var filePath = path.join(currentDirPath, name);		
         var stat = moCI.fs.statSync(filePath);
-        if (stat.isFile()) {
+        if (stat.isFile() && callback) {
             callback(filePath, stat);
         } else if (stat.isDirectory()) {
-			callback(filePath, stat);
-            moCI.fs.walk(filePath, callback);
+			if (callback) {
+				if ( callback(filePath, stat) ) {
+					moCI.fs.walk(filePath, callback);
+				}
+			}
         }
 	} catch(err) {
 		//alert("fs.walk:", err);

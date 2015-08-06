@@ -39,7 +39,6 @@ body {
 */
 	text-align: center;
 	padding: 0px;
-    padding-left: 17px;
 	font-size: 10px;
 	color: #FFF;
 	z-index: 50000;
@@ -98,11 +97,11 @@ button.control_button,
 	-webkit-app-region: no-drag;
 }
 
-.win32 .titlebar {
+.titlebar {
 	-webkit-app-region: drag;
 }
 
-.win32 .titlebar .x_drag {	
+.titlebar .x_drag {	
 	-webkit-app-region: drag !important;
 }
 

@@ -30,6 +30,15 @@ var config = {
 	"moldeouser_path": "",
 	"user_path": "",
 	"desktop_path": "",
+	"browser_window_options": {
+		icon: "moldeocontrol.png",
+		focus: false,						
+		toolbar: false,
+		frame: false,
+		width: win.width,
+		height: 280,
+		position: "center",
+	},
     "browser_samples": "",
     "browser_userfolder": "",
     "browser_moldeolab" : "",
@@ -39,6 +48,17 @@ var config = {
     "director_exe": "moldeodirector",
 	"render": {
 		"session": null,/*receive session["rendered_folder"]*/
+		"frame_quality": "JPGGOOD",
+		"frame_qualities": {
+			"Bad (jpg 10%)": "JPGBAD",
+			"Average (jpg 25%)": "JPGAVERAGE",			
+			"Normal (jpg 50%)": "JPG",
+			"Good (jpg 75%)": "JPGGOOD",
+			"Superb (jpg 100%)": "JPGSUPERB",
+			"Excellent (png 24 bits)": "PNG",
+			"Transparency (png 32 bits)": "PNGALPHA",
+			"Raw (tga)": "TGA",
+		},
 	},
 	"versioning": {
 		"release_version": {

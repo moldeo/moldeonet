@@ -9,7 +9,7 @@ var ConsoleInterface = {
 	Project: {},
 	
 	Updater: {
-		"actual_version": "", /* check moldeoversion.txt */
+		"actual_version": "", /* check moldeoversion.txt or .xml */
 		"actual_version_str": "",
 		"actual_full_version_number": 0,
 		"last_version": "",
@@ -174,46 +174,39 @@ var ConsoleInterface = {
 					}
 					*/
 					if (event.target.getAttribute("class")=="button_RECORD special_button"  ) {
-						OscMoldeoSend( { 'msg': '/moldeo','val0': 'consolerendersession' } );
+						showModalDialog( 	"Choose a quality", 
+										moCI.QualitySelect(), 
+										{ 
+											"buttons": {
+												"START RENDER": { 
+													"class": "modal-button", 
+													"return": true,
+												},
+												"CANCEL": { 
+													"class": "modal-button", 
+													"return": false, 
+												},
+											},
+										},
+										function( result ) {
+											if (result=="true" || result==true) {
+											
+												var ql = document.getElementById("quality_select");
+												if (ql && ql.options && ql.selectedIndex>=0) {
+													config.render.frame_quality = ql.options[ql.selectedIndex].value;
+												}
+											
+												OscMoldeoSend( { 'msg': '/moldeo','val0': 'consolerendersession', 'val1': config.render.frame_quality } );
+											}
+										});
 					} else {
-						OscMoldeoSend( { 'msg': '/moldeo','val0': 'consolerendersession' } );
+						OscMoldeoSend( { 'msg': '/moldeo','val0': 'consolerendersession', 'val1': config.render.frame_quality } );
 					}
 				},
 			},
 			"button_RENDERVIDEO": {
 				"click": function(event) {
-					try {
-						console.log("button_RENDERVIDEO > show window options ");
-						
-						var wini = document.getElementById("render_video_info");
-						
-						var name = document.getElementById("render_video_info_name");
-						var container_codec = document.getElementById("render_video_info_container_codec");
-						var videoname = name.value;
-						
-						if (videoname=="" || videoname==undefined) {
-							alert("Debe escribir un nombre de archivo para el video");
-							return;
-						}
-						var videocontainer_codec = container_codec.options[container_codec.selectedIndex].value;
-						var arx = videocontainer_codec.split(" codec:");
-						var videocontainer = arx[0];						
-						var videocodec = arx[1];					
-						
-						console.log("Rendering in "+videoname+" codec ("+videocodec+")");
-						
-						$(wini).hide();
-						//moCI.Project.datapath+"/temp_render" + XXXX
-						frame_path = config.render.session["rendered_folder"];
-						frame_path = frame_path.replace(/\\\\/g, "/" );
-						frame_path = frame_path.replace(/\\/g, "/" );
-												 
-						moCI.RenderVideo( frame_path, videocontainer, videocodec, videoname );
-						
-					} catch(err) {
-						if (moCI.console) moCI.console.error(err);
-						alert(err);
-					}
+					
 				}
 			},
 			"button_SPACE": {
@@ -654,6 +647,11 @@ var ConsoleInterface = {
 					"min": 0.0,
 					"max": 20.0,
 					"step": 0.1,
+				},
+				"volume": {
+					"min": 0.0,
+					"max": 2.0,
+					"step": 0.01,
 				},
 				"blending": {
 					"min": 0,
@@ -1371,15 +1369,7 @@ var ConsoleInterface = {
 		"Open": function() {
 			try { 
 				if (moCI.Browser.winBrowser==null) {
-					moCI.Browser.winBrowser = gui.Window.open('MoldeoBrowser.html', {
-						icon: "moldeocontrol.png",
-						focus: false,						
-						toolbar: false,
-						frame: true,
-						width: win.width,
-						height: 300,
-                        position: "center",
-					});
+					moCI.Browser.winBrowser = gui.Window.open('MoldeoBrowser.html', config.browser_window_options );
 					if (moCI.Browser.winBrowser) {
 						if (config.log.full) console.log("moCI.Browser.Open > registering events.");
                         moCI.Browser.winBrowser.moveTo(win.x, win.y-330);
@@ -1450,7 +1440,11 @@ var ConsoleInterface = {
 						}
 					} else if(stat.isDirectory()) {
 						//iterate or wait
+						if ( filepath.indexOf("temp_render")>=0 ) 
+							return false;
+						return true;
 					}
+					return false;
 				});
 			} catch(err) {
 				console.error("loadBrowserFolder: ",err);
@@ -1855,29 +1849,51 @@ var ConsoleInterface = {
 			config.render.session = info["session"];
 		
 			//finaliza el render mostrando una ventana para elegir el codec para el video
-			var wini = document.getElementById("render_video_info");
-			var wini_container_codec = document.getElementById("render_video_info_container_codec");
-			//clean options
-			wini_container_codec.innerHTML = "";
+			var comments = '<span>Seleccionar formato del video:</span>'+moCI.CodecSelect();
+			showModalDialog( 	"Choose Video Format", 
+								comments,
+								{ 
+									"buttons": {
+										"OK": { 
+											"class": "modal-button", 
+											"return": true,
+										},
+										"CANCEL": { 
+											"class": "modal-button", 
+											"return": false, 
+										},
+									}
+								},
+								function(result) {
+									if (result=="true" || result==true) {
+										moCI.PrepareAndRenderVideo();
+									}							
+								});
+		}
+	},
+	"PrepareAndRenderVideo": function() {
+		try {
+			console.log("PrepareAndRenderVideo > ");
 			
-			var rvideoplatform = config.render_video_pipes[config.platform];
+			var videoname = "tmp_video";
+			var container_codec = document.getElementById("render_video_info_container_codec");
+			var videocontainer_codec = container_codec.options[container_codec.selectedIndex].value;
+			var arx = videocontainer_codec.split(" codec:");
+			var videocontainer = arx[0];						
+			var videocodec = arx[1];					
 			
+			console.log("PrepareAndRenderVideo > Rendering in "+videoname+" codec ("+videocodec+")");
 			
-			for( var container in rvideoplatform ) {
+			//moCI.Project.datapath+"/temp_render" + XXXX
+			frame_path = config.render.session["rendered_folder"];
+			frame_path = frame_path.replace(/\\\\/g, "/" );
+			frame_path = frame_path.replace(/\\/g, "/" );
+									 
+			moCI.RenderVideo( frame_path, videocontainer, videocodec, videoname );
 			
-				var codecs = rvideoplatform[ container ];
-				
-				for( var codec in codecs ) {
-				
-					videocontainer_codec = container+" codec:" + codec;
-					
-					var option = document.createElement("option");
-					option.setAttribute("value", videocontainer_codec );
-					option.innerHTML = videocontainer_codec;
-					wini_container_codec.appendChild( option );
-				}				
-			}
-			$(wini).show();
+		} catch(err) {
+			if (moCI.console) moCI.console.error(err);
+			alert(err);
 		}
 	},
 	"RenderVideo": function( frame_path, videocontainer, videocodec, videoname ) {
@@ -1917,6 +1933,41 @@ var ConsoleInterface = {
 		
 		launchRender( rOptions["full_call"], rOptions );
 		
+	},
+	"CodecSelect": function() {
+		/**/
+		var rvideoplatform = config.render_video_pipes[config.platform];
+		var wini_container_codec = document.createElement("SELECT");
+		$(wini_container_codec).attr("id","render_video_info_container_codec");
+			
+		for( var container in rvideoplatform ) {
+		
+			var codecs = rvideoplatform[ container ];
+			
+			for( var codec in codecs ) {
+			
+				videocontainer_codec = container+" codec:" + codec;
+				
+				var option = document.createElement("option");
+				option.setAttribute("value", videocontainer_codec );
+				option.innerHTML = videocontainer_codec;
+				wini_container_codec.appendChild( option );
+			}				
+		}
+		return wini_container_codec.outerHTML;
+	},
+	"QualitySelect": function() {
+		var select = '<span>Select frame quality</span><select id="quality_select" title="Quality Select">';
+		for( var str in config.render.frame_qualities) {
+			var option = config.render.frame_qualities[str];
+			selected = "";
+			if (option) {
+				if (option==config.render.frame_quality) selected = "selected";
+				select+= '<option value="'+option+'" '+selected+'>'+str+'</option>';
+			}			
+		}
+		select+= "</select>";
+		return select;
 	},
 	"Presentation": function() {
 		if (config.log.full) console.log("buttonED_Presentation > ");
