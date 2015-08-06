@@ -2,8 +2,10 @@
 var OS = require('os');
 var osenv = require('osenv')
 var gui = require('nw.gui');
-//gui.Screen.Init();
-
+/*
+var screen = gui.Screen;
+screen.Init();
+*/
 var config = {
     "platform": OS.platform(),
     "release_mode": "develop" /*"production"*/,
@@ -20,6 +22,7 @@ var config = {
 	
 	"bin_path": "",
 	"moldeo_path": "",
+	"moldeo_version": "",
 	"data_path": "",
 	"sample_path": "",
 	"plugin_path": "",
@@ -35,6 +38,14 @@ var config = {
     "director_exe": "moldeodirector",
 	"render": {
 		"session": null,/*receive session["rendered_folder"]*/
+	},
+	"versioning": {
+		"release_version": {
+			"release": 0,
+			"release candidate": 1,
+			"beta": 2,
+			"alpha": 3,
+		},
 	},
 	"render_video_pipes": {
 		"linux": {
@@ -140,12 +151,13 @@ var config = {
 			}
 
 			config.bin_path = config.player_file_path;
-			config.moldeo_path = config.bin_path.replace(/\\bin\\win\\/gi,'');
+			config.moldeo_path = config.bin_path.replace(/\\bin\\win\\/gi,'');			
 			config.data_path = config.moldeo_path + "\\data";
 			config.sample_path = config.data_path + "\\samples";
 			config.player_full_path = config.player_file_path + config.player_sdl2_exe;
 			config.moldeouser_path = config.home_path+"\\Documents\\Moldeo";
 			config.desktop_path = config.home_path+"\\Desktop";
+			config.moldeo_version = config.bin_path+"/moldeoversion.txt";
 					
 			console.log("fullArgv:"+gui.App.fullArgv+" dataPath:"+gui.App.dataPath+" process.execPath:"+process.execPath);		
 		}
@@ -158,7 +170,8 @@ var config = {
             config.sample_path = config.data_path + "/samples";
 			config.moldeouser_path = config.home_path+"/Moldeo";
 			config.desktop_path = config.home_path+"/Desktop";
-		}	
+			config.moldeo_version = config.moldeo_path+"/moldeoversion.txt";
+		}
 	},
 
 };

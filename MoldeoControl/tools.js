@@ -208,6 +208,14 @@ launchRender = function( render_call, options ) {
 	}
 }
 
+function OpenExternalPage( URL ) {
+	try {
+		gui.Shell.openExternal(URL);
+	} catch(err) {
+		console.error(err);
+	}
+}
+
 fs.walk = function (currentDirPath, callback) {
     moCI.fs.readdirSync(currentDirPath).forEach(function(name) {
 	try {
@@ -337,5 +345,164 @@ function togglediv( ID ) {
 		el.style.display = 'none'
 	} else {
 		el.style.display = 'block'
+	}
+}
+
+
+/**
+showModalDialog( title, message, options, callback )
+options = {
+			"events": {
+				"hide.bs.modal": callback,
+			}
+			"buttons": {
+				"OK": { "class": "modal-button", "return": true, "events":  { "click": function( event) { 
+																return event.target.getAttribute("return"); 
+																},},
+				"NO": { "class": "modal-button", "return": false },
+			},
+			"fields": {
+				"inputtext1": {
+					"type": "textarea",
+				},
+				"parameterx": {
+					"type": "input",
+				}
+			},
+		}
+*/
+
+
+function showModalDialog( title, message, options, callback ) {
+
+	var modaldialog = '<div id="dialogModal" class="modal modal-moldeocontrol fade" role="dialog"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal">&times;</button><h4 class="modal-title">Moldeo </h4></div><div class="modal-body"><p>Some text in the modal.</p></div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button></div></div></div></div>';
+
+	var eleDlg = document.getElementById("dialogModal");
+	if (eleDlg) eleDlg.parentNode.removeChild(eleDlg);
+	var body = $("body");//.remove(eleDlg);
+	var eleDlg = document.createElement("div");
+	eleDlg.innerHTML = modaldialog;
+	$("body").prepend(eleDlg);
+	
+	if ($("#dialogModal")) {
+		$("#dialogModal .modal-title")[0].innerHTML = title;
+		$("#dialogModal .modal-body")[0].innerHTML = message;
+		if (options && options.buttons) {
+			$("#dialogModal .modal-footer")[0].innerHTML = "";
+			
+			for( var butid in options.buttons ) {
+				var oBut = options.buttons[ butid ];
+				var btn = document.createElement("button");
+				btn.setAttribute("class","btn btn-default");
+				btn.setAttribute("return", oBut.return );
+				btn.setAttribute("data-dismiss","modal");
+				btn.innerHTML = butid;
+				footer = $("#dialogModal .modal-footer")[0];
+				if (footer.appendChild) {
+					footer.appendChild( btn );
+				}
+				
+				if (oBut.events) {
+					for( var evname in oBut.events) {
+						var ev_function = oBut.events[evname];
+						btn.addEventListener( evname, ev_function );						
+					}
+				}
+				
+				btn.addEventListener( "click", function( event) { 
+											$("#dialogModal").attr( "return", event.target.getAttribute("return") ); 
+										} );
+				
+			}
+			
+		}
+		$("#dialogModal").on( "hide.bs.modal", function() {
+			if (callback) {
+				callback( $("#dialogModal").attr("return") );
+			}
+		} );
+		$("#dialogModal").modal({ 
+									'show': true, /* show the modal dialog*/
+									'backdrop': true, /* Click in background close the modal*/
+									'keyboard': true,/*ESC close the modal*/
+									'remote': '',/* remote loading of page content*/
+								  });
+	}
+	
+}
+
+
+var multiplexhrs = new Array();
+var idxhrs = 0;
+
+
+function getXhr()
+{
+	if(window.XMLHttpRequest) {
+		multiplexhrs[idxhrs] = new XMLHttpRequest(); 
+		idxhrs++;
+	    return (idxhrs-1);
+	} else if(window.ActiveXObject) {
+
+	  	try{
+	     	multiplexhrs[idxhrs] = new ActiveXObject('Msxml2.XMLHTTP');
+	    } catch (e) 
+	     {
+	     	multiplexhrs[idxhrs] = new ActiveXObject('Microsoft.XMLHTTP');
+	     }
+	     idxhrs++;
+	    return (idxhrs-1);
+	} else {
+	 	alert('Your browser doesn\'t support XMLHTTPRequest objects...'); 
+		return (-1);
+	} 
+}
+
+var DYNAMIC_UNINITIALIZED = 0;
+var DYNAMIC_LOADING = 1;
+var DYNAMIC_LOADED = 2;
+var DYNAMIC_INTERACTIVE = 3;
+var DYNAMIC_COMPLETED = 4;
+
+
+function DynamicRequestVar( variable, phprequest, params, endcallback )
+{
+	//if (params!='') params+='&'; 
+	//params+= 'rand='+Math.random ();
+	
+	var idxhr = getXhr();
+	var XOBJ = null;
+	if (idxhr>-1) {
+		XOBJ = multiplexhrs[idxhr];
+		XOBJ.onreadystatechange = function()
+		    {			
+		     if( ( XOBJ.readyState == 4 && (XOBJ.status == 200 || XOBJ.status == 0 ))
+		    	|| XOBJ.readyState==1 )
+		     {		     			    			     	
+	    	 	eval( variable + '= XOBJ.responseText;');
+		     	if (endcallback!=undefined) {
+		     		//alert(endcallback);
+		     		if ( (typeof endcallback) == "string") eval(endcallback);
+		     		else if ((typeof endcallback) == "function") {
+						//console.log( "endcallback:"+XOBJ.responseText );
+		     			endcallback( XOBJ.responseText, XOBJ.readyState );
+		     		}
+		     	}
+	 	
+		     } else if (XOBJ.readyState == 4) {
+		    	 if (XOBJ.status!=200) {
+		    		 //alert("DynamicRequest error, status:"+XOBJ.status); 
+		    	 }		    	 		    	
+		     }
+		     
+		    };
+		//alert("REQUEST:"+phprequest + '?' + params);
+		console.log( "REQUEST:"+phprequest + '?' + params );
+		XOBJ.open('GET',phprequest + '?' + params, true);
+		if (!document.all) {
+			//XOBJ.overrideMimeType("text/html; charset=ISO-8859-1");
+		}
+		XOBJ.send(null);
+		
 	}
 }

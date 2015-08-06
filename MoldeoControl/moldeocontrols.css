@@ -22,17 +22,15 @@ body {
   display: none;
 }
 
-.win32 .titlebar {
-	-webkit-app-region: drag;
-}
+
 
 .titlebar {	
-	position: absolute;
+	position: fixed;
 	top: 0px;
 	left: 0px;
-	width: 90%;
+	width: 100%;
 	height: 17px;
-	background-color: transparent;
+	background-color: black;
 /*
     
 	-webkit-user-select: none;
@@ -42,22 +40,10 @@ body {
     padding-left: 17px;
 	font-size: 10px;
 	color: #FFF;
-	z-index: 1000;
+	z-index: 50000;
 	font-family: moldeofont;
-    cursor: move;
-    /*-webkit-app-region: drag;*/
-}
-
-.top-titlebar-close-button {
-  position: absolute;
-  right: -8% !important;
-  top: 0px;
-  width: 17px;
-  height: 17px;
-  -webkit-app-region: no-drag;
-  background-color: #000 !important;
-  background-image: url(button_close.png);
-  border-radius: 8px;
+    
+    /*-webkit-app-region: drag;*/	
 }
 
 #container {
@@ -74,7 +60,15 @@ div {
 	background-size: 100% 100%;
 }
 
-button {
+button.key_button,
+button.space_button,
+button.special_button,
+button.circle_button,
+#editor_button,
+button.parameter_selector,
+button.control_button,
+#close-window-button
+ {
 	display: block;
 	position: absolute;
 	background-repeat: no-repeat;
@@ -89,6 +83,25 @@ button {
 	/*border: solid 1px #0F0;*/
 	cursor: pointer;
 	cursor: hand;
+}
+
+.titlebar button {
+	display: inline !important;
+	background-color: transparent !important;
+	background-color: black !important;
+	position: relative !important;
+	border: 0px;
+	cursor: pointer;
+	cursor: hand;
+	-webkit-app-region: no-drag;
+}
+
+.win32 .titlebar {
+	-webkit-app-region: drag;
+}
+
+.win32 .titlebar .x_drag {	
+	-webkit-app-region: drag !important;
 }
 
 button.object_enabled {
@@ -2230,6 +2243,32 @@ input[type=range]::-webkit-slider-thumb:active {
 	color: #0F0;
 	background-color: #000;
 }	
+
+body {
+	font-size: 12px;
+}	
+
+.h4, h4 {
+	font-size: 14px;
+}	
 	
+.modal-moldeocontrol .modal-dialog {
+	margin: 15px auto !important;
+}
 	
+.modal-moldeocontrol .modal-header {
+	padding: 2px 6px !important;	
+}
 	
+.modal-moldeocontrol .modal-body {
+	padding: 2px 6px !important;	
+}
+
+.modal-moldeocontrol .modal-footer {
+	padding: 2px 6px !important;	
+}
+
+.modal-moldeocontrol .modal-footer button {
+	padding: 2px 6px !important;
+}
+

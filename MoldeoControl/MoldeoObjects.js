@@ -1,24 +1,144 @@
 ﻿var md5 = require('md5-node');
 
 var ConsoleInterface = {
-	"Options": {
+	Options: {
 		"MAX_N_PRECONFIGS": 3,
+	},	
+	Log: true,	
+	State: {},
+	Project: {},
+	
+	Updater: {
+		"actual_version": "", /* check moldeoversion.txt */
+		"actual_version_str": "",
+		"actual_full_version_number": 0,
+		"last_version": "",
+		"last_version_number": 0,
+		"last_version_json": {},
+		"version_json": {},
+		"options": {
+		},
+		"Functions": {
+			"ReleaseIndex": function( release_version ) {
+			
+				//config.versioning.release_version = release_version;				
+				var index_release_version = config.versioning.release_version[ release_version.toLowerCase() ];
+				
+				if ( !isNaN( index_release_version ) ) {
+					return index_release_version;
+				}
+				return 0;
+				
+			},
+			"ParseVersionStr": function( version_str) {
+				//version (\build*)
+				//build (build [0-9]*)
+				var vjson = {
+					major_version: "0",
+					minor_version: "0",
+					release_version: "Beta",
+					build_version: "0",
+					comments: "--no comments--",
+					full_version_number: 0,
+					full_version_str: "",
+				};
+
+				var re = "error";
+
+				try {
+					var parser = new DOMParser();
+					var xmlDoc = parser.parseFromString( version_str,"text/xml" );
+					
+					if (xmlDoc) {
+						var xmlVersion = xmlDoc.getElementsByTagName("version")[0];
+						if (xmlVersion) {
+							vjson.major_version = Number(xmlVersion.getAttribute("major"));
+							vjson.minor_version = Number(xmlVersion.getAttribute("minor"));
+							vjson.release_version = xmlVersion.getAttribute("release");
+							vjson.build_version = Number(xmlVersion.getAttribute("build"));
+							//base 1 billon, 1 millon, 1 mil, 0
+							vjson.full_version_number = Number(vjson.major_version*1000000000) 
+								+ Number(vjson.minor_version*1000000)								
+								+ Number(vjson.build_version*1000)
+								+ moCI.Updater.Functions.ReleaseIndex(vjson.release_version);
+								
+							vjson.full_version_str = ""+vjson.major_version+"."+vjson.minor_version+" "+vjson.release_version+" (build "+vjson.build_version+")";
+						}
+						
+						var xmlComments = xmlDoc.getElementsByTagName("comments")[0];
+						vjson.comments = xmlComments.innerHTML;
+						
+						moCI.Updater.version_json = vjson;
+						re = vjson.full_version_number;
+						
+						
+					}
+					
+				} catch(err) {
+					return err;
+				}
+				return re;
+			},
+			"checkMoldeoLastVersion": function( url ) { /** call this from the app.init() */
+				if (url==undefined) {
+					url = "http://www.moldeo.org/downloads/lastversion";
+				}
+				try {
+					moCI.Updater.actual_version = fs.readFileSync( config.moldeo_version, "utf8" );
+				} catch(err) {
+					console.error(err);
+					alert(err);					
+					return;
+				}
+				
+				moCI.Updater.actual_full_version_number = moCI.Updater.Functions.ParseVersionStr( moCI.Updater.actual_version );
+				moCI.Updater.actual_version_str = moCI.Updater.version_json.full_version_str;
+				
+				DynamicRequestVar( "moCI.Updater.last_version", url, "package=Moldeo 1.0 Beta&osversion="+config.platform+"&moldeoversion="+moCI.Updater.actual_version_str, function(response, ready_state) {
+				
+					if (response=="" || ready_state!=DYNAMIC_COMPLETED) return;
+					//compare response with moldeoversion.txt
+					moCI.Updater.last_version = response;
+					moCI.Updater.last_version_number = moCI.Updater.Functions.ParseVersionStr( moCI.Updater.last_version );
+					moCI.Updater.last_version_json = moCI.Updater.version_json;
+					if ( moCI.Updater.last_version_number > moCI.Updater.actual_full_version_number ) {
+						//nothing
+						//if (confirm("¿Hay una actualización de Moldeo, quieres ir al sitio para instalarla? " )) {
+						var title = "Actualización Disponible: " + moCI.Updater.last_version_json.full_version_str;
+						var comments = moCI.Updater.last_version_json.comments;
+						showModalDialog( title, comments, 	{ 
+																"buttons": {
+																	"OK": { 
+																		"class": "modal-button", 
+																		"return": true,
+																	},
+																	"NO": { 
+																		"class": "modal-button", 
+																		"return": false, 
+																	},
+																}
+															}, function(result) {
+																//got to page
+																if (result) {
+																	OpenExternalPage("http://www.moldeo.org/downloads#head");
+																}
+																
+															});
+					}
+				} );
+				
+			},
+		},
 	},
 	
-	"Log": true,
-	
-	"State": {},
-	
-	"Project": {},
-	
-	"Player": {
+	Player: {
 		'Display': {
 		},
 		'moConsole': {
 		},
 	},
 	
-	"Control": {
+	Control: {
 		"ObjectSelected": undefined,
 		"PreconfigSelected": {},
 		"PreconfigsSelected": {},
@@ -350,7 +470,7 @@ var ConsoleInterface = {
 		},
 	},
 	
-	"Editor": {
+	Editor: {
 		"ObjectSelected": "",
 		"PreconfigSelected": 0,
 		"SaveNeeded": false,
@@ -1024,7 +1144,7 @@ var ConsoleInterface = {
 		},
 	},
 
-	"Connectors": {
+	Connectors: {
 		
 		"Objects": {
 		
@@ -1171,7 +1291,7 @@ var ConsoleInterface = {
 		},
 	},
 	
-	"Scenes": {
+	Scenes: {
 		"ObjectSelected": false,
 		"ScenePreEffects": {},
 		"SceneEffects": {},
@@ -1179,7 +1299,7 @@ var ConsoleInterface = {
 		"SceneStates": {}
 	},
 	
-	"Browser": {
+	Browser: {
 		"document": null,
 		"winBrowser": null,
 		"winVisible": true,
@@ -1526,7 +1646,7 @@ var ConsoleInterface = {
 		}
 	},
 	
-	"Render": {
+	Render: {
 		"document": null,
 		"winRender": null,
 		"renderOptions": null,
@@ -1608,12 +1728,13 @@ var ConsoleInterface = {
 		},
 	},
 	
-	"mapSelectionsObjects": {
+	mapSelectionsObjects: {
 	},
 	
-	"mapSelectionsObjectsByLabel": {
+	mapSelectionsObjectsByLabel: {
 	
 	},
+	
 	/**GENERAL CONSOLE FUNCTIONS*/
 	"UpdateState": function( info ) {
 		

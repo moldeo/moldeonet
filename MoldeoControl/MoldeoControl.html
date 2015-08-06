@@ -4,10 +4,13 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF8">
 <title>Moldeo Control</title>
 
+<link rel="stylesheet" href="css/bootstrap.min.css" media="screen">
 <link rel="stylesheet" type="text/css" href="moldeocontrols.css" />
  <link rel="stylesheet" href="css/tinyscrollbar.css" type="text/css" media="screen"/>
-<script src="js/jquery-1.8.0.min.js"></script>
+<!--<script src="js/jquery-1.8.0.min.js"></script>-->
+<script src="js/jquery.min.js"></script>
 <script src="js/jquery.tinyscrollbar.js"></script>
+
 
 <script src="config.js"></script>
 <script src="config.init.js"></script>
@@ -25,9 +28,18 @@
 
 </head>
 
-<body class="nox-browser">
+<body class="nox-browser" style="background-color:rgba(0,0,0,0);">
 
-<div id="titlebar" class="titlebar" draggable="true" ><span>MOLDEO CONTROL</span> <button id="close-window-button" class="top-titlebar-close-button" title="cerrar"></button></div>
+<div id="titlebar" class="titlebar" >
+	<span>
+	<button id="drag-window-button" class="x_drag">|||</button><button id="hi" class="x_drag">MOLDEO CONTROL</button><button id="drag-window-button" class="x_drag">|||</button>
+	<button id="close-window-button" class="x_close" title="close">[X]</button>
+	<button id="minimize-window-button" class="x_minimize" title="minimize">[_]</button>
+	<button id="maximize-window-button" class="x_maximize" title="maximize">[+]</button>
+	<button id="debug-window-button" class="x_debug" title="debug">(**)</button>
+	</span>
+	
+</div>
 
 <div id="container">
 	
@@ -40,7 +52,7 @@
 			<input id="saveasscreenshot" type="file" nwsaveas accept=".png,.jpg" />
 			<input id="saveasvideo" type="file"  nwsaveas accept=".avi,.mp4,.ogg,.mov" />
 		</div>
-
+		
 		<button id="buttonED_OpenProject" key="O" class="button_OpenProject key_button" title="Abrir un nuevo proyecto Moldeo"></button>
 		<div id="control_project_panel" class="project_panel  collapsed">
 			<div id="control_project_header" class="header">				
@@ -48,6 +60,7 @@
 			<div id="control_project_content" class="content">
 			</div>
 		</div>
+		
 
 		<div class="channel_controls preconfigs_selector_panel">
 			<button id="button_Object" class="button_indicat indicat_VOID circle_button"></button>
@@ -126,12 +139,12 @@
 		
 	<button id="editor_button"></button>
 	
-	<button id="buttonED_SaveProject" class="button_SaveProject" title="Guardar"></button>
-	<button id="buttonED_SaveProjectAs" class="button_SaveProjectAs"  title="Guardar Como / Clonar"></button>
+	<button id="buttonED_SaveProject" class="button_SaveProject control_button" title="Guardar"></button>
+	<button id="buttonED_SaveProjectAs" class="button_SaveProjectAs control_button"  title="Guardar Como / Clonar"></button>
 	
-	<button id="buttonED_Presentation"  class="button_Presentation" title="Cambiar Modo de Presentación"></button>
-	<button id="buttonED_Screenshot"  class="button_Screenshot" title="Capturar Pantalla"></button>
-	<button id="buttonED_PreviewShot"  class="button_PreviewShot" title="Capturar Previsualización"></button>
+	<button id="buttonED_Presentation"  class="button_Presentation control_button" title="Cambiar Modo de Presentación"></button>
+	<button id="buttonED_Screenshot"  class="button_Screenshot control_button" title="Capturar Pantalla"></button>
+	<button id="buttonED_PreviewShot"  class="button_PreviewShot control_button" title="Capturar Previsualización"></button>
 		
 	<div class="first_editor_effects">
 		
@@ -156,7 +169,7 @@
 			<!--<button id="buttonED_previous_preconfig" class="button_previous_preconfig"></button>-->
 
 			<label id="object_label" class="object_label">
-				<button id="button_object_onoff" moblabel="" class="button_object_onoff button_object_off"></button>
+				<button id="button_object_onoff" moblabel="" class="button_object_onoff button_object_off control_button"></button>
 				<span id="object_label_text">icono</span>
 				<div id="object_preconfigs" class="object_preconfigs">
 					<button id="buttonED_1" moblabel="" key="1" class="button_1 circle_button circle_selected"></button>
@@ -168,20 +181,20 @@
 			
 			<div id="object_edition" class="object_edition">
 				<canvas id="object_edition_image" class="object_edition_image"></canvas>				
-				<button id="object_edit" class="object_edit" title="Editar Imagen"></button>
-				<button id="object_import" class="object_import"  title="Importar Imagen"></button>
+				<button id="object_edit" class="object_edit control_button" title="Editar Imagen"></button>
+				<button id="object_import" class="object_import control_button"  title="Importar Imagen"></button>
 			</div>			
 			
 			<div id="audio_edition" class="object_edition audio_edition">
-				<canvas id="audio_edition_image" class="audio_edition_image"></canvas>				
-				<button id="audio_edit" class="object_edit audio_edit" title="Editar Audio"></button>
-				<button id="audio_import" class="object_import audio_import"  title="Importar Audio"></button>
+				<canvas id="audio_edition_image" class="audio_edition_image control_button"></canvas>				
+				<button id="audio_edit" class="object_edit audio_edit control_button" title="Editar Audio"></button>
+				<button id="audio_import" class="object_import audio_import control_button"  title="Importar Audio"></button>
 			</div>
 			
 			<div id="video_edition" class="object_edition video_edition">
 				<canvas id="video_edition_image" class="video_edition_image"></canvas>				
-				<button id="video_edit" class="object_edit video_edit" title="Editar Video"></button>
-				<button id="video_import" class="object_import video_import"  title="Importar Video"></button>
+				<button id="video_edit" class="object_edit video_edit control_button" title="Editar Video"></button>
+				<button id="video_import" class="object_import video_import control_button"  title="Importar Video"></button>
 			</div>
 			
 			<div id="object_color" class="object_color">
@@ -210,30 +223,30 @@
 					<div id="parameter_inspector_POSITION" group="POSITION" 
 						moblabel="" preconfig="" class="parameter_inspector">
 						<label>POSITION</label>
-						<button id="selector_POSITION_translatex" class="parameter_selector " selector="translatex"></button>
+						<button id="selector_POSITION_translatex" class="parameter_selector" selector="translatex"></button>
 						<input title="X" id="selector_POSITION_translatex_input" selector="translatex" class="param_input" type="text" value=""/>
 						
-						<button id="selector_POSITION_translatey" class="parameter_selector " selector="translatey"></button>
+						<button id="selector_POSITION_translatey" class="parameter_selector" selector="translatey"></button>
 						<input title="Y"  id="selector_POSITION_translatey_input" selector="translatey" class="param_input"  type="text" value=""/>
 						
-						<button id="selector_POSITION_translatez" class="parameter_selector " selector="translatez"></button>
+						<button id="selector_POSITION_translatez" class="parameter_selector" selector="translatez"></button>
 						<input title="Z"  id="selector_POSITION_translatez_input" selector="translatez"  class="param_input" type="text" value=""/>
 						
 						<div class="parameter_selector_xy" selector="translatexy">
 							<label>XY</label>
-							<button id="parameter_selector_xy_centre">CENTRO</button>
-							<button id="parameter_selector_xy_amply1">x1</button>
-							<button id="parameter_selector_xy_amply1">x2</button>
-							<button id="parameter_selector_xy_amply1">x3</button>
+							<button id="parameter_selector_xy_centre" class="control_button">CENTRO</button>
+							<button id="parameter_selector_xy_amply1" class="control_button">x1</button>
+							<button id="parameter_selector_xy_amply1" class="control_button">x2</button>
+							<button id="parameter_selector_xy_amply1" class="control_button">x3</button>
 							<canvas id="selector_POSITION_translatexy" ></canvas>
 						</div>
 						
 						<div class="parameter_selector_zy" selector="translatezy">
 							<label>ZY</label>
-							<button id="parameter_selector_xy_centre">CENTRO</button>
-							<button id="parameter_selector_xy_amply1">x1</button>
-							<button id="parameter_selector_xy_amply1">x2</button>
-							<button id="parameter_selector_xy_amply1">x3</button>
+							<button id="parameter_selector_xy_centre" class="control_button">CENTRO</button>
+							<button id="parameter_selector_xy_amply1" class="control_button">x1</button>
+							<button id="parameter_selector_xy_amply1" class="control_button">x2</button>
+							<button id="parameter_selector_xy_amply1" class="control_button">x3</button>
 							<canvas id="selector_POSITION_translatezy" ></canvas>
 						</div>
 						
@@ -607,6 +620,9 @@
 	
 </div>
 
+
+
+<script  src="js/bootstrap.min.js" type="text/javascript"></script>
 </body>
 
 </html>

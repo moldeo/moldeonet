@@ -386,13 +386,7 @@ function moEffectManager() {
 			|| p_MobDefinition.ConfigName==undefined
 			|| p_MobDefinition.MoldeoLabelName==undefined)
 			return console.error("p_MobDefinition error");
-		new_effect = this.NewEffect(	p_MobDefinition.Name, 
-										p_MobDefinition.ConfigName, 
-										p_MobDefinition.MoldeoLabelName, 
-										p_MobDefinition.Type, 
-										p_MobDefinition.KeyName, 
-										p_MobDefinition.MobIndex.param_index, 
-										p_MobDefinition.MobIndex.value_index );
+		new_effect = this.NewEffect( p_MobDefinition );
 		return new_effect;
 	};
 	this.NewEffect = function( p_name, p_config_name, p_labelname, p_key_name, p_type, p_param_index, p_value_index ) {

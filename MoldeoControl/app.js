@@ -73,24 +73,59 @@ function dragWithCustomImage(event) {
 
 
 
-window.onload = function() {
+$(function() {
  
 	win = gui.Window.get();
-	win.moveTo( 0, (600-164) );
 
-	document.getElementById("close-window-button").onclick = function() {
-		//window.close();
-		gui.App.quit();
-	}
+/**
+screen {
+// unique id for a screen
+  id: int,
 
-    
+// physical screen resolution, can be negative, not necessarily start from 0,depending on screen arrangement
+  bounds: {
+    x: int,
+    y: int,
+    width: int,
+    height: int
+  },
+
+// useable area within the screen bound
+  work_area: {
+    x: int,
+    y: int,
+    width: int,
+    height: int
+  },
+
+  scaleFactor: float,
+  isBuiltIn: bool,
+  rotation: int,
+  touchSupport: int
+}
+*/
+	/*
+	var screen_client = Screen.screens[0];
+	var screen_width = screen_client.work_area.width;
+	var screen_height = screen_client.work_area.height;
+	*/
+	screen_height = 600;
+	win.moveTo( 0, (screen_height-164) );
+
+	$(".x_minimize").on("click", function(event) { win.minimize(); /*gui.App.quit();*/ });
+	$(".x_maximize").on("click", function(event) { win.maximize(); /*gui.App.quit();*/ });
+	$(".x_debug").on("click", function(event) { win.showDevTools(); /*gui.App.quit();*/ });
+	$(".x_close").on("click", function(event) { win.close(); /*gui.App.quit();*/ });
+		
+	
     var drage = document.getElementById("titlebar");
-    drage.addEventListener('dragstart', handleDragStart, true);
-    drage.addEventListener('dragenter', handleDragEnter, true);
-    drage.addEventListener('dragover', handleDragOver, true);
-    drage.addEventListener('dragleave', handleDragLeave, true);
-    drage.addEventListener('dragend', handleDragEnd, true);
-
+	if (drage && config.platform=="linux") {
+		drage.addEventListener('dragstart', handleDragStart, true);
+		drage.addEventListener('dragenter', handleDragEnter, true);
+		drage.addEventListener('dragover', handleDragOver, true);
+		drage.addEventListener('dragleave', handleDragLeave, true);
+		drage.addEventListener('dragend', handleDragEnd, true);
+	}
 	gui.Window.get().show();
 	$(document.getElementsByTagName("body")[0]).toggleClass(config.platform);
 
@@ -109,9 +144,9 @@ window.onload = function() {
 	if (moCI) {
 		RegisterAllButtonActions();
         moCI.Browser.Open();
-
+		setTimeout( moCI.Updater.Functions.checkMoldeoLastVersion, 1000 );
 	}
 
 	OscMoldeoSend( { 'msg': '/moldeo','val0': 'consoleget'} );
 	
-}
+});
