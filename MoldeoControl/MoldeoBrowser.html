@@ -15,8 +15,8 @@
 
 <script src="config.js"></script>
 <script src="config.init.js"></script>
-<script src="browser.js"></script>
 <script src="translations.js"></script>
+<script src="browser.js"></script>
 <!--
 <script src="moldeo.js"></script>
 <script src="js/d3-master/d3.js"></script>
@@ -30,8 +30,16 @@
 
 <body class="browser">
 
-
-<div class="titlebar">MOLDEO PROJECTS BROWSER <button id="close-window-button" class="top-titlebar-close-button" title="cerrar"></button></div>
+<div id="titlebar" class="titlebar" >
+	<span>
+	<button id="drag-window-button" class="x_drag">|||</button><button id="hi" class="x_drag">MOLDEO PROJECTS BROWSER</button><button id="drag-window-button" class="x_drag">|||</button>
+	<button id="close-window-button" class="x_close" title="close">[X]</button>
+	<button id="minimize-window-button" class="x_minimize" title="minimize">[_]</button>
+	<button id="maximize-window-button" class="x_maximize" title="maximize">[+]</button>
+	<button id="debug-window-button" class="x_debug" title="debug">((?!))</button>
+	</span>
+	
+</div>
 
 
 <div id="container">

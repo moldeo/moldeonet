@@ -30,7 +30,9 @@ body {
 	left: 0px;
 	width: 100%;
 	height: 17px;
-	background-color: black;
+	/*background-color: black;*/
+	background-image: url(images/fondo_title_bar.png);
+	background-size: 100% 100%;
 /*
     
 	-webkit-user-select: none;
@@ -88,7 +90,7 @@ button.control_button,
 .titlebar button {
 	display: inline !important;
 	background-color: transparent !important;
-	background-color: black !important;
+	/*background-color: black !important;*/
 	position: relative !important;
 	border: 0px;
 	cursor: pointer;
@@ -1134,22 +1136,96 @@ input[type=range]::-webkit-slider-thumb:active {
 
 */
 
+#editor_button_connection_indicator {
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	width: 30px;
+	height: 30px;	
+	background-image: url( images/fondo_connection_indicator_black.png);
+	z-index: 500000;
+}
+
+#editor_button_connection_indicator  .con_indicator {
+	
+	width: 100%;
+	height: 100%;
+	background-image: url( images/fondo_connection_indicator.png);
+	background-size: 100% 100%;		
+}
+
+#control_project_led.yellow {
+	display: block;
+	float: left;
+	clear: none;
+	position: relative;
+	background-image: url(images/control_project_led_green.png);
+}
+
+#control_project_led.green {
+	display: block;
+	float: left;
+	clear: none;
+	position: relative;
+	background-image: url(images/control_project_led_green.png);
+}
+
+#control_project_led.red {
+	display: block;
+	float: left;
+	clear: none;
+	position: relative;
+	background-image: url(images/control_project_led_green.png);
+}
+
+
 #editor_button {
 	transition: all 1s;
-	top: -8%;
-	right: 2%;
-	width: 5%;
-	height: 8%;
+	top: -21px;
+	right: 0px;
+	left: auto;
+	width: 100%;
+	height: 21px;
 	
-	background-image: url( buttons/button_EDITOR_on.svg );
+	/*background-image: url( buttons/button_EDITOR_on.svg );*/
+	background-image: url( images/fondo_editor_button.png );
 	z-index: 120;
 	cursor: pointer;
 	cursor: hand;
+	z-index: 100000;
+	position: absolute;
+}
+
+#editor_button_go_back {
+	transition: all 1s;
+	top: -15px;
+	right: 1.2%;
+	left: auto;
+	width: 43px;
+	height: 40px;
+	
+	/*background-image: url( buttons/button_EDITOR_on.svg );*/
+	background-image: url( images/fondo_editor_button_go_back_cut.png );
+	z-index: 120;
+	cursor: pointer;
+	cursor: hand;
+	z-index: 100000;
+	position: absolute;
+	
+	transition: all 1s;
+	transform: rotate(90deg);
+	
+}
+
+.editor_opened #editor_button_go_back {
+	transition: all 1s;
+	transform: rotate(0deg);
 }
 
 #editor_button.editor_button_close {
-	top: -8% !important;
-	background-image: url( buttons/button_EDITOR_off.svg ) !important;
+	top: -21px !important;
+	/*background-image: url( buttons/button_EDITOR_off.svg ) !important;*/
+	background-image: url( images/fondo_editor_button.png ) !important;
 	
 }
 
@@ -1201,8 +1277,8 @@ input[type=range]::-webkit-slider-thumb:active {
 #buttonED_SaveProject {
 	display: block;
 	position: absolute;
-	left: 45px;
-	top: 8px;
+	left: 20px;
+	top: 12px;
 	width: 28px;
 	height: 24px;
 }
@@ -1222,8 +1298,8 @@ input[type=range]::-webkit-slider-thumb:active {
 #buttonED_SaveProjectAs {
 	display: block;
 	position: absolute;
-	left: 80px;
-	top: 8px;
+	left: 54px;
+	top: 12px;
 	width: 28px;
 	height: 24px;
 }
@@ -1244,12 +1320,13 @@ input[type=range]::-webkit-slider-thumb:active {
 
 
 #buttonED_Presentation {
-	display: block;
-	position: absolute;
-	right: 3%;
-	top: 2%;
-	width: 3%;
-	height: 18%;
+
+display: block;
+position: absolute;
+right: 4px;
+top: 31px;
+width: 3%;
+height: 18%;
 }
 .button_Presentation {
 	background-image: url(buttons/button_Presentation.svg);
@@ -1347,7 +1424,7 @@ input[type=range]::-webkit-slider-thumb:active {
 
 
 .first_editor_effects {
-	top: 24%;
+	top: 33%;
 	left: 4%;
 	width: 16%;
 	height: 60%;
@@ -1357,7 +1434,7 @@ input[type=range]::-webkit-slider-thumb:active {
 }
 
 .second_editor_effects {
-	top: 24%;
+	top: 33%;
 	right: 4%;
 	width: 16%;
 	height: 60%;
@@ -1385,8 +1462,8 @@ input[type=range]::-webkit-slider-thumb:active {
 	display: table;
 	position: absolute;
 	width: 75%;
-	height: 90%;	
-	top:  0%;
+	height: 94%;
+	top: 5px;
 	left: 14%;
 	/*border: solid 2px #F0F;*/
 }
@@ -1752,10 +1829,10 @@ input[type=range]::-webkit-slider-thumb:active {
 			position: absolute;
 			margin-left: 6%;
 			margin-top: 2px;
-			padding: 2%;
-			height: 60%;
+			padding: 0% 0% 0% 2%;
+			height: 80%;
 			width: 80%;
-			/*border: solid 1px #00FFF4;*/
+			border: solid 1px #00FFF4;
 			border: solid 1px #999;
 			border-radius: 7px;
 			background-color: #3e3e3e;
@@ -1890,14 +1967,15 @@ input[type=range]::-webkit-slider-thumb:active {
 		position: absolute;
 		float: left;
 		width: 35px;
-		height: 15px;
+		height: 17px;
 		font-size: 12px;
 		border: solid 1px #999;
-		background-color: #333;
-		color: #999;
+		background-color: #000;
+		color: #FFF;
 		bottom: 20px;
 		left: 80px;
 		transition: all 0.5s;
+		border-radius: 5px;
 	 }
 	 
 	 .param_input_selected {

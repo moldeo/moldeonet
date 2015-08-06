@@ -30,16 +30,29 @@
 
 <body class="nox-browser" style="background-color:rgba(0,0,0,0);">
 
+<!-- BASE PANEL INTERFACE -->
 <div id="titlebar" class="titlebar" >
 	<span>
 	<button id="drag-window-button" class="x_drag">|||</button><button id="hi" class="x_drag">MOLDEO CONTROL</button><button id="drag-window-button" class="x_drag">|||</button>
 	<button id="close-window-button" class="x_close" title="close">[X]</button>
 	<button id="minimize-window-button" class="x_minimize" title="minimize">[_]</button>
 	<button id="maximize-window-button" class="x_maximize" title="maximize">[+]</button>
-	<button id="debug-window-button" class="x_debug" title="debug">(**)</button>
+	<button id="debug-window-button" class="x_debug" title="debug">(?!)</button>
 	</span>
 	
 </div>
+
+<!--
+<button id="editor_button_connection_indicator" class="control_button">
+	<div class="con_indicator"></div>
+	<div class="con_indicator_led_big"></div>
+	<div class="con_indicator_led_small_1"></div>	
+	<div class="con_indicator_led_small_2"></div>	
+</button>
+-->
+
+
+<!-- CONTROL INTERFACE -->
 
 <div id="container">
 	
@@ -55,7 +68,8 @@
 		
 		<button id="buttonED_OpenProject" key="O" class="button_OpenProject key_button" title="Abrir un nuevo proyecto Moldeo"></button>
 		<div id="control_project_panel" class="project_panel  collapsed">
-			<div id="control_project_header" class="header">				
+			<div id="control_project_led" class="con_indicator_led_big"></div>
+			<div id="control_project_header" class="header">
 			</div> 
 			<div id="control_project_content" class="content">
 			</div>
@@ -137,7 +151,10 @@
 
 <div id="editor_panel" class="window_panel ">
 		
-	<button id="editor_button"></button>
+	<div id="editor_header" class="editor_header">
+		<button id="editor_button" class="control_button"></button>
+		<button id="editor_button_go_back" class="control_button"></button>		
+	</div>
 	
 	<button id="buttonED_SaveProject" class="button_SaveProject control_button" title="Guardar"></button>
 	<button id="buttonED_SaveProjectAs" class="button_SaveProjectAs control_button"  title="Guardar Como / Clonar"></button>

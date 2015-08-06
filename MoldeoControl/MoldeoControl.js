@@ -173,7 +173,7 @@ function activateEditor() {
 }	
 
 function toggleEditor() {
-	if (config.log.full) console.log("editor_button click!");
+	if (config.log.full) console.log("editor_button_go_back click!");
 	
 	var editor_panel = document.getElementById("editor_panel");
 	var editor_button = document.getElementById("editor_button");

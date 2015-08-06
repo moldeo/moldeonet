@@ -794,7 +794,7 @@ var ConsoleInterface = {
 			
 		},		
 		"Buttons": { 
-			"editor_button": { 
+			"editor_button_go_back": { 
 				"click": function(event) {
 							toggleEditor();						
 						}
@@ -1300,6 +1300,20 @@ var ConsoleInterface = {
 	},
 	
 	Browser: {
+		"Projects": {			
+			"Recents": [],
+			/*
+			"Favorites": {},
+			"MoldeoLab": {},			
+			"Samples": {},
+			*/
+		},
+		"Textures": {
+		},
+		"Movies": {
+		},
+		"Sounds": {
+		},
 		"document": null,
 		"winBrowser": null,
 		"winVisible": true,
@@ -1620,14 +1634,6 @@ var ConsoleInterface = {
 				console.error("updateBrowser() > error",err);
 			}
 		},		
-		"Projects": {			
-			"Recents": [],
-			/*
-			"Favorites": {},
-			"MoldeoLab": {},			
-			"Samples": {},
-			*/
-		},
 		"SaveRecents": function( filename ) {
 			if (filename) moCI.Browser.Projects.Recents.push( filename );
 			for( var mol_index in Browser.Projects.Recents ) {
@@ -1635,12 +1641,6 @@ var ConsoleInterface = {
 				
 			}
 		},		
-		"Textures": {
-		},
-		"Movies": {
-		},
-		"Sounds": {
-		},
 		"Functions": {
 			
 		}

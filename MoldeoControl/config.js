@@ -2,6 +2,7 @@
 var OS = require('os');
 var osenv = require('osenv')
 var gui = require('nw.gui');
+var win = gui.Window.get();
 /*
 var screen = gui.Screen;
 screen.Init();

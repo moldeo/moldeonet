@@ -7,16 +7,49 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="834"
-   height="164"
-   id="svg4695"
+   width="834.00006"
+   height="20.826031"
+   id="svg5696"
    version="1.1"
    inkscape:version="0.48.4 r9939"
    sodipodi:docname="fondo_title_bar.svg">
   <defs
-     id="defs4697" />
+     id="defs5698">
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5525"
+       id="linearGradient5533"
+       x1="-0.49831939"
+       y1="10.413833"
+       x2="834.50177"
+       y2="10.413833"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-0.00126561,888.36213)" />
+    <linearGradient
+       id="linearGradient5525">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop5527" />
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="1"
+         id="stop5529" />
+    </linearGradient>
+    <linearGradient
+       y2="10.413833"
+       x2="834.50177"
+       y1="10.413833"
+       x1="-0.49831939"
+       gradientTransform="translate(-177.0017,161.94835)"
+       gradientUnits="userSpaceOnUse"
+       id="linearGradient5694"
+       xlink:href="#linearGradient5525"
+       inkscape:collect="always" />
+  </defs>
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -24,42 +57,23 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1"
-     inkscape:cx="387.82163"
-     inkscape:cy="93.489551"
+     inkscape:zoom="0.84492187"
+     inkscape:cx="393.86867"
+     inkscape:cy="-23.35891"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     showguides="true"
-     inkscape:guide-bbox="true"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
      inkscape:window-width="1536"
      inkscape:window-height="785"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
-     inkscape:window-maximized="1">
-    <sodipodi:guide
-       orientation="1,0"
-       position="416.99571,154.87296"
-       id="guide4709" />
-    <sodipodi:guide
-       orientation="1,0"
-       position="278.00024,95.529152"
-       id="guide4711" />
-    <sodipodi:guide
-       orientation="1,0"
-       position="556.00146,66.893964"
-       id="guide4713" />
-    <sodipodi:guide
-       orientation="0,1"
-       position="517.72704,159.63861"
-       id="guide4717" />
-    <sodipodi:guide
-       orientation="0,1"
-       position="396,159.63861"
-       id="guide4719" />
-  </sodipodi:namedview>
+     inkscape:window-maximized="1" />
   <metadata
-     id="metadata4700">
+     id="metadata5701">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
@@ -74,13 +88,15 @@
      inkscape:label="Capa 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0,-888.36217)">
+     transform="translate(177.00002,-161.94917)">
     <path
-       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 834.00178,8.1698e-4 -834.0000994,-3e-11 L 0.00501908,4.345765 278.00415,4.301365 294.4657,20.78245 l 122.53001,0.0444 122.55822,-0.0444 16.46546,-16.46546 277.97764,0.0444 z"
+       style="fill:url(#linearGradient5694);fill-opacity:1;stroke:none"
+       d="m 657.00002,161.94917 -834.00004,0 0.003,4.34494 277.99906,-0.0444 16.46154,16.48109 122.53001,0.0444 122.55822,-0.0444 16.46546,-16.46546 277.97765,0.0444 z"
        id="path4750"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cccccccccc"
-       transform="translate(0,888.36217)" />
+       inkscape:export-filename="D:\0_DESARROLLO\0_MOLDEO\0_desarrollo\GITHUB\moldeo\moldeoinstaller\moldeonet\MoldeoControl\images\fondo_title_bar.png"
+       inkscape:export-xdpi="90.751816"
+       inkscape:export-ydpi="90.751816" />
   </g>
 </svg>
