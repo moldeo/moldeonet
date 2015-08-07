@@ -2037,6 +2037,7 @@ function CreateParametersSideWindowActions( MOB_label, psideMobWin ) {
 			var actionUnpublished = document.createElement("button");
 			actionUnpublished.setAttribute( "id", "action_param_"+MOB_label+"_unpublished");
 			actionUnpublished.setAttribute( "class", "action_param_SHOW_ALL");
+			actionUnpublished.setAttribute( "title", "Muestra todos los parámetros.");
 			actionUnpublished.innerHTML = "++";
 			/*
 			var actionUp = document.createElement("button");

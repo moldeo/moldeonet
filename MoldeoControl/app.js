@@ -149,4 +149,5 @@ screen {
 
 	OscMoldeoSend( { 'msg': '/moldeo','val0': 'consoleget'} );
 	
+	//$('[data-toggle="tooltip"]').tooltip(); 
 });

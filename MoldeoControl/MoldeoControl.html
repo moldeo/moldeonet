@@ -80,9 +80,9 @@
 
 		<div class="channel_controls preconfigs_selector_panel">
 			<button id="button_Object" class="button_indicat indicat_VOID circle_button"></button>
-			<button id="button_1" key="1" class="button_1 circle_button"></button>
-			<button id="button_2" key="2" class="button_2 circle_button"></button>
-			<button id="button_3" key="3" class="button_3 circle_button"></button>
+			<button id="button_1" title="Activate Preconfig 1"  key="1" class="button_1 circle_button"></button>
+			<button id="button_2" title="Activate Preconfig 2" key="2" class="button_2 circle_button"></button>
+			<button id="button_3" title="Activate Preconfig 3" key="3" class="button_3 circle_button"></button>
 		</div>
 
 		<div class="channel_controls object_selectors">
@@ -97,18 +97,18 @@
 		</div>
 
 		<div class="first_effects objects_selector_panel">
-			<button id="button_W"  key="W" class="button_W key_button"></button>
-			<button id="button_A" key="A" class="button_A key_button"></button>
-			<button id="button_S"  key="S" class="button_S key_button"></button>
-			<button id="button_D" key="D" class="button_D key_button"></button>
+			<button id="button_W"  key="W" class="button_W key_button" data-toggle="tooltip"></button>
+			<button id="button_A" key="A" class="button_A key_button" data-toggle="tooltip"></button>
+			<button id="button_S"  key="S" class="button_S key_button" data-toggle="tooltip"></button>
+			<button id="button_D" key="D" class="button_D key_button" data-toggle="tooltip"></button>
 		</div>
 
 
 		<div class="second_effects objects_selector_panel">
-			<button id="button_I"  key="I" class="button_I key_button"></button>
-			<button id="button_J"  key="J" class="button_J key_button"></button>
-			<button id="button_K"  key="K" class="button_K key_button"></button>
-			<button id="button_L"  key="L" class="button_L key_button"></button>
+			<button id="button_I"  key="I" class="button_I key_button" data-toggle="tooltip"></button>
+			<button id="button_J"  key="J" class="button_J key_button" data-toggle="tooltip"></button>
+			<button id="button_K"  key="K" class="button_K key_button" data-toggle="tooltip"></button>
+			<button id="button_L"  key="L" class="button_L key_button" data-toggle="tooltip"></button>
 		</div>
 
 		<div id="render_video_info">
@@ -118,19 +118,19 @@
 		</div>		
 		
 		<div class="channel_controls play_panel">
-			<button id="button_TAB" class="button_TAB special_button"></button>
-			<button id="button_ENTER" class="button_ENTER special_button"></button>
-			<button id="button_RECORD" class="button_RECORD special_button"></button>			
+			<button id="button_TAB"  title="Stop" class="button_TAB special_button"></button>
+			<button id="button_ENTER"  title="Play/Pause" class="button_ENTER special_button"></button>
+			<button id="button_RECORD"  title="Record/Render" class="button_RECORD special_button"></button>			
 		</div>
 
 		<div class="channel_controls beat_panel">
-			<button id="button_SPACE" class="button_SPACE space_button"></button>
+			<button id="button_SPACE"  title="Beat" class="button_SPACE space_button"></button>
 		</div>
 
 		<div class="channel_controls channel_selectors">
-			<button id="button_F1" class="button_F1 circle_button"></button>
-			<button id="button_F2" class="button_F2 circle_button"></button>
-			<button id="button_F3" class="button_F3 circle_button"></button>
+			<button id="button_F1" title="Activate All Preconfig 1" class="button_F1 circle_button"></button>
+			<button id="button_F2" title="Activate All Preconfig 2" class="button_F2 circle_button"></button>
+			<button id="button_F3" title="Activate All Preconfig 3" class="button_F3 circle_button"></button>
 		</div>
 			
 		<div class="channel_controls cursor_panel">
@@ -153,7 +153,7 @@
 		
 	<div id="editor_header" class="editor_header">
 		<button id="editor_button" class="control_button"></button>
-		<button id="editor_button_go_back" class="control_button"></button>		
+		<button id="editor_button_go_back" class="control_button" data-toggle="tooltip" title="Abrir Editor de objetos"></button>		
 	</div>
 	
 	<button id="buttonED_SaveProject" class="button_SaveProject control_button" title="Guardar"></button>
@@ -161,21 +161,21 @@
 	
 	<button id="buttonED_Presentation"  class="button_Presentation control_button" title="Cambiar Modo de Presentación"></button>
 	<button id="buttonED_Screenshot"  class="button_Screenshot control_button" title="Capturar Pantalla"></button>
-	<button id="buttonED_PreviewShot"  class="button_PreviewShot control_button" title="Capturar Previsualización"></button>
+	<button id="buttonED_PreviewShot"  class="button_PreviewShot control_button" title="Generar viñetas"></button>
 		
-	<div class="first_editor_effects">
+	<div class="first_editor_effects objects_editor_panel">
 		
-		<button id="buttonED_W"  key="W" class="button_W key_button"></button>
-		<button id="buttonED_A" key="A" class="button_A key_button"></button>
-		<button id="buttonED_S"  key="S" class="button_S key_button"></button>
-		<button id="buttonED_D" key="D" class="button_D key_button"></button>
+		<button id="buttonED_W"  key="W" class="button_W key_button" data-toggle="tooltip"></button>
+		<button id="buttonED_A" key="A" class="button_A key_button" data-toggle="tooltip" ></button>
+		<button id="buttonED_S"  key="S" class="button_S key_button" data-toggle="tooltip" ></button>
+		<button id="buttonED_D" key="D" class="button_D key_button" data-toggle="tooltip" ></button>
 	</div>
 	
-	<div  class="second_editor_effects">
-		<button id="buttonED_I"  key="I" class="button_I key_button"></button>
-		<button id="buttonED_J"  key="J" class="button_J key_button"></button>
-		<button id="buttonED_K"  key="K" class="button_K key_button"></button>
-		<button id="buttonED_L"  key="L" class="button_L key_button"></button>
+	<div  class="second_editor_effects objects_editor_panel">
+		<button id="buttonED_I"  key="I" class="button_I key_button" data-toggle="tooltip" ></button>
+		<button id="buttonED_J"  key="J" class="button_J key_button" data-toggle="tooltip" ></button>
+		<button id="buttonED_K"  key="K" class="button_K key_button" data-toggle="tooltip" ></button>
+		<button id="buttonED_L"  key="L" class="button_L key_button" data-toggle="tooltip" ></button>
 	</div>
 	
 	<div class="object_side">
@@ -186,12 +186,12 @@
 			<!--<button id="buttonED_previous_preconfig" class="button_previous_preconfig"></button>-->
 
 			<label id="object_label" class="object_label">
-				<button id="button_object_onoff" moblabel="" class="button_object_onoff button_object_off control_button"></button>
-				<span id="object_label_text">icono</span>
+				<button id="button_object_onoff" title="Activar/Desactivar objeto" moblabel="" class="button_object_onoff button_object_off control_button"></button>
+				<span id="object_label_text">-</span>
 				<div id="object_preconfigs" class="object_preconfigs">
-					<button id="buttonED_1" moblabel="" key="1" class="button_1 circle_button circle_selected"></button>
-					<button id="buttonED_2" moblabel=""  key="2" class="button_2 circle_button"></button>
-					<button id="buttonED_3" moblabel=""  key="3" class="button_3 circle_button"></button>
+					<button id="buttonED_1" title="Editar preconfig 1" moblabel="" key="1" class="button_1 circle_button circle_selected"></button>
+					<button id="buttonED_2" title="Editar preconfig 2" moblabel=""  key="2" class="button_2 circle_button"></button>
+					<button id="buttonED_3" title="Editar preconfig 3" moblabel=""  key="3" class="button_3 circle_button"></button>
 				</div>
 			</label>
 			<!--<button id="buttonED_next_preconfig" class="button_next_preconfig"></button>-->

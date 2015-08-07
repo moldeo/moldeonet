@@ -288,6 +288,7 @@ button.fxselected:hover:after {
 			letter-spacing: 2px;
 			color: #FFF;
 			font-family: moldeofont;
+			font-weight: normal !important;
 			background-color: rgba(0,0,0,0.4);
 			border: solid 0px #A00;
 			cursor: pointer;
@@ -402,6 +403,7 @@ button.fxselected:hover:after {
 	background-color: #000;
 	color: #FFF;
 	font-family: moldeofont;
+	font-weight: normal !important;
 }
 
 /*
@@ -682,6 +684,7 @@ PRECONFIG SELECTOR  PANEL
 	height: 20px;
 	font-size: 14px;
 	font-family: moldeofont;
+	font-weight: normal !important;
 	color: #FFF;
 	
 }
@@ -1100,6 +1103,7 @@ input[type=range].slide_V {
 	overflow: hidden;
 	font-size: 10px;
 	font-family: moldeofont;
+	font-weight: normal !important;
 	color: #FFF;
 }
 
@@ -1356,8 +1360,8 @@ height: 18%;
 #buttonED_PreviewShot {
 	display: block;
 	position: absolute;
-	right: 10%;
-	top: 2%;
+	right: 0.5%;
+	top: 40%;
 	width: 3%;
 	height: 18%;
 }
@@ -1515,6 +1519,7 @@ height: 18%;
 			
 			
 			font-size: 19px;
+			font-weight: normal !important;
 			font-family: moldeofont;
 			text-transform: uppercase;
 			color: #94fbff;				
@@ -1711,6 +1716,7 @@ height: 18%;
 	
 	font-size: 13px;
 	font-family: moldeofont;
+	font-weight: normal !important;
 				/*cambio de fuente*/
 
 	text-transform: uppercase;
@@ -1751,6 +1757,7 @@ height: 18%;
 				clear: both !important;
 				background-color: transparent;
 				font-family: moldeofont !important;
+				font-weight: normal !important;
 				margin-top: 2px !important;
 				border-radius: 4px;
 				color: #999;
@@ -1828,7 +1835,7 @@ height: 18%;
 			position: absolute;
 			margin-left: 6%;
 			margin-top: 2px;
-			padding: 0% 0% 0% 2%;
+			padding: 1% 0% 0% 2%;
 			height: 80%;
 			width: 80%;
 			border: solid 1px #00FFF4;
@@ -1921,6 +1928,7 @@ height: 18%;
 		color: #FFF;
 		font-size: 10px;
 		font-family: moldeofont;
+		font-weight: normal !important;
 		display: block;
 		position: absolute;
 		top: -13px;
@@ -2059,6 +2067,7 @@ height: 18%;
 		clear: both;
 		font-size: 9px;
 		font-family: moldeofont;
+		font-weight: normal !important;
 		color: #FFF;
 	}
 	
@@ -2267,6 +2276,7 @@ height: 18%;
 	text {
 		font-family: moldeofont;
 		text-rendering: geometricPrecision;
+		font-weight: normal !important;
 		stroke: #FFF;
 		stroke-width: 0.06%;
 	}
@@ -2323,6 +2333,7 @@ height: 18%;
 
 body {
 	font-size: 12px;
+	line-height: 1.2;
 }	
 
 .h4, h4 {

@@ -418,18 +418,35 @@ var ConsoleInterface = {
 		"Register": function() {
 			if (config.log.full) console.log("RegisterPlayerButtons");
 	
+			$(".objects_selector_panel>button").each( function(index,element) {
+				element.setAttribute( "title", "");
+				element.setAttribute( "data-original-title", "");
+				deactivateClass( element, "object_enabled");
+			});
+	
 			for( var key in moCI.mapSelectionsObjects ) {
 				var keyBtn = document.getElementById("button_"+key);
 				if (config.log.full) console.log("RegisterPlayerButtons > key button: ","button_",key);
 				if (keyBtn) {
+					
 					keyBtn.addEventListener( "click", Control.Functions.KeyActivation );
-					if (moCI.mapSelectionsObjects[key])
+					
+					if (moCI.mapSelectionsObjects[key]) {
+						//keyBtn.setAttribute("title",moCI.mapSelectionsObjects[key]);
+						keyBtn.setAttribute( "data-original-title",moCI.mapSelectionsObjects[key]);
+						$(keyBtn).tooltip();
 						activateClass( keyBtn, moCI.mapSelectionsObjects[key] );
+					}
 				} else {
 					console.error("RegisterPlayerButtons > button_"+key+" NOT FOUND!");
 				}
 				
 			}
+			/*
+			$(".objects_selector_panel>button").each( function(index,element) {
+				//$(element).tooltip();
+			});
+			*/
 			
 			//buttons and cursors
 			if (config.log.full) console.log("RegisterPlayerButtons > all buttons with events"); 
@@ -1100,10 +1117,28 @@ var ConsoleInterface = {
 		"Register": function() {
 			if (config.log.full) console.log("RegisterEditorButtons");
 
+			$(".objects_editor_panel>button").each( function(index,element) {
+				element.setAttribute( "title", "");
+				element.setAttribute( "data-original-title", "");
+				//element.removeEventListener( "click", Editor.Functions["edit_button_click"] );
+				deactivateClass( element, "object_enabled");
+			});
 			for( var key in moCI.mapSelectionsObjects ) {
 				var selObject = document.getElementById("buttonED_"+key);
-				if (selObject) selObject.addEventListener( "click", Editor.Functions["edit_button_click"]);
+				if (selObject) {
+					selObject.addEventListener( "click", Editor.Functions["edit_button_click"]);
+					if (moCI.mapSelectionsObjects[key]) {
+						selObject.setAttribute( "title", "" );
+						selObject.setAttribute( "data-original-title", moCI.mapSelectionsObjects[key] );
+						$(selObject).tooltip();
+					}
+						
+				}
 			}
+/*
+			$(".objects_editor_panel button").each( function(index,element) {
+				
+			});	*/		
 
 			for( var button in Editor.Buttons ) {
 				var dd = document.getElementById(button);
