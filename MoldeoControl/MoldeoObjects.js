@@ -803,7 +803,12 @@ var ConsoleInterface = {
 					
 					var mob_label = event.target.getAttribute("moblabel");
 					if (mob_label=="" || mob_label==undefined) {
-						alert("Debe seleccionar un efecto para poder editarlo.");
+						showModalDialog("Atención", "Debe tocar alguna de las teclas para seleccionar el efecto a editar.", {
+							"buttons": {
+								"OK": { "class": "button", "return": true  },
+								"CANCEL": { "class": "button", "return": false  },
+							}
+						});
 						return;
 					}
 					

@@ -1899,8 +1899,8 @@ height: 18%;
 	.parameter_group input[type="checkbox"] {
 		display: none;
 		position: absolute;
-		right: 10%;
-		top: 20%;
+		right: 18%;
+		top: 13%;
 		background-color: #333;
 		border: solid 1px #00FFF4;
 		color: #00FFF4;
