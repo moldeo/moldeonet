@@ -1744,9 +1744,13 @@ var ConsoleInterface = {
 		"SaveAsVideo": function( filename ) {
 			//moCI.Render.renderOptions
 			console.log("SaveAsVideo > filename: ", filename);
-			var fullvideoname = moCI.Render.renderOptions["fullvideoname"];
-			filename+= "." + moCI.Render.renderOptions["videocontainer"];
+				
 			try {
+				var vcontainer = moCI.Render.renderOptions["videocontainer"];
+				var fullvideoname = moCI.Render.renderOptions["fullvideoname"];
+				if ( isNaN(filename.indexOf( "." + vcontainer )) )
+					filename+= "." + vcontainer;
+					
 				fs.copyFile( fullvideoname, filename, function(err) {
 					if (err) {
 						alert(err);
