@@ -8,6 +8,11 @@ var ConsoleInterface = {
 	State: {},
 	Project: {},
 	
+	/**
+	*	UPDATER OBJECT
+	*	Check for last version from download site and popup a notification
+	*
+	*/
 	Updater: {
 		"actual_version": "", /* check moldeoversion.txt or .xml */
 		"actual_version_str": "",
@@ -119,7 +124,7 @@ var ConsoleInterface = {
 																}
 															}, function(result) {
 																//got to page
-																if (result) {
+																if (result=="true") {
 																	OpenExternalPage("http://www.moldeo.org/downloads#head");
 																}
 																
@@ -174,31 +179,52 @@ var ConsoleInterface = {
 					}
 					*/
 					if (event.target.getAttribute("class")=="button_RECORD special_button"  ) {
-						showModalDialog( 	"Choose a quality", 
-										moCI.QualitySelect(), 
-										{ 
-											"buttons": {
-												"START RENDER": { 
-													"class": "modal-button", 
-													"return": true,
-												},
-												"CANCEL": { 
-													"class": "modal-button", 
-													"return": false, 
+					
+					moCI.checkWritePermission( function(success) { 
+						if (success)
+						showModalDialog( 	"Elija la calidad de la imagen", 
+											moCI.QualitySelect(), 
+											{ 
+												"buttons": {
+													"START RENDER": { 
+														"class": "modal-button", 
+														"return": true,
+													},
+													"CANCEL": { 
+														"class": "modal-button", 
+														"return": false, 
+													},
 												},
 											},
-										},
-										function( result ) {
-											if (result=="true" || result==true) {
-											
-												var ql = document.getElementById("quality_select");
-												if (ql && ql.options && ql.selectedIndex>=0) {
-													config.render.frame_quality = ql.options[ql.selectedIndex].value;
+											function( result ) {
+												if (result=="true" || result==true) {
+												
+													var ql = document.getElementById("quality_select");
+													if (ql && ql.options && ql.selectedIndex>=0) {
+														config.render.frame_quality = ql.options[ql.selectedIndex].value;
+													}
+												
+													OscMoldeoSend( { 'msg': '/moldeo','val0': 'consolerendersession', 'val1': config.render.frame_quality } );
 												}
-											
-												OscMoldeoSend( { 'msg': '/moldeo','val0': 'consolerendersession', 'val1': config.render.frame_quality } );
 											}
-										});
+										);
+						else
+							showModalDialog( 	"Sin permiso de escritura",
+												"Para obtener permiso debe clonar el proyecto en otra carpeta.",
+												{ 
+													"buttons": { 
+														"CLONAR": { "class": "modal-button", "return": true,}, 
+														"CERRAR": { "class": "modal-button", 	"return": false,},
+													}, 
+												},
+												function( result ) {
+													if (result=="true" || result==true) {
+														//MAYBE
+														//abrir ventana de clonado:
+														moCI.Editor.Functions.CloneDialog();
+													}
+												});
+									});
 					} else {
 						OscMoldeoSend( { 'msg': '/moldeo','val0': 'consolerendersession', 'val1': config.render.frame_quality } );
 					}
@@ -884,16 +910,11 @@ var ConsoleInterface = {
 			},
 			"buttonED_SaveProjectAs": {
 				"click": function(event) {
-					if (config.log.full) console.log("buttonED_SaveProjectAs > SaveAsDialog");
-					var saveasproject = document.getElementById("saveasproject");			
-					var clone_name = prompt("Ingresa el nuevo nombre del proyecto (sin acentos ni caracteres especiales por favor)","mi_clon");
-					if (saveasproject && clone_name) {
-						saveasproject.setAttribute("clone_name", clone_name );
-						saveasproject.setAttribute("value", "" );
-						saveasproject.value = "";
-						saveasproject.click();
-					}
-				}
+					if (config.log.full)
+						console.log("buttonED_SaveProjectAs > SaveAsDialog");
+					
+					moCI.Editor.Functions.CloneDialog();
+				},
 			},
 			"buttonED_Presentation": {
 				"click": function(event) { moCI.Presentation(); },
@@ -1082,6 +1103,18 @@ var ConsoleInterface = {
 			}
 		},
 		"Functions": {
+			"CloneDialog": function() {
+			
+				var saveasproject = document.getElementById("saveasproject");			
+				var clone_name = prompt("Ingresa el nuevo nombre del proyecto (sin acentos ni caracteres especiales por favor)","mi_clon");
+				
+				if (saveasproject && clone_name) {
+					saveasproject.setAttribute("clone_name", clone_name );
+					saveasproject.setAttribute("value", "" );
+					saveasproject.value = "";
+					saveasproject.click();
+				}
+			},
 			"SetColor": function( red_byte, green_byte, blue_byte, alpha_float ) {
 				var color = "#" + ("000000" + rgbToHex( red_byte, green_byte, blue_byte ) ).slice(-6);
 					if (config.log.full) console.log( "SetColor color: ", color, " r: ", red_byte
@@ -2095,6 +2128,21 @@ var ConsoleInterface = {
 		
 	},	
 	
+	"checkWritePermission": function( callback ) {
+		try {
+			var fd = fs.openSync( moCI.Project.datapath+"/._test_dummy","w" );
+			fs.writeSync( fd, "testing dummy" );
+		} catch(err) {
+			console.error(err);
+			//alert(err);			
+			if (callback) callback( false );
+			return;
+		}
+		
+		var fd = fs.unlinkSync( moCI.Project.datapath+"/._test_dummy" );
+		
+		if (callback) callback( true );
+	},
 	
 	"AddValue": function( moblabel, param, preconfig, value ) {
 		if (config.log.full) console.log("AddValue: moblabel:",moblabel, "param:",param, "preconfig:",preconfig,"value:",value );
