@@ -541,7 +541,7 @@ var ConsoleInterface = {
 				},
 				"emittertype": {
 					"min": "0",
-					"max": "7",
+					"max": "8",
 					"step": "1",
 				},
 				"randommethod": {
@@ -975,6 +975,7 @@ var ConsoleInterface = {
 						cfile.setAttribute("accept",".jpg,.png");
 						cfile.setAttribute("importobject","object_edition");
 						cfile.importobject = event.target.parentNode;
+						cfile.value = "";//so the value will change
 						cfile.click();
 					}
 					

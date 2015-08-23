@@ -2785,7 +2785,7 @@ function SetValue( moblabel, selector, preconfig, value ) {
 								//explode( color
 								if (config.log.full) console.log("SetValue of a color:",value,"subselec:",subselec,"ParamValue:",ParamValue );
 								
-								if (!isNaN(Number(value)) && !isNaN(Number(subselec)) && ParamValue.length>=3) {
+								if ( !isNaN(Number(value)) && !isNaN(Number(subselec)) && ParamValue.length>=3 ) {
 									ParamValue[subselec]["value"] = value;
 									value = rgbToHex( ParamValue[0]["value"]*255,
 													ParamValue[1]["value"]*255,
