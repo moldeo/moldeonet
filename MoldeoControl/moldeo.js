@@ -180,30 +180,36 @@ moInherit( moConfigDefinition, moAbstract );
 /**
 * moConfig
 */
-function moConfig() {
+function moConfig( options ) {
 	moCallConstructor( this, { _inherit: "moAbstract", _class: "moConfig" } );
-	
-	this.ConfigDefinition = {};
-	this.Params = {
-		"alpha": {
-			"values": {
-			
-			}
-		},
-		"syncro": {},
-		"color": {},
-	};
+	var self = this;
+	this.ConfigDefinition = options | {};
+	this.Params = {};
 	this.Preconfigs = {};
+	
+	this.SetConfigDefinition = function( ConfigDefinition ) {
+		self.ConfigDefinition = $.extend({}, self.ConfigDefinition, ConfigDefinition);
+	};
+	
+	this.CreateDefault = function( config_file_name ) {
+		//explore the Config Definition and create every parameter definition founded.
+		var self2 = this;
+		/*console.log("moConfig:", self, " moConfig.CreateDefault:",self2 );
+		for( var paramdefinition in self.ConfigDefinition ) {
+			var pDef = self.ConfigDefinition[ paramdefinition ];
+			self.Params[ pDef.name ] = new moParam( pDef );
+		}*/		
+	};
 	
 	this.LoadConfig = function( config_file_name ) {
 		//load from file:
 		
-	}
+	};
 	
 	this.SaveConfig = function( config_file_name ) {
 		//save to file:
 		
-	}
+	};
 }
 moInherit( moConfig, moAbstract );
 
@@ -279,16 +285,38 @@ function moInlets() {
 /**
 * moMoldeoObject (aka Mob or MOB (Moldeo Object) )
 */
-function moMoldeoObject() {
+function moMoldeoObject( MobDefinition ) {
 	moCallConstructor( this, { _inherit: "moScript", _class: "moMoldeoObject" } );
 	
-	this.MobState = new moMobState();
-	this.MobDefinition = new moMobDefinition();
+	this.MobState = new moMobState( MobDefinition );
+	this.MobDefinition = new moMobDefinition( MobDefinition );
 
-	this.Config = new moConfig();
+	this.Config = new moConfig( {
+		"configparams": {
+			"script": {
+				"paramdefinition": {
+					"paramtype": "SCRIPT",
+				},
+			},
+			"inlet": {
+				"paramdefinition": {
+					"paramtype": "INLET",
+				},				
+			},
+			"outlet": {
+				"paramdefinition": {
+					"paramtype": "OUTLET",
+				},								
+			}
+		},
+		"preconfigs": {			
+		},
+	} );
 	this.Outlets = new moOutlets();
 	this.Inlets = new moInlets();
 
+	this.Config.SetConfigDefinition( MobDefinition );
+	
 	this.Enable = function() {
 		this.MobState.Activated = true;
 	};	
@@ -338,7 +366,30 @@ function moEffect() {
 		"tintv": 1.0
 	};
 	
-	this.Config = {};
+	this.Config = {		
+		"configparams": {
+			"alpha": {
+				"paramdefinition": {
+					"paramtype": "ALPHA",
+				},
+			},
+			"color": {
+				"paramdefinition": {
+					"paramtype": "COLOR",
+				},				
+			},
+			"syncro": {
+				"paramdefinition": {
+					"paramtype": "SYNCRO",
+				},				
+			},
+			"phase": {
+				"paramdefinition": {
+					"paramtype": "PHASE",
+				},				
+			}
+		}
+	};
 
 	this.Draw = function( p_tempo_gral, p_parent_state ) { };
 	this.Interaction = function( p_device_manager ) { };
@@ -420,10 +471,13 @@ moInherit( moEffectManager, moAbstract );
 function moResourceManager() {
 	moCallConstructor( this, { _inherit: "moAbstract", _class: "moResourceManager" } );
 	
+	/** This Render Manager is based on WEBGL/THREE.JS*/
 	this.RenderMan = {};
 	this.TextureMan = {};
 	this.VideoMan = {};
 	this.SoundMan = {};
+	
+	/** This GL Functions are for webgl or three.js (depending on the best mode for your computer)*/
 	this.GLMan = {};
 	this.GuiMan = {};
 	this.MathMan = {};
@@ -471,4 +525,4 @@ function moMoldeoJsTest() {
 }
 
 
-var MoldeoJsTest = new moMoldeoJsTest();
+/*var MoldeoJsTest = new moMoldeoJsTest();*/

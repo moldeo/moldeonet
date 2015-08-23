@@ -5,6 +5,7 @@
 (B) Image do not load twice in the same project. //\\ No permite cargar la misma imagen en dos configs diferentes
 
 
+x 2015-08-23 2015-08-22 Both particles global ROTATE(X|Y|Z) and particular ROTATE (X|Y|Z) values should apply. //\\ Los parámetros de rotación deben poder aplicarse en las partículas o en el sistema.
 x 2015-08-23 2015-08-22 Last version update message fix. Button NO just close the message. //\\ En la ventana de notificación de una actualización, el botón NO te debe llevar a la página.
 x 2015-08-22 Create this todo.txt Format and conventions taken from https://github.com/ginatrapani/todo.txt-cli/wiki/The-Todo.txt-Format
 
