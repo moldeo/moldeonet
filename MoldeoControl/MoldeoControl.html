@@ -11,6 +11,13 @@
 <script src="js/jquery.min.js"></script>
 <script src="js/jquery.tinyscrollbar.js"></script>
 
+<script src="lib/threejs/build/three.min.js"></script>
+<script src="lib/threejs/examples/js/controls/TrackballControls.js"></script>
+<script src="lib/threejs/examples/js/renderers/Projector.js"></script>
+<script src="lib/threejs/examples/js/renderers/CanvasRenderer.js"></script>
+
+<script src="js/libs/stats.min.js"></script>
+
 
 <script src="config.js"></script>
 <script src="config.init.js"></script>
@@ -185,7 +192,7 @@
 			
 			<!--<button id="buttonED_previous_preconfig" class="button_previous_preconfig"></button>-->
 
-			<label id="object_label" class="object_label">
+			<div id="object_label" class="object_label">
 				<button id="button_object_onoff" title="Activar/Desactivar objeto" moblabel="" class="button_object_onoff button_object_off control_button"></button>
 				<span id="object_label_text">-</span>
 				<div id="object_preconfigs" class="object_preconfigs">
@@ -193,7 +200,7 @@
 					<button id="buttonED_2" title="Editar preconfig 2" moblabel=""  key="2" class="button_2 circle_button"></button>
 					<button id="buttonED_3" title="Editar preconfig 3" moblabel=""  key="3" class="button_3 circle_button"></button>
 				</div>
-			</label>
+			</div>
 			<!--<button id="buttonED_next_preconfig" class="button_next_preconfig"></button>-->
 			
 			<div id="object_edition" class="object_edition">
