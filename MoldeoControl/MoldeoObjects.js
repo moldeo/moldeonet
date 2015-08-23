@@ -541,7 +541,7 @@ var ConsoleInterface = {
 				},
 				"emittertype": {
 					"min": "0",
-					"max": "5",
+					"max": "7",
 					"step": "1",
 				},
 				"randommethod": {
@@ -568,6 +568,22 @@ var ConsoleInterface = {
 					"min": "-5.0",
 					"max": "5.0",
 					"step": "0.01",
+				},
+				
+				"translatex": {
+					"min": "-50.0",
+					"max": "50.0",
+					"step": "1",
+				},
+				"translatey": {
+					"min": "-50.0",
+					"max": "50.0",
+					"step": "1",
+				},
+				"translatez": {
+					"min": "-50.0",
+					"max": "50.0",
+					"step": "1",
 				},
 				
 				"randommotion": {

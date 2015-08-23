@@ -474,7 +474,7 @@ function ExecuteCanvasPositionInspector(event) {
 	
 	var selector = event.target.parentNode.getAttribute("selector");
 
-	SetInspectorMode( group , selector );
+	SetInspectorMode( group , selector, moblabel );
 	
 	if (selector=="translatexy") {
 		ExecuteStandardSlider( "POSITION", moblabel, "translatex", preconfig, (x-elcanvas.width*0.5)/(0.5*elcanvas.width) );
@@ -1492,7 +1492,7 @@ function ActivateInspectorSelector( event ) {
 			console.error("ActivateInspectorSelector > Inspector group not defined!",Inspector);
 			return;
 		}
-		SetInspectorMode( group, selector );
+		SetInspectorMode( group, selector, moblabel );
 	} catch(err) {
 		console.error("ActivateInspectorSelector > ", err, event);
 		alert("ActivateInspectorSelector > "+err);
@@ -2089,7 +2089,7 @@ var sliderpos;
 /**
 *
 */
-function SetPositionMode( group, parammode ) {
+function SetPositionMode( group, parammode, moblabel ) {
 	group = "POSITION";
 	
 	if (config.log.full) console.log("SetPositionMode > parammode: ", parammode);
@@ -2110,11 +2110,34 @@ function SetPositionMode( group, parammode ) {
 	
 		var slider = group+"_slide";
 		
+		var min = -5;
+		var max = 5;
+		var step = 0.01;
+		var Cons;
+		
+		var Mob = Editor.Objects[moblabel];
+		if (Mob==undefined) {
+		} else {
+			var effect_class_name = Mob.object.objectdefinition.name;
+			Cons = Editor.Constraints[effect_class_name][parammode];
+		}
+		//if (Cons) Cons = Editor.Constraints["particlessimple"][parammode];
+		
+		if (Cons==undefined) {
+			Cons = Editor.Constraints["standard"][parammode];
+		}
+
+		if (Cons) {
+			if (Cons["min"]!=undefined) min = Cons["min"];
+			if (Cons["max"]!=undefined) max = Cons["max"];
+			if (Cons["step"]!=undefined) step = Cons["step"];
+		}		
+		
 		//the slider (one slider per group, N selectors )
 		var sliderEl  = document.getElementById( slider );
-		sliderEl.setAttribute("min", "-1.0" );
-		sliderEl.setAttribute("max", "1.0" );
-		sliderEl.setAttribute("step", "0.01" );
+		sliderEl.setAttribute("min", min );
+		sliderEl.setAttribute("max", max );
+		sliderEl.setAttribute("step", step );
 		sliderEl.setAttribute("selector", parammode );
 		if (sliderEl === document.activeElement ) {
 			$(sliderEl).css("border", "solid 1px transparent");
@@ -2134,7 +2157,7 @@ function ExecutePositionCanvas( moblabel, selector, preconfig, sliderValue1, sli
 	
 }
 
-function SetScaleMode( group, parammode ) {
+function SetScaleMode( group, parammode, moblabel ) {
 	group = "SCALE";
 	var slider = group+"_slide";
 	var sliderEl  = document.getElementById( slider );
@@ -2144,9 +2167,34 @@ function SetScaleMode( group, parammode ) {
 		if (inputEl) {
 			activateClass( inputEl, "param_input_selected");
 			
-			sliderEl.setAttribute("min", "-1" );
-			sliderEl.setAttribute("max", "1.0" );
-			sliderEl.setAttribute("step", "0.01" );
+			var min = -5;
+			var max = 5;
+			var step = 0.01;
+			var Cons;
+			
+			var Mob = Editor.Objects[moblabel];
+			if (Mob==undefined) {
+			} else {
+				var effect_class_name = Mob.object.objectdefinition.name;
+				Cons = Editor.Constraints[effect_class_name][parammode];
+			}
+			//if (Cons) Cons = Editor.Constraints["particlessimple"][parammode];
+			
+			if (Cons==undefined) {
+				Cons = Editor.Constraints["standard"][parammode];
+			}
+
+			if (Cons) {
+				if (Cons["min"]!=undefined) min = Cons["min"];
+				if (Cons["max"]!=undefined) max = Cons["max"];
+				if (Cons["step"]!=undefined) step = Cons["step"];
+			}		
+			
+			//the slider (one slider per group, N selectors )
+			var sliderEl  = document.getElementById( slider );
+			sliderEl.setAttribute("min", min );
+			sliderEl.setAttribute("max", max );
+			sliderEl.setAttribute("step", step );
 			sliderEl.setAttribute("selector", parammode );	
 
 			if (sliderEl === document.activeElement ) {
@@ -2189,7 +2237,7 @@ function SetScaleMode( group, parammode ) {
 
 }
 
-function SetScaleParticleMode( group, parammode ) {
+function SetScaleParticleMode( group, parammode, moblabel ) {
 	group = "SCALEPARTICLE";
 	var slider = group+"_slide";
 	var sliderEl  = document.getElementById( slider );
@@ -2199,9 +2247,34 @@ function SetScaleParticleMode( group, parammode ) {
 		if (inputEl) {
 			activateClass( inputEl, "param_input_selected");
 			
-			sliderEl.setAttribute("min", "-1" );
-			sliderEl.setAttribute("max", "1.0" );
-			sliderEl.setAttribute("step", "0.01" );
+			var min = -5;
+			var max = 5;
+			var step = 0.01;
+			var Cons;
+
+			var Mob = Editor.Objects[moblabel];
+			if (Mob==undefined) {
+			} else {
+				var effect_class_name = Mob.object.objectdefinition.name;
+				Cons = Editor.Constraints[effect_class_name][parammode];
+			}
+			//if (Cons) Cons = Editor.Constraints["particlessimple"][parammode];
+
+			if (Cons==undefined) {
+				Cons = Editor.Constraints["standard"][parammode];
+			}
+
+			if (Cons) {
+				if (Cons["min"]!=undefined) min = Cons["min"];
+				if (Cons["max"]!=undefined) max = Cons["max"];
+				if (Cons["step"]!=undefined) step = Cons["step"];
+			}		
+
+			//the slider (one slider per group, N selectors )
+			var sliderEl  = document.getElementById( slider );
+			sliderEl.setAttribute("min", min );
+			sliderEl.setAttribute("max", max );
+			sliderEl.setAttribute("step", step );
 			sliderEl.setAttribute("selector", parammode );	
 
 			if (sliderEl === document.activeElement ) {
@@ -2245,7 +2318,7 @@ function SetScaleParticleMode( group, parammode ) {
 }
 
 
-function SetMotionMode( group, parammode ) {
+function SetMotionMode( group, parammode, moblabel ) {
 
 	var slider = group+"_slide";
 	var sliderEl  = document.getElementById( slider );
@@ -2291,7 +2364,7 @@ function SetMotionMode( group, parammode ) {
 /**
 *	SetSceneObjectsMode
 */
-function SetSceneObjectsMode( group, parammode ) {
+function SetSceneObjectsMode( group, parammode, moblabel ) {
 }
 
 /**
@@ -2299,12 +2372,12 @@ function SetSceneObjectsMode( group, parammode ) {
 *
 *	there is no scene states modes??
 */
-function SetSceneStatesMode( group, parammode ) {
+function SetSceneStatesMode( group, parammode, moblabel ) {
 
 }
 
 
-function SetStandardMode( group, parammode ) {
+function SetStandardMode( group, parammode, moblabel ) {
 
 	var slider = group+"_slide";
 	
@@ -2336,9 +2409,14 @@ function SetStandardMode( group, parammode ) {
 	var min = -5;
 	var max = 5;
 	var step = 0.01;
+	var Cons;
 	
-	Cons = Editor.Constraints["particlessimple"][parammode];
-	//if (Cons) Cons = Editor.Constraints["particlessimple"][parammode];
+	var Mob = Editor.Objects[moblabel];
+	if (Mob==undefined) {
+	} else {
+		var effect_class_name = Mob.object.objectdefinition.name;
+		Cons = Editor.Constraints[effect_class_name][parammode];
+	}
 	
 	if (Cons==undefined) {
 		Cons = Editor.Constraints["standard"][parammode];
@@ -2378,7 +2456,7 @@ function SetStandardMode( group, parammode ) {
 *	For SCALE group inspector, modes available are "horizontal", "vertical", and "proportional", so the behaviour for the slide is different
 *
 */
-function SetInspectorMode( group, parammode ) {
+function SetInspectorMode( group, parammode, moblabel ) {
 
 	//the label field
 	var labelEl = document.getElementById( group+"_slide_label" );
@@ -2403,39 +2481,39 @@ function SetInspectorMode( group, parammode ) {
 	
 
 	if (group=="POSITION") {
-		SetPositionMode( group, parammode );
+		SetPositionMode( group, parammode, moblabel );
 	} else
 	if (group=="SCALE") {
-		SetScaleMode( group, parammode );
+		SetScaleMode( group, parammode, moblabel );
 	}else	
 	if (group=="SCALEPARTICLE") {
-		SetScaleParticleMode( group, parammode );
+		SetScaleParticleMode( group, parammode, moblabel );
 	}else
 	if (group=="MOTION") {
-		SetMotionMode( group, parammode );
+		SetMotionMode( group, parammode, moblabel );
 	} else
 	if (group=="SCENE_OBJECTS") {
 		if (config.log.full) console.log("SetInspectorMode !!! for SCENE_OBJECTS");
-		SetSceneObjectsMode( group, parammode );
+		SetSceneObjectsMode( group, parammode, moblabel );
 	} else	
 	if (group=="SCENE_STATES") {
 		if (config.log.full) console.log("SetInspectorMode !!! for SCENE_STATES");
-		SetSceneStatesMode( group, parammode );
+		SetSceneStatesMode( group, parammode, moblabel );
 	} else	
 	if (group=="EMITTER") {
 		if (config.log.full) console.log("SetInspectorMode !!! for EMITTER: SetStandardMode: ", parammode);
-		SetStandardMode( group, parammode );
+		SetStandardMode( group, parammode, moblabel );
 	} else	
 	if (group=="BEHAVIOUR") {
 		if (config.log.full) console.log("SetInspectorMode !!! for BEHAVIOUR: SetStandardMode: ", parammode);
-		SetStandardMode( group, parammode );
+		SetStandardMode( group, parammode, moblabel );
 	} else	
 	if (group=="ATTRACTOR") {
 		if (config.log.full) console.log("SetInspectorMode !!! for ATTRACTOR: SetStandardMode: ", parammode);
-		SetStandardMode( group, parammode );
+		SetStandardMode( group, parammode, moblabel  );
 	} else {
 		if (config.log.full) console.log("SetInspectorMode !!! for group: ",group, " parammode: ", parammode);
-		SetStandardMode( group, parammode );	
+		SetStandardMode( group, parammode, moblabel  );	
 	}
 }
 
@@ -2880,7 +2958,7 @@ function UpdateStandardInspector( TabInspector, inspectorElement, moblabel, prec
 		slider.addEventListener("change", ExecuteSliderInspector );
 	}
 	
-	SetStandardMode( paramType, paramName );
+	SetStandardMode( paramType, paramName, moblabel  );
 	
 	if (paramValue==undefined) {
 		console.error("UpdateStandardInspector > NO PRECONFIG VALUE FOR : " + moblabel+"."+paramName+" AT POSITION ("+preconfig+")" );

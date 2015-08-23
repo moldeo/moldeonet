@@ -4,6 +4,8 @@
 2015-08-22 +MoldeoControl @moldeo1.0 task format
 (B) Image do not load twice in the same project. //\\ No permite cargar la misma imagen en dos configs diferentes
 
+2015-08-22 +MoldeoControl @moldeo1.0 task format
+(C) Setting min and max constraints by effect. //\\ Permitir setear el min y max de la posicion segun cada efecto (por ejemplo las particulas tenria un rango entre -50.0 y 50.0 en vez de -1 y 1
 
 x 2015-08-23 2015-08-22 Both particles global ROTATE(X|Y|Z) and particular ROTATE (X|Y|Z) values should apply. //\\ Los parámetros de rotación deben poder aplicarse en las partículas o en el sistema.
 x 2015-08-23 2015-08-22 Last version update message fix. Button NO just close the message. //\\ En la ventana de notificación de una actualización, el botón NO te debe llevar a la página.
