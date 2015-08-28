@@ -1181,7 +1181,7 @@ function selectEditorSound( moblabel, param_name, preconfig ) {
 		unselectEditorObjects(preconfig);
 		deactivateClass( audio_edition, "object_edition_collapsed");		
 		
-		if ( fetchSound( moblabel, param_name, preconfig ) ) {
+		if ( fetchAudio( moblabel, param_name, preconfig ) ) {
 			drawParamAudio( moblabel, param_name, preconfig );
 		}
 	} catch(err) {
