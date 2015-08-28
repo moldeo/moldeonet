@@ -1169,7 +1169,7 @@ function drawParamAudio( moblabel, param_name, preconfig ) {
 	if (audio_edition) audio_edition.setAttribute("title", filesrc );
 }
 
-function selectEditorSound( moblabel, param_name, preconfig_index ) {
+function selectEditorSound( moblabel, param_name, preconfig ) {
 	try {
 		var audio_edition = document.getElementById("audio_edition");
 		if (audio_edition==undefined) return;
