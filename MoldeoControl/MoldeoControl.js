@@ -2114,17 +2114,22 @@ function SetPositionMode( group, parammode, moblabel ) {
 		var max = 5;
 		var step = 0.01;
 		var Cons;
+		var Constraints;
 		
 		var Mob = Editor.Objects[moblabel];
 		if (Mob==undefined) {
 		} else {
 			var effect_class_name = Mob.object.objectdefinition.name;
-			Cons = Editor.Constraints[effect_class_name][parammode];
+			Constraints = Editor.Constraints[effect_class_name];
+			if (Constraints) {
+				Cons = Constraints[parammode];
+			}
 		}
-		//if (Cons) Cons = Editor.Constraints["particlessimple"][parammode];
 		
 		if (Cons==undefined) {
-			Cons = Editor.Constraints["standard"][parammode];
+			if (Editor.Constraints["standard"]) {
+				Cons = Editor.Constraints["standard"][parammode];
+			}
 		}
 
 		if (Cons) {
@@ -2171,17 +2176,22 @@ function SetScaleMode( group, parammode, moblabel ) {
 			var max = 5;
 			var step = 0.01;
 			var Cons;
+			var Constraints;
 			
 			var Mob = Editor.Objects[moblabel];
 			if (Mob==undefined) {
 			} else {
 				var effect_class_name = Mob.object.objectdefinition.name;
-				Cons = Editor.Constraints[effect_class_name][parammode];
+				Constraints = Editor.Constraints[effect_class_name];
+				if (Constraints) {
+					Cons = Constraints[parammode];
+				}
 			}
-			//if (Cons) Cons = Editor.Constraints["particlessimple"][parammode];
 			
 			if (Cons==undefined) {
-				Cons = Editor.Constraints["standard"][parammode];
+				if (Editor.Constraints["standard"]) {
+					Cons = Editor.Constraints["standard"][parammode];
+				}
 			}
 
 			if (Cons) {
@@ -2251,17 +2261,22 @@ function SetScaleParticleMode( group, parammode, moblabel ) {
 			var max = 5;
 			var step = 0.01;
 			var Cons;
-
+			var Constraints;
+			
 			var Mob = Editor.Objects[moblabel];
 			if (Mob==undefined) {
 			} else {
 				var effect_class_name = Mob.object.objectdefinition.name;
-				Cons = Editor.Constraints[effect_class_name][parammode];
+				Constraints = Editor.Constraints[effect_class_name];
+				if (Constraints) {
+					Cons = Constraints[parammode];
+				}
 			}
-			//if (Cons) Cons = Editor.Constraints["particlessimple"][parammode];
-
+			
 			if (Cons==undefined) {
-				Cons = Editor.Constraints["standard"][parammode];
+				if (Editor.Constraints["standard"]) {
+					Cons = Editor.Constraints["standard"][parammode];
+				}
 			}
 
 			if (Cons) {
@@ -2410,16 +2425,22 @@ function SetStandardMode( group, parammode, moblabel ) {
 	var max = 5;
 	var step = 0.01;
 	var Cons;
+	var Constraints;
 	
 	var Mob = Editor.Objects[moblabel];
 	if (Mob==undefined) {
 	} else {
 		var effect_class_name = Mob.object.objectdefinition.name;
-		Cons = Editor.Constraints[effect_class_name][parammode];
+		Constraints = Editor.Constraints[effect_class_name];
+		if (Constraints) {
+			Cons = Constraints[parammode];
+		}
 	}
 	
 	if (Cons==undefined) {
-		Cons = Editor.Constraints["standard"][parammode];
+		if (Editor.Constraints["standard"]) {
+			Cons = Editor.Constraints["standard"][parammode];
+		}
 	}
 
 	if (Cons) {
@@ -2925,6 +2946,7 @@ function UpdateSceneStatesInspector( inspectorElement, moblabel, preconfig ) {
 
 function UpdateStandardInspector( TabInspector, inspectorElement, moblabel, preconfig ) {
 	try {
+	
 	if (config.log.full) console.log("UpdateStandardInspector > ");
 	
 	if (inspectorElement==undefined) return;
