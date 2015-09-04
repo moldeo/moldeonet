@@ -1317,7 +1317,8 @@ function fetchImage( moblabel, param_name, preconfig, remote ) {
 			IMGOBJECT["img"].onload = onloadImage;				
 			//using real-path for this image, if we are in local-control
 			var newsrc = ValueToSrc( ParamValue[0]["value"] );
-			if (IMGOBJECT["img"].filesrc!=newsrc) {
+			//if (IMGOBJECT["img"].filesrc!=newsrc) {
+			if (newsrc) {
 			
 				IMGOBJECT["filesrc"] = newsrc;
 				IMGOBJECT["img"].filesrc = newsrc;
@@ -2757,11 +2758,8 @@ function ImportFile( moblabel, param_name, preconfig, filename ) {
 	
 }
 
-function SetValue( moblabel, selector, preconfig, value ) {
-	
-	if (config.log.full) console.log("SetValue("+moblabel+","+selector+","+preconfig+","+value+")");
-	var subselec = undefined;
-	var clselector=selector;
+function selectorToSubselector( selector ) {
+	var subselec = 0;
 	if (selector=="color:0") { subselec = 0;}
 	if (selector=="color_1") subselec = 1;
 	if (selector=="color_2") subselec = 2;
@@ -2770,13 +2768,17 @@ function SetValue( moblabel, selector, preconfig, value ) {
 	if (selector=="particlecolor_1") subselec = 1;
 	if (selector=="particlecolor_2") subselec = 2;
 	if (selector=="particlecolor_3") subselec = 3;
+	return subselec;
+} 
 
-
+function selectorToSelector( selector ) {
+	var Selector = selector;
+	
 	if (selector=="color:0"
 	|| selector=="color_1"
 	|| selector=="color_2"
 	|| selector=="color_3") {
-		selector = "color";
+		Selector = "color";
 	}
 	
 	
@@ -2784,9 +2786,47 @@ function SetValue( moblabel, selector, preconfig, value ) {
 	|| selector=="particlecolor_1"
 	|| selector=="particlecolor_2"
 	|| selector=="particlecolor_3") {
-		selector = "particlecolor";
+		Selector = "particlecolor";
+	}
+	return Selector; 
+}
+
+function SetSaveNeeded() {
+	Editor.SaveNeeded = true;
+	if (Editor.SaveNeeded) {
+		activateClass( document.getElementById("buttonED_SaveProject"), "saveneeded" );
+		activateClass( document.getElementById("buttonED_SaveProjectAs"), "saveneeded" );
 	}
 
+}
+
+function RefreshValue( moblabel, selector, preconfig ) {
+
+	var subselec = selectorToSubselector(selector);
+	selector = selectorToSelector(selector);
+
+	var APIObj = { 
+				"msg": "/moldeo",
+				"val0": "valuerefresh", 
+				"val1": moblabel, 
+				"val2": selector,
+				"val3": preconfig
+				};
+	if (config.log.full) console.log("RefreshValue > APIObj:",APIObj);
+	SetSaveNeeded();
+	OscMoldeoSend( APIObj );
+
+}
+
+function SetValue( moblabel, selector, preconfig, value ) {
+	
+	if (config.log.full) console.log("SetValue("+moblabel+","+selector+","+preconfig+","+value+")");
+	
+	var subselec = undefined;
+	var clselector=selector;
+
+	subselec = selectorToSubselector(selector);
+	selector = selectorToSelector(selector);
 
 	var success = false;
 	try {
@@ -2828,7 +2868,9 @@ function SetValue( moblabel, selector, preconfig, value ) {
 							} else {							
 								Data["value"] = value;
 							}
+							
 							success = true;
+							
 						} else console.error("SetValue > no Data for " + selector +" preconf:"+preconfig+" subvalue: 0 ");
 					} else {
 						moCI.AddValue( moblabel, selector, preconfig, value );
@@ -2849,11 +2891,7 @@ function SetValue( moblabel, selector, preconfig, value ) {
 						"val4": value
 						};
 			if (config.log.full) console.log("APIObj:",APIObj);
-			Editor.SaveNeeded = true;
-			if (Editor.SaveNeeded) {
-				activateClass( document.getElementById("buttonED_SaveProject"), "saveneeded" );
-				activateClass( document.getElementById("buttonED_SaveProjectAs"), "saveneeded" );
-			}
+			SetSaveNeeded();
 			OscMoldeoSend( APIObj );
 		}
 	} catch(bigerr) {

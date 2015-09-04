@@ -1656,15 +1656,39 @@ height: 18%;
 				height: 100%;
 			}
 
-			
+
+			#object_edition .object_edit {
+				display: none;
+			}
+				
 			.object_edition .object_edit {
 				background-image: url(buttons/button_Editor_ObjectEdition_EDIT.svg);
+				top: 3px;
+			}
+			
+			.object_edition .object_edit:hover {
+				background-image: url(buttons/button_Editor_ObjectEdition_EDIT_on.svg);
 				top: 3px;
 			}
 			
 			.object_edition .object_import {
 				background-image: url(buttons/button_Editor_ObjectEdition_IMPORT.svg);
 				top: 15px;
+			}
+
+			.object_edition .object_import:hover {
+				background-image: url(buttons/button_Editor_ObjectEdition_IMPORT_on.svg);
+				top: 15px;
+			}
+			
+			.object_edition .object_refresh {
+				background-image: url(buttons/button_Editor_ObjectEdition_REFRESH.svg);
+				top: 3px;
+			}
+
+			.object_edition .object_refresh:hover {
+				background-image: url(buttons/button_Editor_ObjectEdition_REFRESH_on.svg);
+				top: 3px;
 			}
 			
 		.object_color {

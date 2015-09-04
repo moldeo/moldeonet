@@ -981,6 +981,37 @@ var ConsoleInterface = {
 					
 				},
 			},
+			"object_refresh": {
+				"click": function(event) {
+				
+					if (config.log.full) console.log("object_refresh > REFRESH IMAGE/OBJECT");
+					
+					if (Editor.ObjectSelected=="" || Editor.ObjectSelected==undefined) {
+						alert("Debe seleccionar un efecto antes de importar una imagen.");
+						return;
+					}
+					
+					
+					var moblabel = event.target.parentNode.getAttribute("moblabel");
+					var preconfig = event.target.parentNode.getAttribute("preconfig");
+					var paramname = event.target.parentNode.getAttribute("paramname");
+					
+					RefreshValue( moblabel, paramname, preconfig );
+					/*
+					var cfile = document.getElementById("importfile");			
+					
+					if (cfile) {
+						//cfile.setAttribute();
+						cfile.setAttribute("accept",".jpg,.png");
+						cfile.setAttribute("importobject","object_edition");
+						cfile.importobject = event.target.parentNode;
+						cfile.value = "";//so the value will change
+						cfile.click();
+					}
+					*/
+					
+				},
+			},
 			"audio_import": {
 				"click": function(event) {
 				
