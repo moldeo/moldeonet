@@ -1288,6 +1288,9 @@ function onloadImage(event) {
 		selectEditorImage( m, p, i );
 };
 
+
+var global_refresh = false;
+
 function fetchImage( moblabel, param_name, preconfig, remote ) {
 	try {
 		if (remote) return fetchImageRemote( moblabel, param_name, preconfig );
@@ -1317,9 +1320,9 @@ function fetchImage( moblabel, param_name, preconfig, remote ) {
 			IMGOBJECT["img"].onload = onloadImage;				
 			//using real-path for this image, if we are in local-control
 			var newsrc = ValueToSrc( ParamValue[0]["value"] );
-			//if (IMGOBJECT["img"].filesrc!=newsrc) {
-			if (newsrc) {
-			
+			if (IMGOBJECT["img"].filesrc!=newsrc || global_refresh) {
+			//if (newsrc) {
+				global_refresh = false;
 				IMGOBJECT["filesrc"] = newsrc;
 				IMGOBJECT["img"].filesrc = newsrc;
 				IMGOBJECT["img"].src = newsrc;
@@ -2814,6 +2817,7 @@ function RefreshValue( moblabel, selector, preconfig ) {
 				};
 	if (config.log.full) console.log("RefreshValue > APIObj:",APIObj);
 	SetSaveNeeded();
+	global_refresh = true;
 	OscMoldeoSend( APIObj );
 
 }
