@@ -11,7 +11,7 @@ var ConsoleInterface = {
 	/**
 	*	UPDATER OBJECT
 	*	Check for last version from download site and popup a notification
-	*
+	*   TODO: add 
 	*/
 	Updater: {
 		"actual_version": "", /* check moldeoversion.txt or .xml */
@@ -136,13 +136,27 @@ var ConsoleInterface = {
 		},
 	},
 	
+	/**
+	*   PLAYER OBJECT
+	*
+	*	All members and functions related to manipulate the Player (Reproductor)
+	*   
+	*   TODO: 
+	*/
 	Player: {
 		'Display': {
 		},
 		'moConsole': {
 		},
 	},
-	
+
+	/**
+	*   CONTROL OBJECT
+	*
+	*   All members and functions related to Controlling the state of moldeo objects and effects
+	*
+	*   TODO: 
+	*/	
 	Control: {
 		"ObjectSelected": undefined,
 		"PreconfigSelected": {},
@@ -506,6 +520,13 @@ var ConsoleInterface = {
 		},
 	},
 	
+	/**
+	*   EDITOR OBJECT
+	*
+	*   All members and functions related to modifying the configuration of the moldeo objects and effects
+	*   
+	*   TODO: 
+	*/
 	Editor: {
 		"ObjectSelected": "",
 		"PreconfigSelected": 0,
@@ -1263,6 +1284,14 @@ var ConsoleInterface = {
 		},
 	},
 
+	
+	/**
+	*   CONNECTOR OBJECT
+	*
+	*   All members and functions related to the connections configuration of the moldeo objects and effects
+	*   
+	*   TODO: 
+	*/
 	Connectors: {
 		
 		"Objects": {
@@ -1410,6 +1439,13 @@ var ConsoleInterface = {
 		},
 	},
 	
+	/**
+	*   SCENES OBJECT
+	*
+	*   All members and functions related to the Moldeo Scene objectss
+	*   
+	*   TODO: 
+	*/
 	Scenes: {
 		"ObjectSelected": false,
 		"ScenePreEffects": {},
@@ -1418,6 +1454,13 @@ var ConsoleInterface = {
 		"SceneStates": {}
 	},
 	
+	/**
+	*   BROWSER OBJECT
+	*
+	*   All members and functions related to the project browser.
+	*   
+	*   TODO: 
+	*/
 	Browser: {
 		"Projects": {			
 			"Recents": [],
@@ -1761,6 +1804,13 @@ var ConsoleInterface = {
 		}
 	},
 	
+	/**
+	*   RENDER OBJECT
+	*
+	*   All members and functions related to the rendering process.
+	*   
+	*   TODO: 
+	*/
 	Render: {
 		"document": null,
 		"winRender": null,
@@ -2178,8 +2228,9 @@ var ConsoleInterface = {
 	
 	"checkWritePermission": function( callback ) {
 		try {
-			var fd = fs.openSync( moCI.Project.datapath+"/._test_dummy","w" );
+			var fd = fs.openSync( moCI.Project.datapath+"/._test_dummy","w+" );
 			fs.writeSync( fd, "testing dummy" );
+			fs.closeSync( fd );
 		} catch(err) {
 			console.error(err);
 			//alert(err);			
