@@ -736,6 +736,77 @@ PRECONFIG SELECTOR  PANEL
 	/*height: 100%;*/
 }	
 
+.third_effects {
+	top: 40%;
+	width: 16%;
+	height: 60%;
+	left: 25%;
+	z-index: 1;
+}
+
+
+.third_effects button {
+	display: block;
+	position: relative;
+	float: left;
+	clear: none;
+	width: 22%;
+	height: 25%;
+	/*background-color: red;*/
+	margin: 1%;
+}
+
+
+.button_T { background-image: url( buttons/button_T_off.svg );}
+#button_T:active, #button_T.object_enabled { background-image: url( buttons/button_T_on.svg ); }
+#button_T.object_enabled.fxselected { background-image: url( buttons/button_T_selec_on.svg ); }
+.button_T.fxselected { background-image: url( buttons/button_T_selec.svg ); }
+.button_T.fxediting { background-image: url( buttons/button_T_selec_on.svg ); }
+
+.button_F { background-image: url( buttons/button_F_off.svg );}
+#button_F:active, #button_F.object_enabled { background-image: url( buttons/button_F_on.svg ); }
+#button_F.object_enabled.fxselected { background-image: url( buttons/button_F_selec_on.svg ); }
+.button_F.fxselected { background-image: url( buttons/button_F_selec.svg ); }
+.button_F.fxediting { background-image: url( buttons/button_F_selec_on.svg ); }
+
+.button_G { background-image: url( buttons/button_G_off.svg );}
+#button_G:active, #button_G.object_enabled { background-image: url( buttons/button_G_on.svg ); }
+#button_G.object_enabled.fxselected { background-image: url( buttons/button_G_selec_on.svg ); }
+.button_G.fxselected { background-image: url( buttons/button_G_selec.svg ); }
+.button_G.fxediting { background-image: url( buttons/button_G_selec_on.svg ); }
+
+.button_H { background-image: url( buttons/button_H_off.svg );}
+#button_H:active, #button_H.object_enabled { background-image: url( buttons/button_H_on.svg ); }
+#button_H.object_enabled.fxselected { background-image: url( buttons/button_H_selec_on.svg ); }
+.button_H.fxselected { background-image: url( buttons/button_H_selec.svg ); }
+.button_H.fxediting { background-image: url( buttons/button_H_selec_on.svg ); }
+
+.button_C { background-image: url( buttons/button_C_off.svg );}
+#button_C:active, #button_C.object_enabled { background-image: url( buttons/button_C_on.svg ); }
+#button_C.object_enabled.fxselected { background-image: url( buttons/button_C_selec_on.svg ); }
+.button_C.fxselected { background-image: url( buttons/button_C_selec.svg ); }
+.button_C.fxediting { background-image: url( buttons/button_C_selec_on.svg ); }
+
+.button_V { background-image: url( buttons/button_V_off.svg );}
+#button_V:active, #button_V.object_enabled { background-image: url( buttons/button_V_on.svg ); }
+#button_V.object_enabled.fxselected { background-image: url( buttons/button_V_selec_on.svg ); }
+.button_V.fxselected { background-image: url( buttons/button_V_selec.svg ); }
+.button_V.fxediting { background-image: url( buttons/button_V_selec_on.svg ); }
+
+.button_B { background-image: url( buttons/button_B_off.svg );}
+#button_B:active, #button_B.object_enabled { background-image: url( buttons/button_B_on.svg ); }
+#button_B.object_enabled.fxselected { background-image: url( buttons/button_B_selec_on.svg ); }
+.button_B.fxselected { background-image: url( buttons/button_B_selec.svg ); }
+.button_B.fxediting { background-image: url( buttons/button_B_selec_on.svg ); }
+
+
+.button_N { background-image: url( buttons/button_N_off.svg );}
+#button_N:active, #button_N.object_enabled { background-image: url( buttons/button_N_on.svg ); }
+#button_N.object_enabled.fxselected { background-image: url( buttons/button_N_selec_on.svg ); }
+.button_N.fxselected { background-image: url( buttons/button_N_selec.svg ); }
+.button_N.fxediting { background-image: url( buttons/button_N_selec_on.svg ); }
+
+
 /*
 .button_V {
 	background-image: url( buttons/button_V_off.svg );

@@ -15,7 +15,7 @@
    id="svg94763"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="button_C_selec_on.svg">
+   sodipodi:docname="button_G_selec_on.svg">
   <defs
      id="defs94765">
     <linearGradient
@@ -2504,8 +2504,8 @@
      showborder="true"
      inkscape:window-width="573"
      inkscape:window-height="493"
-     inkscape:window-x="948"
-     inkscape:window-y="6"
+     inkscape:window-x="950"
+     inkscape:window-y="109"
      inkscape:window-maximized="0"
      showguides="true"
      inkscape:guide-bbox="true" />
@@ -2517,7 +2517,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -2639,6 +2639,6 @@
          id="tspan3376-9"
          x="204.14784"
          y="412.5289"
-         style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#00f8ff;fill-opacity:1;font-family:DSC;-inkscape-font-specification:DSC">V</tspan></text>
+         style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#00f8ff;fill-opacity:1;font-family:DSC;-inkscape-font-specification:DSC">G</tspan></text>
   </g>
 </svg>
