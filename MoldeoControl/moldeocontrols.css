@@ -1517,10 +1517,54 @@ height: 18%;
 	display: block;
 }
 
+
+.third_editor_effects {
+	bottom: 5%;
+	left: 3%;
+	width: 16.8%;
+	height: 60%;
+	z-index: 4;
+	position: absolute;
+	display: none;
+	background-color: rgba(0,0,0,0.58);
+}
+
 .first_editor_effects button,
 .second_editor_effects button {
 	width: 33%;
 	height: 50%;
+}
+
+#toggle_third_editor_effects {
+	left: 1%;
+	bottom: 5%;
+	width: 2%;
+	height: 16%;
+	position: absolute;
+	display: block;
+	background-color: grey;
+}
+
+#toggle_third_editor_effects .glyphicon-minus {
+	display: none;
+}
+
+#toggle_third_editor_effects.expanded .glyphicon-minus {
+	display: block !important;
+}
+#toggle_third_editor_effects.expanded .glyphicon-plus {
+	display: none;
+}
+
+.third_editor_effects button {
+	display: block;
+	position: relative;
+	float: left;
+	clear: none;
+	width: 22%;
+	height: 25%;
+	/*background-color: red;*/
+	margin: 1%;
 }
 
 .effects_side {

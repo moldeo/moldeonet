@@ -962,6 +962,12 @@ var ConsoleInterface = {
 			"buttonED_PreviewShot": {
 				"click": function(event) { moCI.PreviewShot(); },
 			},
+			"toggle_third_editor_effects": {
+				"click": function(event) { 
+					$("#third_editor_effects").toggle();
+					$("#toggle_third_editor_effects").toggleClass("expanded");
+				},
+			},
 			"importfile": {
 				"change": function(event) {
 					if (event.target.importobject==undefined) return;
@@ -1280,7 +1286,7 @@ var ConsoleInterface = {
 					document.getElementById(groupName+"_slide").addEventListener("change", ExecuteSliderInspector );
 			}		
 			
-			
+
 		},
 	},
 
