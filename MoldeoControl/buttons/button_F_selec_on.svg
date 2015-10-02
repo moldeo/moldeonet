@@ -15,7 +15,7 @@
    id="svg94763"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="button_C_selec_on.svg">
+   sodipodi:docname="button_F_selec_on.svg">
   <defs
      id="defs94765">
     <linearGradient
@@ -2491,8 +2491,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="8.0658442"
-     inkscape:cx="23.805459"
-     inkscape:cy="19.036192"
+     inkscape:cx="15.095394"
+     inkscape:cy="10.302542"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -2502,10 +2502,10 @@
      fit-margin-bottom="0"
      inkscape:showpageshadow="false"
      showborder="true"
-     inkscape:window-width="573"
-     inkscape:window-height="493"
-     inkscape:window-x="948"
-     inkscape:window-y="6"
+     inkscape:window-width="1114"
+     inkscape:window-height="630"
+     inkscape:window-x="-1"
+     inkscape:window-y="131"
      inkscape:window-maximized="0"
      showguides="true"
      inkscape:guide-bbox="true" />
@@ -2517,7 +2517,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -2639,6 +2639,6 @@
          id="tspan3376-9"
          x="204.14784"
          y="412.5289"
-         style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#00f8ff;fill-opacity:1;font-family:DSC;-inkscape-font-specification:DSC">V</tspan></text>
+         style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#00f8ff;fill-opacity:1;font-family:DSC;-inkscape-font-specification:DSC">F</tspan></text>
   </g>
 </svg>

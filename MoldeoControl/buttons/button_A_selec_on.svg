@@ -2491,10 +2491,10 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="8.0658442"
-     inkscape:cx="28.596776"
+     inkscape:cx="8.078155"
      inkscape:cy="10.302542"
      inkscape:document-units="px"
-     inkscape:current-layer="g14803"
+     inkscape:current-layer="g12770"
      showgrid="false"
      fit-margin-top="0"
      fit-margin-left="0"
@@ -2502,11 +2502,13 @@
      fit-margin-bottom="0"
      inkscape:showpageshadow="false"
      showborder="true"
-     inkscape:window-width="1536"
-     inkscape:window-height="785"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
-     inkscape:window-maximized="1" />
+     inkscape:window-width="735"
+     inkscape:window-height="630"
+     inkscape:window-x="-1"
+     inkscape:window-y="131"
+     inkscape:window-maximized="0"
+     showguides="true"
+     inkscape:guide-bbox="true" />
   <metadata
      id="metadata94768">
     <rdf:RDF>
@@ -2559,7 +2561,7 @@
          id="path10696-3-0-0" />
       <path
          inkscape:connector-curvature="0"
-         style="color:#000000;fill:none;stroke:#00f8ff;stroke-width:1.08201408;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+         style="color:#000000;fill:none;stroke:#00f8ff;stroke-width:2.88537076;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
          d="m 232.69462,647.12599 c 1.37233,0 2.65463,0.2783 3.84375,0.78125 1.18912,0.50295 2.28817,1.22567 3.1875,2.125 0.89933,0.89933 1.62205,1.96713 2.125,3.15625 0.50295,1.18912 0.78125,2.50267 0.78125,3.875 0,1.37233 -0.2783,2.68588 -0.78125,3.875 -0.50295,1.18912 -1.22567,2.25692 -2.125,3.15625 -0.89933,0.89933 -1.99838,1.62205 -3.1875,2.125 -1.18912,0.50295 -2.47142,0.78125 -3.84375,0.78125 -1.37231,0 -2.68586,-0.2783 -3.87498,-0.78125 -1.18912,-0.50295 -2.25692,-1.22567 -3.15625,-2.125 -0.89933,-0.89933 -1.62205,-1.96713 -2.125,-3.15625 -0.50295,-1.18912 -0.78125,-2.50267 -0.78125,-3.875 l 0,50.0625 79.99998,0 0,-60 -70.0625,0 z"
          id="path10696-34-8" />
       <path
