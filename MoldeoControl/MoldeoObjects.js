@@ -388,10 +388,15 @@ var ConsoleInterface = {
 						selectEffect( mkey );
 						//RegisterPlayerPreconfigsButton();
 					} else {
+						var label = moCI.mapSelectionsObjects[mkey];
 						if ( !classActivated( event.target, "object_enabled") ) {
-							OscMoldeoSend( { 'msg': '/moldeo','val0': 'effectenable', 'val1': moCI.mapSelectionsObjects[mkey] } );
+							if ( moCI.Project.MapObjects[label].classname.indexOf("Effect")>0) {
+								OscMoldeoSend( { 'msg': '/moldeo','val0': 'effectenable', 'val1': moCI.mapSelectionsObjects[mkey] } );
+							} else OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectenable', 'val1': moCI.mapSelectionsObjects[mkey] } );
 						} else {
-							OscMoldeoSend( { 'msg': '/moldeo','val0': 'effectdisable', 'val1': moCI.mapSelectionsObjects[mkey] } );
+							if ( moCI.Project.MapObjects[label].classname.indexOf("Effect")>0) {
+								OscMoldeoSend( { 'msg': '/moldeo','val0': 'effectdisable', 'val1': moCI.mapSelectionsObjects[mkey] } );
+							} else OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectdisable', 'val1': moCI.mapSelectionsObjects[mkey] } );
 						}			
 					}
 				} else console.error("RegisterPlayerButtons > no key attribute in "+mid);
@@ -768,7 +773,31 @@ var ConsoleInterface = {
 					"max": 180,
 					"step": 1,
 				},
-
+				"threshold": {
+					"min": 0,
+					"max": 255,
+					"step": 1,
+				},
+				"threshold_max": {
+					"min": 0,
+					"max": 255,
+					"step": 1,
+				},
+				"threshold_type": {
+					"min": 0,
+					"max": 5,
+					"step": 1,
+				},
+				"reduce_width": {
+					"min": 1,
+					"max": 1920,
+					"step": 1,
+				},
+				"reduce_height": {
+					"min": 1,
+					"max": 1080,
+					"step": 1,
+				},
 			}
 		},
 		"Images": {},
@@ -893,9 +922,13 @@ var ConsoleInterface = {
 					}
 					
 					if ( !classActivated( event.target, "object_onoff_on") ) {
-						OscMoldeoSend( { 'msg': '/moldeo','val0': 'effectenable', 'val1': mob_label } );
+						if (moCI.Project.MapObjects[mob_label].classname.indexOf("Effect")>0) {
+							OscMoldeoSend( { 'msg': '/moldeo','val0': 'effectenable', 'val1': mob_label } );
+						} else OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectenable', 'val1': mob_label } );
 					} else {
-						OscMoldeoSend( { 'msg': '/moldeo','val0': 'effectdisable', 'val1': mob_label } );
+						if (moCI.Project.MapObjects[mob_label].classname.indexOf("Effect")>0) {
+							OscMoldeoSend( { 'msg': '/moldeo','val0': 'effectdisable', 'val1': mob_label } );
+						} else OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectdisable', 'val1': mob_label } );
 					}
 					
 				}
@@ -1917,20 +1950,22 @@ var ConsoleInterface = {
 		
 		if (moCI.State==undefined) return;
 		if (config.log.full) console.log("moCI.UpdateState > "+info);
-		if (config.log.full) console.log("moCI.State[effectstate][tempo]:" + moCI.State["effectstate"]["tempo"]);
-		
-		var gtimerstate = moCI.State["effectstate"]["tempo"]["globaltimer_state"];
-		var gtimerclock = moCI.State["effectstate"]["tempo"]["globaltimer_duration"];
-		
-		if (config.log.full) console.log("moCI.UpdateState: gtimerstate:" + gtimerstate + " gtimerclock:" + gtimerclock );
-		
-		var bENTER = document.getElementById("button_ENTER");
-		var button_classes = { "playing": "button_PAUSE", "stopped": "button_ENTER", "paused": "button_ENTER" }
+		if (moCI.State["effectstate"]["tempo"]) {
+			if (config.log.full) console.log("moCI.State[effectstate][tempo]:" + moCI.State["effectstate"]["tempo"]);
+				
+			var gtimerstate = moCI.State["effectstate"]["tempo"]["globaltimer_state"];
+			var gtimerclock = moCI.State["effectstate"]["tempo"]["globaltimer_duration"];
+			
+			if (config.log.full) console.log("moCI.UpdateState: gtimerstate:" + gtimerstate + " gtimerclock:" + gtimerclock );
+			
+			var bENTER = document.getElementById("button_ENTER");
+			var button_classes = { "playing": "button_PAUSE", "stopped": "button_ENTER", "paused": "button_ENTER" }
 
-		if (bENTER && gtimerstate) {
-			bENTER.setAttribute("class",button_classes[gtimerstate]+" special_button");
-		} else {
-			console.error("NO button_ENTER for PLAY action or no 'globaltimer_state/duration' received.");
+			if (bENTER && gtimerstate) {
+				bENTER.setAttribute("class",button_classes[gtimerstate]+" special_button");
+			} else {
+				console.error("NO button_ENTER for PLAY action or no 'globaltimer_state/duration' received.");
+			}
 		}
 		
 		if ( moCI.State.mode=="rendersession" ) {
@@ -1952,7 +1987,7 @@ var ConsoleInterface = {
 		moCI.Project = info;
 		moCI.mapSelectionsObjectsByLabel = {};
 		moCI.mapSelectionsObjects = {};
-
+/*
 		if (moCI.Project.MapEffects==undefined) return;
 		
 		for(var label in moCI.Project.MapEffects) {
@@ -1964,6 +1999,20 @@ var ConsoleInterface = {
 			if (keyname!="" && moCI.mapSelectionsObjects)
 				moCI.mapSelectionsObjects[ keyname ] = label;
 		}
+*/
+		if (moCI.Project.MapObjects==undefined) return;
+		
+		for(var label in moCI.Project.MapObjects) {
+			keyname = moCI.Project.MapObjects[label].keyname;
+			name = moCI.Project.MapObjects[label].name;
+			
+			if (moCI.mapSelectionsObjectsByLabel)
+				moCI.mapSelectionsObjectsByLabel[ label ]  = keyname;
+				
+			if (keyname!="" && moCI.mapSelectionsObjects)
+				moCI.mapSelectionsObjects[ keyname ] = label;
+		}
+
 
 		RegisterAllButtonActions();
 
@@ -1973,8 +2022,25 @@ var ConsoleInterface = {
 		//.setAttribute("class","button_PAUSE special_button");
 		
 		//update every object states
+		/*
 		for(var label in moCI.Project.MapEffects) {
 			OscMoldeoSend( { 'msg': '/moldeo','val0': 'effectgetstate', 'val1': label } );
+		}
+		*/
+		for(var label in moCI.Project.MapObjects) {
+			var MOB = moCI.Project.MapObjects[ label ];
+			
+			if (	MOB.classname.indexOf("Effect")>0 ) {
+				OscMoldeoSend( { 'msg': '/moldeo','val0': 'effectgetstate', 'val1': label } );
+			} else 
+			if (	MOB.classname=="moResource"
+					|| MOB.classname=="moIODevice") {
+				OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectgetstate', 'val1': label } );
+			}
+			
+			if (MOB.keyname=="") {
+			}
+			
 		}
 		
 		moCI.Control.Functions.ObjectsToProjectPanel( moCI.Project );

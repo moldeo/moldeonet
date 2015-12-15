@@ -93,11 +93,14 @@ function selectEffect( selkey ) {
 	if (config.log.full) console.log("selectEffect > selkey: ",selkey);
 
 	var dSEL = document.getElementById("button_"+selkey);
-	if (moCI.mapSelectionsObjects && moCI.mapSelectionsObjects[selkey]) {
+	var MOB_label = "";
 	
+	if (moCI.mapSelectionsObjects && moCI.mapSelectionsObjects[selkey]) {
+		MOB_label = moCI.mapSelectionsObjects[selkey];
 	} else return console.error("selectEffect > NO MAPPING for this OBJECT > mapSelectionsObjects[" + selkey +"] > " + moCI.mapSelectionsObjects[selkey] );
 	
-	Control.ObjectSelected = moCI.mapSelectionsObjects[selkey];
+	Control.ObjectSelected = MOB_label;
+	
 	if (Control.PreconfigsSelected[Control.ObjectSelected]==undefined)
 		Control.PreconfigsSelected[Control.ObjectSelected] = 0;
 	//unselect all
@@ -112,7 +115,9 @@ function selectEffect( selkey ) {
 	if (dc) activateClass( dc, "circle_selected" );
 	
 	//set sliders
-	OscMoldeoSend( { 'msg': '/moldeo','val0': 'effectgetstate', 'val1': moCI.mapSelectionsObjects[selkey] } );
+	if (moCI.Project.MapObjects[MOB_label].classname.indexOf("Effect")>0) {
+		OscMoldeoSend( { 'msg': '/moldeo','val0': 'effectgetstate', 'val1': MOB_label } );
+	} else OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectgetstate', 'val1': MOB_label } );
 	
 	if (dSEL) activateClass( dSEL, "fxselected" );
 }
@@ -665,26 +670,28 @@ function UnselectSelectorPositions( parent ) {
 
 function UpdateControl( MOB_label ) {
 
-	var moldeo_message_info = Editor.States[MOB_label];
+	var objectstate = Editor.States[MOB_label];
 
-	if (moldeo_message_info) {
-		var alphav = moldeo_message_info["alpha"]*100;
-		
-		if (config.log.full) console.log("alpha:",alphav);
-		
-		var sH = document.getElementById("slide_HORIZONTAL_channel_alpha");
-		if (sH) {
-			sH.disabled = false;
-			sH.setAttribute("moblabel", MOB_label);
-			sH.updateValue( alphav, sH );
-		}
-		
-		var sV  = document.getElementById("slide_VERTICAL_channel_tempo");
-		
-		if (sV) {
-			sV.disabled = false;
-			sV.setAttribute("moblabel", MOB_label);
-			sV.updateValue( moldeo_message_info["tempo"]["delta"]*50, sV );
+	if (objectstate) {
+		if (objectstate["tempo"]) {
+			var alphav = objectstate["alpha"]*100;
+			
+			if (config.log.full) console.log("alpha:",alphav);
+			
+			var sH = document.getElementById("slide_HORIZONTAL_channel_alpha");
+			if (sH) {
+				sH.disabled = false;
+				sH.setAttribute("moblabel", MOB_label);
+				sH.updateValue( alphav, sH );
+			}
+			
+			var sV  = document.getElementById("slide_VERTICAL_channel_tempo");
+			
+			if (sV) {
+				sV.disabled = false;
+				sV.setAttribute("moblabel", MOB_label);
+				sV.updateValue( objectstate["tempo"]["delta"]*50, sV );
+			}
 		}
 	}
 }
@@ -750,6 +757,8 @@ function UpdateValue( moblabel, param, preconf, value ) {
 
 function UpdateEditor( MOB_label, fullobjectInfo ) {
 
+	if (config.log.full) console.log("UpdateEditor > MOB_label:"+MOB_label+" fullobjectInfo: ",fullobjectInfo);
+
 	if (moCI.Project.datapath==undefined) {
 		console.error("ERROR > no console INFO, trying to get it...");
 		OscMoldeoSend( { 'msg': '/moldeo','val0': 'consoleget', 'val1': '' } );
@@ -760,10 +769,15 @@ function UpdateEditor( MOB_label, fullobjectInfo ) {
 	selectEditorEffectByLabel( MOB_label );							
 	RegisterEditorLabelObject();
 				
+				
 	Editor.PreconfigSelected = fullobjectInfo["object"]["objectconfig"]["currentpreconfig"];
 	
 	Editor.Objects[MOB_label] = fullobjectInfo;
-	Editor.States[MOB_label] = fullobjectInfo["effectstate"];
+	
+	if (fullobjectInfo["effectstate"]) {
+		Editor.States[MOB_label] = fullobjectInfo["effectstate"];
+	} else Editor.States[MOB_label] = fullobjectInfo["object"]["objectstate"];
+	
 	Editor.Parameters[MOB_label] = fullobjectInfo["object"]["objectconfig"]["parameters"];
 	Editor.Preconfigs[MOB_label] = fullobjectInfo["object"]["objectconfig"]["preconfigs"];
 	
@@ -829,14 +843,14 @@ function UpdateState( MOB_label ) {
 	
 		if (config.log.full) console.log("MOB_label: ",MOB_label," objectState:",objectState );
 		
-		if ( objectState["Activated"]==1 ) {
+		if ( objectState["activated"]==1 ) {
 		
-			if (config.log.full) console.log("UpdateState > btn_OnOff Activated");
+			if (config.log.full) console.log("UpdateState > btn_OnOff activated");
 			activateClass( btn_OnOff, "button_object_onoff_on");
 			
 		} else {
 		
-			if (config.log.full) console.log("UpdateState > btn_OnOff Deactivated");
+			if (config.log.full) console.log("UpdateState > btn_OnOff deactivated");
 			deactivateClass( btn_OnOff, "button_object_onoff_on");
 			
 		}
@@ -886,26 +900,28 @@ function UpdateSceneStateInfo( MOB_label, NewIndex ) {
 
 function UpdateSceneSliders( MOB_label ) {
 
-	var moldeo_message_info = Editor.States[MOB_label];
+	var objectstate = Editor.States[MOB_label];
 	
-	if (moldeo_message_info) {
-		var alphav = moldeo_message_info["alpha"]*100;
-		if (config.log.full) console.log("alpha:",alphav);
-		
-		var sH = document.getElementById("scene_slide_VERTICAL_channel_alpha");
-		if (sH) {
-			sH.disabled = false;
-			sH.setAttribute("moblabel", MOB_label);
-			sH.updateValue( alphav, sH );
-		} else console.error("UpdateSceneSliders > no scene_slide_VERTICAL_channel_alpha");
-		
-		var sV  = document.getElementById("scene_slide_VERTICAL_channel_tempo");
-		
-		if (sV) {
-			sV.disabled = false;
-			sV.setAttribute("moblabel", MOB_label);
-			sV.updateValue( moldeo_message_info["tempo"]["delta"]*50, sV );
-		} else console.error("UpdateSceneSliders > no scene_slide_VERTICAL_channel_tempo");
+	if (objectstate) {
+		if (objectstate["tempo"]) {
+			var alphav = objectstate["alpha"]*100;
+			if (config.log.full) console.log("alpha:",alphav);
+			
+			var sH = document.getElementById("scene_slide_VERTICAL_channel_alpha");
+			if (sH) {
+				sH.disabled = false;
+				sH.setAttribute("moblabel", MOB_label);
+				sH.updateValue( alphav, sH );
+			} else console.error("UpdateSceneSliders > no scene_slide_VERTICAL_channel_alpha");
+			
+			var sV  = document.getElementById("scene_slide_VERTICAL_channel_tempo");
+			
+			if (sV) {
+				sV.disabled = false;
+				sV.setAttribute("moblabel", MOB_label);
+				sV.updateValue( objectstate["tempo"]["delta"]*50, sV );
+			} else console.error("UpdateSceneSliders > no scene_slide_VERTICAL_channel_tempo");
+		}
 	}
 }
 
@@ -1428,7 +1444,11 @@ function selectEditorColor( preconfig_index ) {
 	if (config.log.full) console.log("selectEditorColor(",preconfig_index,")");
 	if (preconfig_index==undefined) preconfig_index = Editor.PreconfigSelected;
 	
-	var Color = Editor.Parameters[Editor.ObjectSelected]["color"]["paramvalues"][preconfig_index];
+	var Color = Editor.Parameters[Editor.ObjectSelected]["color"];
+	if (Color) {
+		Color = Color["paramvalues"][preconfig_index];
+	}
+	
 	//create hexa color:
 	if (Color && Color.length>3) {
 		var red = Math.floor( Color[0]["value"]*255 );
@@ -1682,7 +1702,9 @@ function ToggleParameterProperty( event ) {
 	if (config.log.full) console.log("ToggleParameterProperty > moblabel: ",mob_label," param:",param," toggle:",event.target.checked);
 	if (event.target.checked) {
 		OscMoldeoSend( { 'msg': '/moldeo','val0': 'paramset', 'val1': mob_label, 'val2': param, 'val3': 'property','val4': 'published' } );
+		SetSaveNeeded();
 	} else {
+		SetSaveNeeded();
 		OscMoldeoSend( { 'msg': '/moldeo','val0': 'paramset', 'val1': mob_label, 'val2': param, 'val3': 'property','val4': '' } );
 	}
 

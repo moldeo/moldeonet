@@ -102,7 +102,7 @@ var MoldeoApiReceiver = {
 		// to update all controls that 
 		// are observers of the object states
 		var effect_label_name = message["target"];
-		var effect_activated = info["Activated"];
+		var effect_activated = info["activated"];
 		var fxbuttons = document.getElementsByClassName(effect_label_name);
 		
 		if (config.log.full) console.log( "fxbuttons:", fxbuttons);
@@ -154,6 +154,50 @@ var MoldeoApiReceiver = {
 	/** OBJECT */
 	"objectget": function( message ) {
 		UpdateEditor( message["target"], message["info"] );
+	},
+	
+	"objectgetstate": function( message ) {
+		if (config.log.full) console.log("objectgetstate ", message);
+		//UpdateEditor( message["target"], message["info"] );
+		var info = message["info"];
+		// use moldeo_message_target, 
+		// to update all controls that 
+		// are observers of the object states
+		var object_label_name = message["target"];
+		var object_activated = info["activated"];
+		var fxbuttons = document.getElementsByClassName(object_label_name);
+		
+		if (config.log.full) console.log( "fxbuttons:", fxbuttons);
+		for( var i=0; i<fxbuttons.length; i++ ) {
+			var fxbutton = fxbuttons[i];
+			if (config.log.full) console.log( "fxbutton: i: " ,i, " html: ",fxbutton.outerHTML );
+			if (fxbutton) {
+				if (config.log.full) console.log( "fxbutton: is activated ? ", object_activated );
+				if ( object_activated == '1' ) {
+					if (config.log.full) console.log( "activating fxbutton:" );
+					activateClass( fxbutton, "object_enabled" );
+				} else { /* -1 */
+					if (config.log.full) console.log( "deactivating fxbutton:" );
+					deactivateClass( fxbutton, "object_enabled" );
+				}
+			}
+		}
+		
+		Editor.States[object_label_name] = info;
+		
+		if (Editor.ObjectSelected==object_label_name) {			
+			UpdateState(object_label_name);
+		}
+		
+		//update Control objects
+		if (Control.ObjectSelected==object_label_name) {
+			UpdateControl( object_label_name );
+		}
+		
+		if (Scenes.ObjectSelected==object_label_name) {
+			UpdateScene( object_label_name );
+		}
+		
 	},
 	
 };
