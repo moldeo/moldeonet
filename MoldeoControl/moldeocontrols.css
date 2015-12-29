@@ -24,6 +24,7 @@ body {
 
 
 
+
 .titlebar {	
 	position: fixed;
 	top: 0px;
@@ -103,6 +104,12 @@ button.control_button,
 
 .titlebar .x_drag {	
 	-webkit-app-region: drag !important;
+}
+.titlebar button {
+	padding: 1px 3px;
+}
+.titlebar .x_debug {
+	padding: 0px !important;
 }
 
 button.object_enabled {
@@ -876,7 +883,7 @@ PRECONFIG SELECTOR  PANEL
 .button_J.fxediting { background-image: url( buttons/button_J_selec_on.svg ); }
 
 .button_K {
-	background-image: url( buttons/button_N_off.svg );
+	background-image: url( buttons/button_K_off.svg );
 	left: 33%;
 	top: 50%;
 }
@@ -2124,6 +2131,11 @@ height: 18%;
 		border-radius: 5px;
 	 }
 	 
+	 select.param_input {
+		 width: auto !important;
+		 left: 140px;
+	 }
+	 
 	 .param_input_selected {
 		display: block !important;
 		
@@ -2140,18 +2152,42 @@ height: 18%;
 		display: block !important;
 	 }
 	 
-	 .param_input_color_red {
+	 #parameter_inspector_COLOR 
+	 .parameter_selector {
+		 color: #FFF;
+		 position: absolute;
+		 float: left;
+		 bottom: 40px !important;
+	 } 
+	 
+	.param_input_color_red,
+	.param_input_color,
+	.param_input_0,
+	.param_input_COLOR,
+	.parameter_selector_0	{
 		left: 50px;
-	 }
-	 .param_input_color_green {
+	}
+	.param_input_color_green,
+	.param_input_color_1,
+	.param_input_1,
+	.param_input_COLOR_1,
+	.parameter_selector_1	{
 		left: 120px;
-	 }
-	 .param_input_color_blue {
+	}
+	.param_input_color_blue,
+	.param_input_color_2,
+	.param_input_2,
+	.param_input_COLOR_2,
+	.parameter_selector_2	{
 		left: 190px;
-	 }
-	 .param_input_color_alpha {
+	}
+	.param_input_color_alpha,
+	.param_input_color_3,
+	.param_input_3,
+	.param_input_COLOR_3,
+	.parameter_selector_3	{
 		left: 260px;
-	 }
+	}
 
 	 .param_input:focus {
 		width: 300px !important;
@@ -2161,6 +2197,16 @@ height: 18%;
 		font-size: 20px;
 		z-index: 40000;
 		left: 80px !important;
+	 }
+	 
+	 select.param_input:focus {
+		width: auto !important;
+		background-color: #111;
+		color: #94fbff;
+		height: auto !important;
+		font-size: 12px !important;
+		z-index: 40000;
+		left: 140px !important;
 	 }
 	 
 	#selector_POSITION_translatex {

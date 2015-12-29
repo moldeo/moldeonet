@@ -124,7 +124,7 @@ var MoldeoApiReceiver = {
 		Editor.States[effect_label_name] = info;
 		
 		if (Editor.ObjectSelected==effect_label_name) {			
-			UpdateState(effect_label_name);
+			Editor.UpdateState(effect_label_name);
 		}
 		
 		//update Control objects
@@ -141,7 +141,7 @@ var MoldeoApiReceiver = {
 	/** PARAM */
 	"paramget": function( message ) {
 		if (config.log.full) console.log("paramget: ", message );
-		UpdateEditorParam( message["target"], message["info"] )
+		Editor.UpdateEditorParam( message["target"], message["info"] )
 	},
 	
 	/** VALUE */
@@ -153,7 +153,7 @@ var MoldeoApiReceiver = {
 	
 	/** OBJECT */
 	"objectget": function( message ) {
-		UpdateEditor( message["target"], message["info"] );
+		Editor.Update( message["target"], message["info"] );
 	},
 	
 	"objectgetstate": function( message ) {
@@ -186,7 +186,7 @@ var MoldeoApiReceiver = {
 		Editor.States[object_label_name] = info;
 		
 		if (Editor.ObjectSelected==object_label_name) {			
-			UpdateState(object_label_name);
+			Editor.UpdateState(object_label_name);
 		}
 		
 		//update Control objects

@@ -12,6 +12,7 @@ var config = {
     "platform": OS.platform(),
     "release_mode": "develop" /*"production"*/,
 	"release_version": "1.0",
+	"build_version": "",
 	
 	"log": {
 		"full": false,

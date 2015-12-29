@@ -525,84 +525,7 @@ function RegisterInspectorButtons() {
 			if (document.getElementById(groupName+"_slide"))
 				document.getElementById(groupName+"_slide").addEventListener("change", ExecuteSliderInspector );
 		}		
-		
-		/*POSITIONS*/
-		/*
-		//change position X Y
-		for(var paramName in Editor.CustomSelectors["POSITION"]) {
-			var selector = document.getElementById("selector_POSITION_"+paramName );
-			if (selector) {
-				var events = Editor.CustomSelectors["POSITION"][paramName]["events"];
-				if (events)
-					for( var eventname in events) {
-						selector.addEventListener( eventname, events[eventname] );
-					}
-			}
-		}
-		
-		for(var paramName in Editor.CustomInspectors["POSITION"]) {
-			var selector = document.getElementById("selector_POSITION_"+paramName );
-			if (selector && Editor.CustomSelectors["POSITION"][paramName]==undefined) {
-				selector.addEventListener("click", ActivateInspectorSelector );
-			}
-		}
-		document.getElementById("POSITION_slide").addEventListener("change", ExecuteSliderInspector );
-		*/
-		/*SCALE*/
-		/*
-		for(var selectorName in Editor.CustomInspectors["SCALE"]) {
-			var selector = document.getElementById("selector_SCALE_"+selectorName );
-			if (selector) {
-				selector.addEventListener("click", ActivateInspectorSelector );
-			}
-		}		
-		document.getElementById("SCALE_slide").addEventListener("change", ExecuteSliderInspector );
-		*/
-		/*SCALEPARTICLE*/
-		/*
-		for(var selectorName in Editor.CustomInspectors["SCALEPARTICLE"]) {
-			var selector = document.getElementById("selector_SCALEPARTICLE_"+selectorName );
-			if (selector) {
-				selector.addEventListener("click", ActivateInspectorSelector );
-			}
-		}		
-		document.getElementById("SCALEPARTICLE_slide").addEventListener("change", ExecuteSliderInspector );
-		*/
-		/*MOTION*/
-		/*
-		for(var selectorName in Editor.CustomInspectors["MOTION"]) {
-			var selector = document.getElementById("selector_MOTION_"+selectorName );
-			if (selector) {
-				selector.addEventListener("click", ActivateInspectorSelector );
-			}
-		}
-		document.getElementById("MOTION_slide").addEventListener("change", ExecuteSliderInspector );
-		*/
-		/*
-		for(var paramName in Editor.CustomInspectors["EMITTER"]) {
-			var selector = document.getElementById("selector_EMITTER_"+paramName );
-			if (selector) {
-				selector.addEventListener("click", ActivateInspectorSelector );
-			}
-		}
-		document.getElementById("EMITTER_slide").addEventListener("change", ExecuteSliderInspector );
-		
-		for(var paramName in Editor.CustomInspectors["ATTRACTOR"]) {
-			var selector = document.getElementById("selector_ATTRACTOR_"+paramName );
-			if (selector) {
-				selector.addEventListener("click", ActivateInspectorSelector );
-			}
-		}
-		document.getElementById("ATTRACTOR_slide").addEventListener("change", ExecuteSliderInspector );
-		
-		for(var paramName in Editor.CustomInspectors["BEHAVIOUR"]) {
-			var selector = document.getElementById("selector_BEHAVIOUR_"+paramName );
-			if (selector) {
-				selector.addEventListener("click", ActivateInspectorSelector );
-			}
-		}
-		document.getElementById("BEHAVIOUR_slide").addEventListener("change", ExecuteSliderInspector );
-		*/
+				
 	} catch(err) {
 		console.error( "RegisterInspectorButtons > ", err);
 		alert(err);
@@ -706,6 +629,8 @@ function valueMemorize( moblabel, param, preconf, value ) {
 
 function valuegetResponse( moblabel, param, preconf, value ) {
 	if (config.log.full) console.log("valuegetResponse > mob: ",moblabel," param:",param," preconf:",preconf," value:",value);
+	
+	/** TODO: update full interface using getByClassName( moblabel+" "+param+" "+preconf ) and updating with value*/
 	try {
 	//search all inspectors??? maybe it's better to just subscribe inspectors as active!!!
 	UpdateValue( moblabel, param, preconf, value );
@@ -754,111 +679,6 @@ function UpdateValue( moblabel, param, preconf, value ) {
 			UpdateColor( moblabel, param, preconf, value[0]["value"] );
 	}
 }
-
-function UpdateEditor( MOB_label, fullobjectInfo ) {
-
-	if (config.log.full) console.log("UpdateEditor > MOB_label:"+MOB_label+" fullobjectInfo: ",fullobjectInfo);
-
-	if (moCI.Project.datapath==undefined) {
-		console.error("ERROR > no console INFO, trying to get it...");
-		OscMoldeoSend( { 'msg': '/moldeo','val0': 'consoleget', 'val1': '' } );
-		Editor.ObjectRequested = MOB_label;
-		return;
-	}
-	
-	selectEditorEffectByLabel( MOB_label );							
-	RegisterEditorLabelObject();
-				
-				
-	Editor.PreconfigSelected = fullobjectInfo["object"]["objectconfig"]["currentpreconfig"];
-	
-	Editor.Objects[MOB_label] = fullobjectInfo;
-	
-	if (fullobjectInfo["effectstate"]) {
-		Editor.States[MOB_label] = fullobjectInfo["effectstate"];
-	} else Editor.States[MOB_label] = fullobjectInfo["object"]["objectstate"];
-	
-	Editor.Parameters[MOB_label] = fullobjectInfo["object"]["objectconfig"]["parameters"];
-	Editor.Preconfigs[MOB_label] = fullobjectInfo["object"]["objectconfig"]["preconfigs"];
-	
-	// Parameters:
-	// console.log("target: "+ target+ " parameters:" + JSON.stringify( Editor.Parameters[target], "", "\t") );
-	
-	// Preconfigs
-	// console.log("target: "+ target+ " preconfigs:" + JSON.stringify( Editor.Preconfigs[target], "", "\t") );
-	
-	// activamos o desactivamos el boton de Object_Enable
-	if (config.log.full) console.log("UpdateEditor > UpdateState > label: ",MOB_label);
-	UpdateState( MOB_label );
-	
-	if (config.log.full) console.log("UpdateEditor > UpdatePreconfigs > label: ",MOB_label);
-	UpdatePreconfigs( MOB_label );
-
-	if (config.log.full) console.log("UpdateEditor > UpdateState > label: ",MOB_label);
-	UpdateScene( MOB_label );
-	
-	if (config.log.full) console.log("UpdateEditor > deactivate parameters_side_*");
-	for( var ObjectLabel in Editor.Objects ) {
-		var psideWin = document.getElementById("parameters_side_" + ObjectLabel );
-		if (psideWin) deactivateClass( psideWin, "parameters_side_MOB_selected");
-	}
-	
-	if (config.log.full) console.log("UpdateEditor > activate parameters_side_",MOB_label);
-	var psideWin = document.getElementById("parameters_side_" + MOB_label );
-	if (psideWin) activateClass( psideWin, "parameters_side_MOB_selected");
-	
-}
-
-function UpdateEditorParam( MOB_label, fullparaminfo ) {
-	//recorre el Editor > Parameters
-	if (config.log.full) console.log("UpdateEditorParam > MOB_label: ", MOB_label, " fullparaminfo:",fullparaminfo);
-	var Param = Editor.Parameters[MOB_label];
-	
-	var paramName = fullparaminfo["name"];
-	ParamDef = Param[ paramName ]["paramdefinition"];
-	ParamDef = fullparaminfo;
-	var ParamProperty = ParamDef["property"];
-	
-	//buscar todos los parametros: (usando el id)
-	var parameter_name_base = "parameter_group_"+MOB_label+"_"+paramName;
-	for(var preconfigi=0; preconfigi<Options["MAX_N_PRECONFIGS"]; preconfigi++) {
-		var paramid = parameter_name_base+"_"+preconfigi;
-		var elem = document.getElementById(paramid);
-		if (elem) {
-			elem.setAttribute("class", "parameter_group parameter_is_"+ParamProperty);
-		}
-	}
-}
-
-function UpdateState( MOB_label ) {
-
-	if (config.log.full) console.log("UpdateState(",MOB_label,")");
-	
-	var objectState = Editor.States[MOB_label];
-	var btn_OnOff = document.getElementById("button_object_onoff");
-	
-	if (btn_OnOff) {
-	
-		btn_OnOff.setAttribute("moblabel", MOB_label );
-	
-		if (config.log.full) console.log("MOB_label: ",MOB_label," objectState:",objectState );
-		
-		if ( objectState["activated"]==1 ) {
-		
-			if (config.log.full) console.log("UpdateState > btn_OnOff activated");
-			activateClass( btn_OnOff, "button_object_onoff_on");
-			
-		} else {
-		
-			if (config.log.full) console.log("UpdateState > btn_OnOff deactivated");
-			deactivateClass( btn_OnOff, "button_object_onoff_on");
-			
-		}
-		
-		btn_OnOff.setAttribute("moblabel", MOB_label );
-	}
-}
-
 
 function UpdateSceneStateInfo( MOB_label, NewIndex ) {
 
@@ -1415,7 +1235,17 @@ function selectEditorImage( moblabel, param_name, preconfig ) {
 }
 
 function rgbToHex(r, g, b) {
-    return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+	
+	var colorstr = "#FFFFFF";
+	try {
+		r = Number(Math.round(r));
+		g = Number(Math.round(g));
+		b = Number(Math.round(b));	
+		colorstr = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+	} catch(e) {
+		console.error(e,"rgbToHex > r:",r," g:",g," b:",b);
+	}
+	return colorstr;
 }
 
 function hexToRgb(hex) {
@@ -1451,9 +1281,9 @@ function selectEditorColor( preconfig_index ) {
 	
 	//create hexa color:
 	if (Color && Color.length>3) {
-		var red = Math.floor( Color[0]["value"]*255 );
-		var green = Math.floor( Color[1]["value"]*255 );
-		var blue = Math.floor( Color[2]["value"]*255 );
+		var red = Math.round( Color[0]["value"]*255 );
+		var green = Math.round( Color[1]["value"]*255 );
+		var blue = Math.round( Color[2]["value"]*255 );
 		if (config.log.full) console.log("rgbToHex( ",red,", ",green,",", blue," ):",rgbToHex( red, green, blue ));
 		object_color_sel.setAttribute( "style" , "background-color:"+ rgbToHex( red, green, blue )+";");
 	}
@@ -1497,7 +1327,9 @@ function ActivateInspectorSelector( event ) {
 		activateClass( InspectorSelector, "selected");
 		
 		var selector = InspectorSelector.getAttribute("selector");
+		var param = InspectorSelector.getAttribute("param");
 		var group = Inspector.getAttribute("group");
+		if (group==undefined) group = Inspector.getAttribute("paramtype");
 		var moblabel = Inspector.getAttribute("moblabel");
 		var preconfig = Inspector.getAttribute("preconfig");
 		
@@ -1516,6 +1348,11 @@ function ActivateInspectorSelector( event ) {
 			console.error("ActivateInspectorSelector > Inspector group not defined!",Inspector);
 			return;
 		}
+		
+		//memorize selector in Tab Inspector Button!
+		var TabInspector = GetTabInspector( moblabel, group, param, preconfig );
+		if (TabInspector) TabInspector.setAttribute("selector", selector);
+		
 		SetInspectorMode( group, selector, moblabel );
 	} catch(err) {
 		console.error("ActivateInspectorSelector > ", err, event);
@@ -1875,241 +1712,6 @@ function CreateSoundParameter( MOB_label, param_name, preconfig, psideWin ) {
 	
 }
 
-/**
-*	CreateParametersPreconfigWindows
-*	
-*	Create a parameter preconfig window for each preconfig index (TODO: must check it exists ?? or creates itself ? )
-*/
-function CreateParametersPreconfigWindows( MOB_label, psideWin ) {
-	
-	if (config.log.full) console.log("CreateParametersPreconfigWindows > ", MOB_label, " psideWin:",psideWin);
-	if (!psideWin) return console.error("CreateParametersPreconfigWindows > no psideWin");
-	var ret = false;
-	
-	var psideWinPreScroller = document.createElement("DIV");
-	psideWinPreScroller.setAttribute("id","parameters_side_"+MOB_label+"_scroller");
-	psideWinPreScroller.setAttribute("class","parameters_side_MOB_scroller scroll-pane");
-	
-	
-	//scrollbar
-	var psideWinPreScrollbar = document.createElement("DIV");
-	psideWinPreScrollbar.setAttribute("id","parameters_side_"+MOB_label+"_scrollbar");
-	psideWinPreScrollbar.setAttribute("class","parameters_side_MOB_scrollbar scrollbar");
-	psideWinPreScroller.appendChild( psideWinPreScrollbar );
-		//track
-	var psideWinPreScrolltrack = document.createElement("DIV");
-	psideWinPreScrolltrack.setAttribute("id","parameters_side_"+MOB_label+"_scrolltrack");
-	psideWinPreScrolltrack.setAttribute("class","parameters_side_MOB_scrolltrack track");
-	psideWinPreScrollbar.appendChild( psideWinPreScrolltrack );
-		//thumb
-	var psideWinPreScrollthumb = document.createElement("DIV");
-	psideWinPreScrollthumb.setAttribute("id","parameters_side_"+MOB_label+"_scrollthumb");
-	psideWinPreScrollthumb.setAttribute("class","parameters_side_MOB_scrolltrack thumb");
-	psideWinPreScrolltrack.appendChild( psideWinPreScrollthumb );
-		//end
-	var psideWinPreScrollend = document.createElement("DIV");
-	psideWinPreScrollend.setAttribute("id","parameters_side_"+MOB_label+"_scrollend");
-	psideWinPreScrollend.setAttribute("class","parameters_side_MOB_scrolltrack end");
-	psideWinPreScrollthumb.appendChild( psideWinPreScrollend );
-		//viewport
-	var psideWinPreScrollviewport = document.createElement("DIV");
-	psideWinPreScrollviewport.setAttribute("id","parameters_side_"+MOB_label+"_scrollviewport");
-	psideWinPreScrollviewport.setAttribute("class","parameters_side_MOB_scrollviewport viewport");
-	psideWinPreScroller.appendChild( psideWinPreScrollviewport );
-		//overview
-	var psideWinPreScrolloverview = document.createElement("DIV");
-	psideWinPreScrolloverview.setAttribute("id","parameters_side_"+MOB_label+"_scrolloverview");
-	psideWinPreScrolloverview.setAttribute("class","parameters_side_MOB_scrollviewport overview");
-	psideWinPreScrollviewport.appendChild( psideWinPreScrolloverview );
-	
-	psideWin.appendChild( psideWinPreScroller );
-	
-	//FOR THREE FIRST PRECONFIGS create DIVS !!! class="parameters_side_MOB_preconf"
-	//Create DIV "parameter_side_MOB_LABEL_0/1/2" PRECONFIGS GROUPS (could be more!!!!)
-	for( var preconfigi=0; preconfigi<Options["MAX_N_PRECONFIGS"]; preconfigi++ ) {
-	
-		var psideWinPre = document.createElement("DIV");
-		psideWinPre.setAttribute("id","parameters_side_"+MOB_label+"_" + preconfigi );
-		psideWinPre.setAttribute("class", "parameters_side_MOB_preconf");
-		
-		if (psideWinPre) psideWinPreScrolloverview.appendChild( psideWinPre );
-		
-		if (config.log.full) console.log("CreateParametersPreconfigWindows > CREATED parameters side for preconfig ",preconfigi," with id: ", "parameters_side_",MOB_label,"_",preconfigi);
-		
-		//Create DIVs for every published/grouped parameters
-		var pgroup_object_base = "parameter_group_"+MOB_label;
-
-		ret = true;
-		
-		//CHECK FOR EVERY PARAM GROUP DEPENDENCIES
-		//SO WE CREATE THE BUTTONS REFERENCING THE INSPECTORS
-		// IN "PARAMETER_INSPECTOR_SIDE"
-		for( var param_name in Editor.Parameters[MOB_label] ) {
-		
-			var Param = Editor.Parameters[MOB_label][param_name];
-			var ParamType = Param.paramdefinition["type"];
-			var ParamProperty = Param.paramdefinition["property"];
-			var ParamValues = Param.paramvalues;
-			
-			if (config.log.full) console.log("CreateParametersPreconfigWindows > PARAM: ",param_name," PRE:",preconfigi," INFO:",Param);
-			
-			//ANY PARAM MUST BE PUBLISHED TO BE SHOWN!!!
-			//if ( ParamProperty=="published" ) {
-				
-				/*CHECK IF this param is defined in any GROUP inspector*/
-				if ( PrepareGroupParameters( MOB_label,  param_name ) ) {
-					//ret = ret && true;
-					//YES! SO WE WILL CREATE THE GROUP INSPECTOR AFTER THAT.... see: CreateGroupInspectors()
-				} else if (param_name!=undefined && param_name!=false && param_name!="false") {
-					
-					if ( ParamType=="TEXTURE" && 
-						( param_name=="texture" || param_name=="images") ) {
-						
-						CreateTextureParameter( MOB_label, param_name, preconfigi );
-												
-					} else if ( ParamType=="TEXTURE" && 
-						( param_name=="movies") ) {
-						
-						CreateMovieParameter( MOB_label, param_name, preconfigi, psideWinPre );
-												
-					} else if (param_name=="sound" && ParamType=="SOUND") {
-						
-						CreateSoundParameter( MOB_label, param_name, preconfigi, psideWinPre );
-						
-					} else if (ParamType=="TEXT" 
-						|| ParamType=="TEXTURE" 
-						|| ParamType=="NUM"
-						|| ParamType=="FUNCTION"
-						|| ParamType=="COLOR"
-						|| ParamType=="ALPHA"
-						|| ParamType=="SYNC"
-						|| ParamType=="PHASE"
-						|| ParamType=="BLENDING"
-						|| ParamType=="TRANSLATEX"
-						|| ParamType=="TRANSLATEY"
-						|| ParamType=="TRANSLATEZ"
-						|| ParamType=="ROTATEX"
-						|| ParamType=="ROTATEY"
-						|| ParamType=="ROTATEZ"
-						|| ParamType=="SCALEX"
-						|| ParamType=="SCALEY"
-						|| ParamType=="SCALEZ")	{
-						CreateStandardParameter(MOB_label, param_name, preconfigi, psideWinPre );
-					}
-				}
-			//}
-		}
-	
-		//ret = ret && 
-		CreateGroupedParameters( MOB_label, preconfigi, psideWinPre );
-		
-	}
-	
-	$("#parameters_side_"+MOB_label+"_scroller").tinyscrollbar();
-	return ret;
-}
-
-
-/**
-*	CreateParametersSideWindow
-*
-*	Create Parameters Side Window for this Moldeo Object ( identified by his label name: MOB_label )
-*
-*	@param MOB_label Moldeo Object Label Name (must be unique)
-*/
-function CreateParametersSideWindow( MOB_label, parameters_side_AllWin ) {
-	
-	if (config.log.full) console.log("CreateParametersSideWindow > ",MOB_label);
-	// Check and create DIV "parameter_side_MOB_LABEL"
-	
-	var ret = false;
-	var psideWin = document.getElementById("parameters_side_" + MOB_label );
-	
-	if (!psideWin) {
-		if (config.log.full) console.log("CreateParametersSideWindow > Create Parameters Side for ",MOB_label);
-		//FIRST TIME ALWAYS SET ON FIRST PRECONFIG
-		Editor.PreconfigSelected = 0;
-		//Create DIV "parameter_side_MOB_LABEL"
-		psideWin = document.createElement("DIV");
-		psideWin.setAttribute("id","parameters_side_"+MOB_label);
-		psideWin.setAttribute("class", "parameters_side_MOB");
-		psideWin.setAttribute("moblabel", MOB_label );
-		
-		if (psideWin) {
-			parameters_side_AllWin.appendChild( psideWin );
-			ret = CreateParametersSideWindowActions( MOB_label, psideWin );
-			ret = ret && CreateParametersPreconfigWindows( MOB_label, psideWin );
-		}
-		
-	}
-	
-	return ret;
-}
-
-function CreateParametersSideWindowActions( MOB_label, psideMobWin ) {
-	if (config.log.full) console.log("CreateParametersSideWindowActions > ",MOB_label);
-	
-	var ret = false;
-	var psideNameA = "parameters_side_" + MOB_label + "_actions";
-	var psideWinActions = document.getElementById(psideNameA);
-	
-	if (psideWinActions==undefined) {
-		psideWinActions = document.createElement("DIV");
-		
-		if (psideWinActions) {
-			psideWinActions.setAttribute("id",psideNameA);
-			psideWinActions.setAttribute("class", "parameters_side_MOB_actions");
-			
-			var actionUnpublished = document.createElement("button");
-			actionUnpublished.setAttribute( "id", "action_param_"+MOB_label+"_unpublished");
-			actionUnpublished.setAttribute( "class", "action_param_SHOW_ALL");
-			actionUnpublished.setAttribute( "title", "Muestra todos los parámetros.");
-			actionUnpublished.innerHTML = "++";
-			/*
-			var actionUp = document.createElement("button");
-			actionUp.setAttribute("class", "action_param_UP_ONE");
-			actionUp.innerHTML = "UP";
-			
-			var actionDown = document.createElement("button");
-			actionDown.setAttribute("class", "action_param_DOWN_ONE");
-			actionDown.innerHTML = "DO";
-			*/
-			psideWinActions.appendChild(actionUnpublished);
-			//psideWinActions.appendChild(actionUp);
-			//psideWinActions.appendChild(actionDown);
-			
-			if (psideMobWin) {
-				psideMobWin.appendChild( psideWinActions );
-				ret = true;
-			}
-			
-			//actionUnpublished.addEventListener( "click", Editor.Buttons["action_param_unpublished"]["click"]);
-			actionUnpublished.addEventListener( "click", Editor.Buttons["action_param_unpublished"]["click"]);
-		}
-		
-	} 
-	
-	return ret;
-	
-}
-
-
-
-function UpdatePreconfigs( MOB_label ) {
-
-	if (config.log.full) console.log("UpdatePreconfigs(",MOB_label,")");
-	//global Elements
-	var parameters_side_AllWin = document.getElementById("parameters_side");
-	
-	if (!parameters_side_AllWin)
-		return console.error("UpdatePreconfigs > No parameters side where to place windows");
-	else
-		CreateParametersSideWindow( MOB_label, parameters_side_AllWin );
-	/** changed Object, repopulate parameters!!! */
-	selectEditorPreconfig( Editor.PreconfigSelected );
-	
-}
-
 
 var sliderpos;
 /**
@@ -2155,6 +1757,9 @@ function SetPositionMode( group, parammode, moblabel ) {
 		if (Cons==undefined) {
 			if (Editor.Constraints["standard"]) {
 				Cons = Editor.Constraints["standard"][parammode];
+				if (!Cons) {
+					Cons = Editor.Constraints["standard"][group];
+				}
 			}
 		}
 
@@ -2431,20 +2036,28 @@ function SetStandardMode( group, parammode, moblabel ) {
 	if (labelEl) {
 		//update slide label if any
 		labelEl.innerHTML = parammode;
-		labelEl.setAttribute("title",parammode);
+		labelEl.setAttribute( "title", parammode );
 	}	
 	//the input field
-	var inputEl = document.getElementById( "selector_"+group+"_"+parammode+"_input" );
+	var inputElName = "selector_"+group+"_"+parammode+"_input";
+	var inputEl = document.getElementById( inputElName );
 	
 	if (inputEl==undefined) {
-		inputEl = document.getElementById( "selector_"+group+"_input" );
+		inputElName = "selector_"+group+"_input";
+		inputEl = document.getElementById( inputElName );
 		if (inputEl) {
 			inputEl.setAttribute("selector",parammode);
 		}
 	}
 	
 	if (inputEl) {
+		inputElSelName = inputElName+"_select";
 		activateClass( inputEl, "param_input_selected");
+		inputElSel = document.getElementById( inputElSelName );
+		if (inputElSel) {
+			inputElSel.setAttribute("selector",parammode);
+			activateClass( inputElSel, "param_input_selected");
+		}
 	}
 	
 	var min = -5;
@@ -2466,6 +2079,9 @@ function SetStandardMode( group, parammode, moblabel ) {
 	if (Cons==undefined) {
 		if (Editor.Constraints["standard"]) {
 			Cons = Editor.Constraints["standard"][parammode];
+			if (!Cons) {
+				Cons = Editor.Constraints["standard"][group];
+			}
 		}
 	}
 
@@ -2475,7 +2091,8 @@ function SetStandardMode( group, parammode, moblabel ) {
 		if (Cons["step"]!=undefined) step = Cons["step"];
 	}
 	
-	if (config.log.full) console.log("SetStandardMode(",parammode,") > min:",min," max:",max," step:",step );
+	if (config.log.full)
+		console.log("SetStandardMode(",parammode,") > min:",min," max:",max," step:",step );
 	
 	if (sliderEl && inputEl) {
 		sliderEl.setAttribute("min", min );
@@ -2526,6 +2143,8 @@ function SetInspectorMode( group, parammode, moblabel ) {
 		if (inp) deactivateClass( inp,"param_input_selected_3");
 	}
 	
+	Inspector.setAttribute( "selector", parammode );
+	
 
 	if (group=="POSITION") {
 		SetPositionMode( group, parammode, moblabel );
@@ -2561,6 +2180,9 @@ function SetInspectorMode( group, parammode, moblabel ) {
 	} else {
 		if (config.log.full) console.log("SetInspectorMode !!! for group: ",group, " parammode: ", parammode);
 		SetStandardMode( group, parammode, moblabel  );	
+	}
+	if (group=="COLOR") {
+		SetStandardMode( group, parammode, moblabel  );
 	}
 }
 
@@ -2666,6 +2288,16 @@ function GetInspector( target ) {
 	return t;
 }
 
+function GetTabInspector( moblabel, group, param, preconfig ) {
+	var tabid = "parameter_group_"+moblabel+"_"+group+"_"+preconfig;
+	var TabInspector = document.getElementById(tabid);
+	if (!TabInspector) {
+		tabid = "parameter_group_"+moblabel+"_"+param+"_"+preconfig;
+		TabInspector = document.getElementById(tabid);		
+	}
+	return TabInspector;
+}
+
 /**
 	Executed on every change event on every Inspector's Sliders...
 	
@@ -2681,25 +2313,18 @@ function ExecuteSliderInspector(event) {
 	}
 	
 	var group = Inspector.getAttribute("group");
+	if (group==undefined) group = Inspector.getAttribute("paramtype");
 	var moblabel = Inspector.getAttribute("moblabel");
 	var preconfig = Inspector.getAttribute("preconfig");
 	
 	var selector = event.target.getAttribute("selector");
+	if (selector==undefined) selector = Inspector.getAttribute("param");
 	var sliderValue = event.target.value;
 	
 	if (config.log.full) console.log("ExecuteSliderInspector > group:",group,
 				" selector:", selector,
 				" preconfig:",preconfig,
-				" value:",sliderValue );
-	
-	if (group==undefined) {
-		
-		var paramName = Inspector.getAttribute("param");
-		var paramType = Inspector.getAttribute("paramtype");
-		
-		group = paramType;
-		selector = paramName;
-	}
+				" value:",sliderValue );	
 	
 	ExecuteStandardSlider( group, moblabel, selector, preconfig, sliderValue );
 	
@@ -2749,9 +2374,9 @@ function UpdateColor( moblabel, paramname, preconfig, filename ) {
 	var green = 0;
 	var blue = 0;
 	if (color_value) {
-		red = Math.floor(Number(color_value[0]["value"])*255);
-		green = Math.floor(Number(color_value[1]["value"])*255);
-		blue = Math.floor(Number(color_value[2]["value"])*255);
+		red = Math.round(Number(color_value[0]["value"])*255);
+		green = Math.round(Number(color_value[1]["value"])*255);
+		blue = Math.round(Number(color_value[2]["value"])*255);
 		color = rgbToHex( red, green, blue );
 	}
 	if (config.log.full) console.log("UpdateColor > ",color,"for:",red,green,blue);
@@ -2800,6 +2425,7 @@ function selectorToSelector( selector ) {
 	var Selector = selector;
 	
 	if (selector=="color:0"
+	|| selector=="color_0"
 	|| selector=="color_1"
 	|| selector=="color_2"
 	|| selector=="color_3") {
@@ -2808,6 +2434,7 @@ function selectorToSelector( selector ) {
 	
 	
 	if (selector=="particlecolor:0"
+	|| selector=="particlecolor_0"
 	|| selector=="particlecolor_1"
 	|| selector=="particlecolor_2"
 	|| selector=="particlecolor_3") {
@@ -3008,91 +2635,360 @@ function UpdateSceneStatesInspector( inspectorElement, moblabel, preconfig ) {
 	listitem = inspectorElement;
 }
 
+
+function CreateInspectorLabel( inspectorElement, moblabel, paramName, paramType, paramName, preconfig ) {
+	
+	var el = document.createElement("LABEL");
+	el.setAttribute("title",paramType+" ("+paramName+")");
+	el.innerHTML = paramType+" ("+paramName+")";
+	inspectorElement.appendChild(el);
+}
+
+function CreateColorInspectorCanvas( inspectorElement, moblabel, paramName, paramType, paramName, preconfig ) {
+	
+}
+
+//creates html inspector value...
+function CreateInspectorValue( inspectorElement, moblabel, paramName, paramType, paramName, preconfig, sub ) {
+	
+	var Params = Editor.Parameters[moblabel];
+	if (Params==undefined) return false;
+	var Param = Params[paramName];
+	var paramValue = Param.paramvalues[preconfig];
+	var paramDefinition = Param.paramdefinition;
+	
+	var datav = paramValue[sub]["value"];
+	var datavDef = paramValue[sub]["valuedefinition"];
+	var codeName = datavDef.codename;
+	
+	var subs = "";
+	if (sub>0) subs="_"+sub;
+	var selectortype = paramType+subs;
+	var selector = paramName+subs;
+
+	var inputInspector;
+	var inputInspectorName;
+	var buttonInspectorName = "selector_"+paramType+"_"+selector;
+	inputInspectorName = buttonInspectorName+"_input";
+	
+	inputInspector = document.getElementById( inputInspectorName );
+	
+	if (!inputInspector) {
+		
+		buttonInspector = document.createElement("BUTTON");
+		buttonInspector.setAttribute("id", buttonInspectorName );
+		buttonInspector.setAttribute("title", buttonInspectorName );		
+		buttonInspector.setAttribute("selector", selector);
+		buttonInspector.setAttribute("param", paramName);
+		buttonInspector.setAttribute("class", "parameter_selector parameter_selector_"+sub+" parameter_selector_"+selectortype+" parameter_selector_"+selector);	
+		buttonInspector.addEventListener("click", ActivateInspectorSelector );
+		buttonInspector.innerHTML = codeName;
+		inspectorElement.appendChild(buttonInspector);
+		
+		inputInspector = document.createElement("INPUT");
+		inputInspector.setAttribute("id", inputInspectorName );		
+		inputInspector.setAttribute("title", inputInspectorName );		
+		inputInspector.setAttribute("selector", selector);
+		inputInspector.setAttribute("param", paramName);
+		//TODO: check ParamDefinition for class name
+		inputInspector.setAttribute("class", "param_input param_input_"+sub+" param_input_"+selectortype+" param_input_"+selector);	
+		//TODO: check ParamDefinition!! for input type or class
+		inputInspector.setAttribute("type", "text");	
+		inputInspector.addEventListener("change", inputValueUpdate )		
+		inspectorElement.appendChild(inputInspector);
+		
+		
+	}
+	return inputInspector;
+}
+
+function CreateSliderInspector( inspectorElement, moblabel, paramName, paramType, paramName, preconfig ) {
+	/*
+	<div id="COLOR_slide_back" class="slide_H_back parameter_slide_back">
+							<label id="COLOR_slide_label">color</label>
+							<input id="COLOR_slide" class="parameter_slide slide_H slide_controls"  type="range" min="0.0" max="1.0" step="0.01" value="0"/>
+						</div>
+	*/					
+	var Params = Editor.Parameters[moblabel];
+	if (Params==undefined) return false;
+	var Param = Params[paramName];
+	var paramValue = Param.paramvalues[preconfig];
+	var paramDefinition = Param.paramdefinition;
+/*	
+	var datav = paramValue[sub]["value"];
+	var datavDef = paramValue[sub]["value"];
+	
+	var subs = "";
+	if (sub>0) subs="_"+sub;
+	var selectortype = paramType+subs;
+	var selector = paramName+subs;
+*/
+	var inputInspector;
+	var inputInspectorName;
+	
+	var sliderInspectorName = paramType+"_slide";
+	var sliderInspectorNameBack = sliderInspectorName+"_back";
+	var sliderInspectorNameLabel = sliderInspectorName+"_label";
+		
+	inputInspector = document.getElementById( sliderInspectorName );
+	
+	if (!inputInspector) {
+		inputInspector = document.createElement("DIV");
+		inputInspector.setAttribute("id", sliderInspectorNameBack );
+		inputInspector.setAttribute("title", sliderInspectorNameBack );
+		inputInspector.setAttribute("class", "slide_H_back parameter_slide_back" );
+
+		inspectorElement.appendChild(inputInspector);
+		
+		sliderInspectorLabel = document.createElement("LABEL");
+		sliderInspectorLabel.setAttribute("id", sliderInspectorNameLabel );
+		sliderInspectorLabel.setAttribute("title", sliderInspectorNameLabel );
+		sliderInspectorLabel.innerHTML = paramName;
+		inputInspector.appendChild( sliderInspectorLabel );
+		
+		sliderInspectorInput = document.createElement("INPUT");
+		sliderInspectorInput.setAttribute("id", sliderInspectorName );
+		sliderInspectorInput.setAttribute("title", sliderInspectorName );
+		sliderInspectorInput.setAttribute("class", "parameter_slide slide_H slide_controls" );
+		sliderInspectorInput.setAttribute("type", "range" );
+		sliderInspectorInput.setAttribute("min", "0.0" );
+		sliderInspectorInput.setAttribute("max", "1.0" );
+		sliderInspectorInput.setAttribute("step", "0.01" );
+		sliderInspectorInput.setAttribute("value", "0.0" );
+		//sliderInspectorInput.addEventListener("change", ExecuteSliderInspector );
+		inputInspector.appendChild( sliderInspectorInput );
+	}
+}
+
+function UpdateColorInspector( inspectorElement, moblabel, paramName, paramType, paramName, preconfig ) {
+
+		var Params = Editor.Parameters[moblabel];
+		if (Params==undefined) return false;
+		var Param = Params[paramName];
+		var paramValue = Param.paramvalues[preconfig];
+		var paramDefinition = Param.paramdefinition;
+
+		
+		//SetInspectorVariables( inspectorElement, moblabel, paramName, paramType, paramName, preconfig );
+		
+		inspectorElement.innerHTML = "";
+		
+		//INSPECTOR LABEL creation
+		CreateInspectorLabel( inspectorElement, moblabel, paramName, paramType, paramName, preconfig );
+		
+		//INSPECTOR COLOR CANVAS
+		CreateColorInspectorCanvas( inspectorElement, moblabel, paramName, paramType, paramName, preconfig );
+		
+		
+		//INSPECTOR STANDARD SLIDER
+		//only one slider
+		CreateSliderInspector( inspectorElement, moblabel, paramName, paramType, paramName, preconfig );
+		/*
+		var sliderInspectorName = paramType+"_slide";
+		var slider = document.getElementById(sliderInspectorName);
+		if (slider) {
+			slider.addEventListener("change", ExecuteSliderInspector );
+		}
+		*/
+		
+		//CHECK VALUES		
+		if (paramValue) {
+			var subvalues = paramValue.length>1;
+			var data_str = moCI.GetValuesToStr( moblabel, paramName, preconfig );
+					
+			
+			if (paramValue.length) {								
+				for(var sub=0; sub<paramValue.length; sub++) {
+ 					var datav = paramValue[sub]["value"];
+					
+					//now that we have	it, assign it to inspector...
+					var inputInspector;								
+
+					inputInspector = CreateInspectorValue( inspectorElement, moblabel, paramName, paramType, paramName, preconfig, sub );
+					/*
+					if (slider) {
+						slider.value = datav;
+					}
+					
+					if (inputInspector) {
+						inputInspector.addEventListener("change", inputValueUpdate );
+						inputInspector.setAttribute("value", datav);
+						inputInspector.value = datav;
+						activateClass(inputInspector,"param_input_selected");
+					}
+					*/
+				}
+			}
+		}
+		
+		return;
+		
+}
+
+function SetInspectorVariables( inspectorElement, moblabel, paramName, paramType, paramName, preconfig ) {
+    	//SETTING INSPECTOR ATTRIBUTES
+		inspectorElement.setAttribute("moblabel", moblabel);
+		inspectorElement.setAttribute("param", paramName);
+		inspectorElement.setAttribute("paramtype", paramType);
+		// TODO: must use
+		//inspectorElement.setAttribute("selector", paramName);
+		inspectorElement.setAttribute("preconfig", preconfig );
+}
+
+function ClickInspectorSelector( group, selectorName ) {
+	if (selectorName && group) {
+		var idSelEleName = "selector_"+group+"_"+selectorName+"";
+		var SelElement = document.getElementById( idSelEleName );		
+		if (SelElement) {
+			SelElement.click();
+		}
+	}
+
+}
+
 function UpdateStandardInspector( TabInspector, inspectorElement, moblabel, preconfig ) {
 	try {
 	
-	if (config.log.full) console.log("UpdateStandardInspector > ");
-	
-	if (inspectorElement==undefined) return;
-	if (moblabel==undefined) return;
-	if (preconfig==undefined) return;
+		if (config.log.full) console.log("UpdateStandardInspector > ");
+		
+		if (inspectorElement==undefined) return;
+		if (moblabel==undefined) return;
+		if (preconfig==undefined) return;
 
-	var Params = Editor.Parameters[moblabel];
-	if (Params==undefined) return false;
+		var Params = Editor.Parameters[moblabel];
+		if (Params==undefined) return false;
 
-	var paramName = TabInspector.getAttribute("param");
-	var paramType = TabInspector.getAttribute("paramtype");
+		var paramName = TabInspector.getAttribute("param");
+		var paramType = TabInspector.getAttribute("paramtype");
+		var selectorName = TabInspector.getAttribute("selector");
+		if (selectorName==undefined || selectorName=="") selectorName = paramName;
 
-	
-	//SETTING INSPECTOR ATTRIBUTES
-	inspectorElement.setAttribute("moblabel", moblabel);
-	inspectorElement.setAttribute("param", paramName);
-	inspectorElement.setAttribute("paramtype", paramType);
-	inspectorElement.setAttribute("selector", paramName);
-	inspectorElement.setAttribute("preconfig", preconfig );
-	
-	
-	moCI.MemorizePreconfigSelection( moblabel, preconfig );
-	
-	var Param = Params[paramName];
-	var paramValue = Param.paramvalues[preconfig];
-	
-	//only one slide
-	var sliderInspectorName = paramType+"_slide";
-	var slider = document.getElementById(sliderInspectorName);
-	if (slider) {
-		slider.addEventListener("change", ExecuteSliderInspector );
-	}
-	
-	SetStandardMode( paramType, paramName, moblabel  );
-	
-	if (paramValue==undefined) {
-		console.error("UpdateStandardInspector > NO PRECONFIG VALUE FOR : " + moblabel+"."+paramName+" AT POSITION ("+preconfig+")" );
-		moCI.AddValue( moblabel, paramName, preconfig );
-		return;
-		//ValueAdd( moblabel, param, preconf, value );
-		//PresetValueAdd(...)
-	}
-	
-	if (paramValue) {
-		var data_str = moCI.GetValuesToStr( moblabel, paramName, preconfig );
-		if (paramValue.length) {								
-			for(var sub=0; sub<paramValue.length; sub++) {
-				var datav = paramValue[sub]["value"];
-				
-				//now that we have	it, assign it to inspector...
-				
-				var inputInspectorName = "selector_"+paramType+"_"+paramName+"_input";
-				if (sub>0 && paramValue.length>1) 
-					inputInspectorName = "selector_"+paramType+"_"+paramName+"_"+sub+"_input";
-			
-				if (slider) {
-					slider.value = datav;
-				}
-				
-				//now that we have it, assign it to inspector...
-				var inputInspector = document.getElementById( inputInspectorName );
-				
-				if (!inputInspector) {
-					inputInspectorName = "selector_"+paramType+"_input";
-					inputInspector = document.getElementById( inputInspectorName );
-				}
-				if (inputInspector) {
-					inputInspector.addEventListener("change", inputValueUpdate );
-					inputInspector.setAttribute("value", datav);
-					inputInspector.value = datav;
-					activateClass(inputInspector,"param_input_selected");
-				} else {
-					console.error("UpdateStandardInspector > " + inputInspectorName+" not found!");
-				}
-			}
-		} else {
-			console.error("UpdateStandardInspector > NO PARAM VALUE (subvalue 0) FOR : " + moblabel+"."+paramName+" AT POSITION ("+preconfig+")" );
+		SetInspectorVariables( inspectorElement, moblabel, paramName, paramType, paramName, preconfig );
+		
+		moCI.MemorizePreconfigSelection( moblabel, preconfig );
+		
+		var Param = Params[paramName];
+		var paramValue = Param.paramvalues[preconfig];
+		var paramDefinition = Param.paramdefinition;
+		
+		if (paramValue==undefined) {
+			console.error("UpdateStandardInspector > NO PRECONFIG VALUE FOR : " + moblabel+"."+paramName+" AT POSITION ("+preconfig+")" );
 			moCI.AddValue( moblabel, paramName, preconfig );
+			return;
+			//ValueAdd( moblabel, param, preconf, value );
+			//PresetValueAdd(...)
+		}		
+		
+		if (paramType=="COLOR") UpdateColorInspector( inspectorElement, moblabel, paramName, paramType, paramName, preconfig );
+		
+		//only one slide / PARAM_TYPE inspector
+		var sliderInspectorName = paramType+"_slide";
+		var slider = document.getElementById(sliderInspectorName);
+		if (slider) {
+			slider.addEventListener("change", ExecuteSliderInspector );
 		}
+		
+		SetStandardMode( paramType, paramName, moblabel  );
+		
+		if (paramValue) {
+			var subvalues = paramValue.length>1;
+			var data_str = moCI.GetValuesToStr( moblabel, paramName, preconfig );
+					
+			
+			if (paramValue.length) {								
+				for(var sub=0; sub<paramValue.length; sub++) {
+ 					var datav = paramValue[sub]["value"];
+					
+					//now that we have	it, assign it to inspector...
+					var inputInspector;
+					var inputInspectorName = "selector_"+paramType+"_"+paramName+"_input";
 
-	}
+					if (sub>0 && subvalues) {
+						inputInspectorName = "selector_"+paramType+"_"+paramName+"_"+sub+"_input";
+					}				
+					
+					if (slider) {
+						slider.value = datav;
+					}
+					
+					//now that we have it, assign it to inspector...
+					inputInspector = document.getElementById( inputInspectorName );
+					
+					if (!inputInspector) {
+						inputInspectorName = "selector_"+paramType+"_input";
+						inputInspector = document.getElementById( inputInspectorName );
+					}
+					if (inputInspector) {
+						inputInspector.addEventListener("change", inputValueUpdate );
+						inputInspector.setAttribute("value", datav);
+						inputInspector.value = datav;
+						activateClass(inputInspector,"param_input_selected");
+						
+						var inputSelectInspectorName = inputInspectorName+"_select";
+						var inputSelectInspector = document.getElementById( inputSelectInspectorName );
+							
+						if (paramDefinition.options.length>0) {
+					
+							
+							if (!inputSelectInspector) {
+								inputSelectInspector = document.createElement("SELECT");
+							}
+							inputSelectInspector.setAttribute( "id", inputSelectInspectorName );
+							inputSelectInspector.setAttribute( "title", inputSelectInspectorName );
+							inputSelectInspector.setAttribute( "class", "param_input" );
+							
+							/*var inputSelectInspector = document.getElementById( inputSelectInspectorName );
+							if (!inputSelectInspector) {
+								inputSelectInspectorName = "selector_"+paramType+"_input_select";
+								inputSelectInspector = document.getElementById( inputSelectInspectorName );
+							}
+							if (!inputSelectInspector) {
+								
+							}
+							*/							
+							if (inputSelectInspector) {
+								
+								inputSelectInspector.setAttribute("selector", paramName);
+								inputSelectInspector.innerHTML = "";
+															
+								//update and create OPTIONS...
+								for( var o=0; o<paramDefinition.options.length; o++ ) {
+									var optionname = paramDefinition.options[o];
+									var optionEl = document.createElement("OPTION");							
+									optionEl.setAttribute("value", o );
+									optionEl.innerHTML = optionname;
+									if (datav==o) {
+										optionEl.setAttribute("selected","");
+									}
+									inputSelectInspector.appendChild(optionEl);
+								}
+														
+								inputSelectInspector.addEventListener("change", inputSelectValueUpdate );						
+								//inputSelectInspector.value = datav;
+								inputInspector.parentNode.insertBefore( inputSelectInspector, inputInspector );
+								activateClass( inputSelectInspector, "param_input_selected");
+								
+							}
+						} else {
+							if (inputSelectInspector)
+								deactivateClass( inputSelectInspector, "param_input_selected");
+						}
+						
+						
+						
+					} else {
+						console.error("UpdateStandardInspector > " + inputInspectorName+" not found!");
+					}
+				}
+			} else {
+				console.error("UpdateStandardInspector > NO PARAM VALUE (subvalue 0) FOR : " + moblabel+"."+paramName+" AT POSITION ("+preconfig+")" );
+				moCI.AddValue( moblabel, paramName, preconfig );
+			}
+
+		}
 	
+		ClickInspectorSelector( paramType, selectorName);
+		
 	} catch(err) {
 		console.error("UpdateStandardInspector > ",err);
 		alert("UpdateStandardInspector > " + err);
@@ -3108,6 +3004,21 @@ function inputValueUpdate( event ) {
 
 		selector = event.target.getAttribute("selector");
 		sliderValue = event.target.value;
+		SetValue( moblabel, selector, preconfig, sliderValue );
+	}
+}
+
+function inputSelectValueUpdate( event ) {
+	if (config.log.full) console.log("Select Value updated!! ",event.target.value );
+	var Inspector = GetInputInspector(event.target);
+	if (Inspector) {
+		moblabel = Inspector.getAttribute("moblabel");
+		preconfig = Inspector.getAttribute("preconfig");
+
+		selector = event.target.getAttribute("selector");
+		
+		sliderValue = event.target.options[event.target.selectedIndex].value;
+		
 		SetValue( moblabel, selector, preconfig, sliderValue );
 	}
 }
@@ -3143,16 +3054,18 @@ function IsValidParamValues( paramValues ) {
 function UpdateGroupParam( group, moblabel, paramName, preconfig ) {
 
 	try {
-		/*
-		if (Editor.Parameters[moblabel]==undefined) return;
-		var Param = Editor.Parameters[moblabel][paramName];
-		if (Param==undefined) return;
-		var paramValue = Param[preconfig];
-		*/
+		var Params = Editor.Parameters[moblabel];
+		if (Params==undefined) return false;
+		
+		var Param = Params[paramName];
+		var paramValue = Param.paramvalues[preconfig];
+		var paramDefinition = Param.paramdefinition;
+		
 		var paramValues = moCI.GetParamValues( moblabel, paramName, preconfig );
 		
 		if ( IsValidParamValues(paramValues) ) {								
 			
+			var subvalues = paramValues.length>1;
 			var data_str = moCI.GetValuesToStr( moblabel, paramName, preconfig );
 			
 			for(var sub=0; sub<paramValues.length; sub++) {
@@ -3160,17 +3073,60 @@ function UpdateGroupParam( group, moblabel, paramName, preconfig ) {
 				
 				//now that we have	it, assign it to inspector...
 				
-				var inputInsName = "selector_"+group+"_"+paramName+"_input";
-				if (sub>0 && paramValues.length>1) 
-					inputInsName = "selector_"+group+"_"+paramName+"_"+sub+"_input";
+				var inputInspectorName = "selector_"+group+"_"+paramName+"_input";
+				if (sub>0 && subvalues) 
+					inputInspectorName = "selector_"+group+"_"+paramName+"_"+sub+"_input";
 					
-				var inputI = document.getElementById( inputInsName );											
-				if (inputI) {
-					inputI.addEventListener("change", inputValueUpdate );
-					inputI.setAttribute("value", datav);
-					inputI.value = datav;
+				var inputInspector = document.getElementById( inputInspectorName );											
+				if (inputInspector) {
+					inputInspector.addEventListener("change", inputValueUpdate );
+					inputInspector.setAttribute("value", datav);
+					inputInspector.value = datav;
 					if (config.log.full)
-						console.log("UpdateInspector > updated value "+inputInsName+" val:"+datav+" data_str:"+data_str);
+						console.log("UpdateGroupParam > updated value "+inputInspectorName+" val:"+datav+" data_str:"+data_str);
+											
+					var inputSelectInspectorName = inputInspectorName+"_select";
+					var inputSelectInspector = document.getElementById( inputSelectInspectorName );
+						
+					if (paramDefinition.options.length>0) {
+				
+						
+						if (!inputSelectInspector) {
+							inputSelectInspector = document.createElement("SELECT");
+						}
+						inputSelectInspector.setAttribute( "id", inputSelectInspectorName );
+						inputSelectInspector.setAttribute( "title", inputSelectInspectorName );
+						inputSelectInspector.setAttribute( "class", "param_input" );
+												
+						if (inputSelectInspector) {
+							
+							inputSelectInspector.setAttribute("selector", paramName);
+							inputSelectInspector.innerHTML = "";
+														
+							//update and create OPTIONS...
+							for( var o=0; o<paramDefinition.options.length; o++ ) {
+								var optionname = paramDefinition.options[o];
+								var optionEl = document.createElement("OPTION");							
+								optionEl.setAttribute("value", o );
+								optionEl.innerHTML = optionname;
+								if (datav==o) {
+									optionEl.setAttribute("selected","");
+								}
+								inputSelectInspector.appendChild(optionEl);
+							}
+													
+							inputSelectInspector.addEventListener("change", inputSelectValueUpdate );						
+							//inputSelectInspector.value = datav;
+							inputInspector.parentNode.insertBefore( inputSelectInspector, inputInspector );
+							activateClass( inputSelectInspector, "param_input_selected");
+							
+						}
+					} else {
+						if (inputSelectInspector)
+							deactivateClass( inputSelectInspector, "param_input_selected");
+					}				
+					
+					
 				} else {
 					console.error("UpdateInspector > " + inputInsName+" not found!");
 				}
@@ -3201,25 +3157,6 @@ function UpdateGroupedInspector( moblabel, group, preconfig ) {
 		for( var selectorName in inspectorSelectors ) {			
 			var selParams = inspectorSelectors[ selectorName ];			
 			if (selParams) {
-
-				//SIMULA un CLICK SOBRE EL SELECTOR SELECCIONADO
-				var idSelEleName = "selector_"+group+"_"+selectorName+"";
-				var SelElement = document.getElementById( idSelEleName );
-				if (SelElement) {
-					if (firstSel==undefined) firstSel = SelElement;
-					//si coincide con el memorizado
-					if ( selectorName == GetSelectedSelectorName( moblabel, group, preconfig ) ) {					
-						
-						if (config.log.full) console.log("UpdateGroupedInspector > "+idSelEleName+" clicked, previously selected.");
-							
-						SelElement.click();//CLICK
-						
-						selectorSelected = true;					
-					}
-				} else {
-					console.error("UpdateGroupedInspector > no htmlElement for " + idSelEleName);
-				}
-
 				//PONE AL DIA cualquier htmlElement con su PARAMETRO ( Editor.Parameters )
 				for( var paramName in selParams) {
 					//if this MOBLLE has this parameter as a member (==true), so we try to UPDATE IT( lo ponemos al dia con sus valores )
@@ -3235,9 +3172,29 @@ function UpdateGroupedInspector( moblabel, group, preconfig ) {
 							moCI.AddValue( moblabel, paramName, preconfig );
 						}									
 					}				
-				}				
+				}								
 			}
 		}	
+		
+		//GENERA un CLICK SOBRE EL SELECTOR SELECCIONADO
+		for( var selectorName in inspectorSelectors ) {			
+			var idSelEleName = "selector_"+group+"_"+selectorName+"";
+			var SelElement = document.getElementById( idSelEleName );
+			if (SelElement) {
+				if (firstSel==undefined) firstSel = SelElement;
+				//si coincide con el memorizado
+				if ( selectorName == GetSelectedSelectorName( moblabel, group, preconfig ) ) {					
+					
+					if (config.log.full) console.log("UpdateGroupedInspector > "+idSelEleName+" clicked, previously selected.");
+						
+					SelElement.click();//CLICK
+					
+					selectorSelected = true;					
+				}
+			} else {
+				console.error("UpdateGroupedInspector > no htmlElement for " + idSelEleName);
+			}
+		}
 
 		if (selectorSelected == false && firstSel) 
 			firstSel.click();
@@ -3328,98 +3285,6 @@ function hasParam( moblabel, param_name ) {
 	return res;
 }
 
-/**
-	SET
-	TODO: always select first parameter inspector!!
-	TODO: in inspector always select first value...
-*/
-function selectEditorPreconfig( preconfig_index ) {
-try {	
-	if (config.log.full) console.log("selectEditorPreconfig > ", preconfig_index);
-	
-	if (Editor.ObjectSelected=="" || Editor.ObjectSelected==undefined) {
-		alert("Atención! Seleccione un efecto antes de editar una preconfiguración.");
-		return;
-	}
-
-	if (config.log.full) console.log("selectEditorPreconfig(",preconfig_index,")");
-
-	Editor.PreconfigSelected = preconfig_index;
-	Preconfs = Editor.Preconfigs[ Editor.ObjectSelected ];
-	Editor.PreconfigsSelected[Editor.ObjectSelected] = preconfig_index;
-	
-	/* selectControlPreconfig */
-	if (config.log.full) console.log("selectEditorPreconfig > Editor.ObjectSelected: ", Editor.ObjectSelected );
-	Control.Functions.selectControlPreconfig( Editor.ObjectSelected, Editor.PreconfigSelected, true /*force select*/ );
-	
-	var parameters_side_winID = "parameters_side_"+Editor.ObjectSelected+"_";
-	
-	var CurrentPreconfig = Preconfs[preconfig_index];
-	var win_Preconfigs = document.getElementById("object_preconfigs");
-	var btn_Preconfig = document.getElementById("buttonED_"+(Editor.PreconfigSelected+1) );
-	
-	if (!win_Preconfigs) return console.error("Element object_preconfigs doesnt exists");
-	
-	var win_parameters_Preconfig = document.getElementById( parameters_side_winID+preconfig_index );	
-	if (!win_parameters_Preconfig) return console.error("selectEditorPreconfig > no " + parameters_side_winID);
-
-	//reset classes DEACTIVATE
-	for( var p=1;p<=Options["MAX_N_PRECONFIGS"];p++) {
-
-		//DEACTIVATE PRECONFIG SELECTOR
-		if (win_Preconfigs) deactivateClass( win_Preconfigs, "object_preconfigs_" + p );
-		
-		//DEACTIVATE PRECONFIG SELECTOR BUTTONS
-		btn_Preconfigx = document.getElementById("buttonED_"+p );
-		if (btn_Preconfigx) deactivateClass( btn_Preconfigx, "circle_selected" );
-		
-		//DEACTIVATE PARAMETERS SIDE
-		win_parameters_Preconfigx = document.getElementById( parameters_side_winID + (p-1) );
-		if (win_parameters_Preconfigx) {
-			deactivateClass( win_parameters_Preconfigx, "parameters_selected" );
-		} else {
-			if (config.log.full) console.log("selectEditorPreconfig > win_parameters_Preconfigx:",win_parameters_Preconfigx," null in ",Editor.ObjectSelected);
-		}
-	}
-	
-	//ACTIVATE ACTUAL PRECONFIG WINDOWS,BUTTONS AND PARAMETERS SIDE
-	//activate class for window
-	if (win_Preconfigs) activateClass( win_Preconfigs, "object_preconfigs_" + (Editor.PreconfigSelected+1) );
-	//activate class for circle button
-	if (btn_Preconfig) activateClass( btn_Preconfig, "circle_selected" );
-	//activate class for parameters side
-	if (win_parameters_Preconfig) activateClass( win_parameters_Preconfig, "parameters_selected" );
-	
-	
-	
-	selectEditorParameter(Editor.PreconfigSelected);	
-	//LOAD IMAGE in canvas for this Preconfig
-	//EN funcion de las imagenes que tenemos en ObjectImages generamos THUMBNAILS
-	// aqui solo para 1	
-	if (hasParam(Editor.ObjectSelected, "texture"))
-		selectEditorImage( Editor.ObjectSelected, "texture", Editor.PreconfigSelected );
-	if (hasParam(Editor.ObjectSelected, "images"))
-		selectEditorImage( Editor.ObjectSelected, "images", Editor.PreconfigSelected );
-	
-	if (hasParam(Editor.ObjectSelected, "sound"))
-		selectEditorSound( Editor.ObjectSelected, "sound", Editor.PreconfigSelected );
-	
-	if (hasParam(Editor.ObjectSelected, "movies"))
-		selectEditorMovie( Editor.ObjectSelected, "movies", Editor.PreconfigSelected );
-	
-	selectEditorColor( Editor.PreconfigSelected );
-	
-	if (CurrentPreconfig!=undefined) {
-		if (config.log.full) console.log( "Preconfig selected: ",CurrentPreconfig );
-	} else {
-		console.error("selectEditorPreconfig > no preconfig for (MUST ADD PRECONFIG):", Editor.PreconfigSelected);
-		moCI.AddPreconfig( Editor.ObjectSelected, Editor.PreconfigSelected );
-	}
-} catch(err) {
-	console.error("selectEditorPreconfig > ", err);
-	alert("selectEditorPreconfig > "+ err);
-}
-}
 
 
 

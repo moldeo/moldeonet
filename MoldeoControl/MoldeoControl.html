@@ -40,13 +40,13 @@
 <!-- BASE PANEL INTERFACE -->
 <div id="titlebar" class="titlebar" >
 	<span>
-	<button id="drag-window-button" class="x_drag" title="Drag">||</button>
-	<button id="hi" class="x_drag"  title="Drag">MOLDEO CONTROL</button>
-	<button id="drag-window-button" class="x_drag"  title="Drag">||</button>
-	<button id="debug-window-button" class="x_debug" title="debug">[!]</button>
-	<button id="minimize-window-button" class="x_minimize" title="Minimize">[_]</button>
-	<button id="maximize-window-button" class="x_maximize" title="Maximize">[+]</button>
-	<button id="close-window-button" class="x_close" title="Close">[ X ]</button>
+	<!--<button id="drag-window-button" class="x_drag" title="Drag"></button>-->
+	<button id="debug-window-button" class="x_debug" title="debug"><span class="glyphicon glyphicon-cog"></span></button>
+	<button id="controltitle" class="x_drag"  title="Drag">MOLDEO CONTROL</button>	
+	<!--<button id="drag-window-button" class="x_drag"  title="Drag"></button>-->
+	<button id="minimize-window-button" class="x_minimize" title="Minimize"><span class="glyphicon glyphicon-minus"></span></button>
+	<button id="maximize-window-button" class="x_maximize" title="Maximize"><span class="glyphicon glyphicon-plus"></span></button>
+	<button id="close-window-button" class="x_close" title="Close"><span class="glyphicon glyphicon-remove-sign"></span></button>
 	</span>
 	
 </div>
@@ -526,22 +526,28 @@
 					<!-- OBJECT IMPORT START -->
 					<div id="parameter_inspector_TEXTURE" class="parameter_inspector">
 						<label>TEXTURE</label>
+						<input id="selector_TEXTURE_input" class="param_input" selector="texture" type="text" value=""/>
 					</div>			
 					<div id="parameter_inspector_SOUND" class="parameter_inspector">
 						<label>SOUND</label>
+						<input id="selector_SOUND_input" class="param_input" selector="sound" type="text" value=""/>
 					</div>
 					<div id="parameter_inspector_OBJECT" class="parameter_inspector">
 						<label>OBJECT</label>
+						<input id="selector_OBJECT_input" class="param_input" selector="object" type="text" value=""/>
 					</div>
 					<div id="parameter_inspector_3DMODEL" class="parameter_inspector">
 						<label>3DMODEL</label>
+						<input id="selector_3DMODEL_input" class="param_input" selector="3dmodel" type="text" value=""/>
 					</div>
 					
 					<div id="parameter_inspector_SCRIPT" class="parameter_inspector">
 						<label>SCRIPT</label>
+						<input id="selector_SCRIPT_input" class="param_input" selector="script" type="text" value=""/>
 					</div>
 					<div id="parameter_inspector_TEXT" class="parameter_inspector">
 						<label>TEXT</label>
+						<input id="selector_TEXT_input" class="param_input" selector="text" type="text" value=""/>
 					</div>
 					<!-- OBJECT IMPORT END -->
 					
@@ -558,7 +564,9 @@
 					
 					<div id="parameter_inspector_NUM" class="parameter_inspector"  paramtype="NUM">
 						<label>NUMERIC</label>
-						<input id="selector_NUM_input" class="param_input" selector="xxx"  type="text" value="0"/>
+						<input id="selector_NUM_input" class="param_input" selector="xxx"  type="text" value="0"/>						
+						<!--<select id="selector_NUM_input_select" class="param_input" selector="xxx">						
+						</select>-->
 						<div id="NUM_slide_back" class="slide_H_back parameter_slide_back">
 							<label id="NUM_slide_label">NUM</label>
 							<input id="NUM_slide" class="parameter_slide slide_H slide_controls"  type="range" min="0" max="10" step="1" value="0"/>
