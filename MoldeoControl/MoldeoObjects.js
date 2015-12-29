@@ -2294,7 +2294,7 @@ var ConsoleInterface = {
 			}
 		},		
 		"SaveRecents": function( filename ) {
-			if (filename) moCI.Browser.Projects.Recents.push( filename );
+			if (filename && moCI.Browser.Projects.Recents) moCI.Browser.Projects.Recents.push( filename );
 			for( var mol_index in Browser.Projects.Recents ) {
 				var recent_mol_file = Browser.Projects.Recents[mol_index];
 				
