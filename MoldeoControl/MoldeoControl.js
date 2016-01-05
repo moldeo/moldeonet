@@ -2527,6 +2527,8 @@ function SetValue( moblabel, selector, preconfig, value ) {
 						} else console.error("SetValue > no Data for " + selector +" preconf:"+preconfig+" subvalue: 0 ");
 					} else {
 						moCI.AddValue( moblabel, selector, preconfig, value );
+						OscMoldeoSend( { 'msg': '/moldeo','val0': 'preconfigset', 'val1': moblabel, 'val2': preconfig } );
+						OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectget', 'val1': moblabel } );
 						console.error("SetValue > no ParamValue for " + preconfig,value);
 					}
 				} else console.error("SetValue > no ParamValues for " + selector,value);
@@ -2874,6 +2876,8 @@ function UpdateStandardInspector( TabInspector, inspectorElement, moblabel, prec
 		if (paramValue==undefined) {
 			console.error("UpdateStandardInspector > NO PRECONFIG VALUE FOR : " + moblabel+"."+paramName+" AT POSITION ("+preconfig+")" );
 			moCI.AddValue( moblabel, paramName, preconfig );
+			OscMoldeoSend( { 'msg': '/moldeo','val0': 'preconfigset', 'val1': moblabel, 'val2': preconfig } );
+			OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectget', 'val1': moblabel } );
 			return;
 			//ValueAdd( moblabel, param, preconf, value );
 			//PresetValueAdd(...)
@@ -2983,6 +2987,9 @@ function UpdateStandardInspector( TabInspector, inspectorElement, moblabel, prec
 			} else {
 				console.error("UpdateStandardInspector > NO PARAM VALUE (subvalue 0) FOR : " + moblabel+"."+paramName+" AT POSITION ("+preconfig+")" );
 				moCI.AddValue( moblabel, paramName, preconfig );
+				OscMoldeoSend( { 'msg': '/moldeo','val0': 'preconfigset', 'val1': moblabel, 'val2': preconfig } );
+				OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectget', 'val1': moblabel } );
+
 			}
 
 		}
@@ -3170,6 +3177,9 @@ function UpdateGroupedInspector( moblabel, group, preconfig ) {
 						} else if ( Param && Param.paramvalues ) {
 							console.error("NO PARAM ENTRY FOR : " + moblabel+"."+paramName+" AT PRECONFIG POSITION: "+preconfig+" " );
 							moCI.AddValue( moblabel, paramName, preconfig );
+							OscMoldeoSend( { 'msg': '/moldeo','val0': 'preconfigset', 'val1': moblabel, 'val2': preconfig } );
+							OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectget', 'val1': moblabel } );
+
 						}									
 					}				
 				}								

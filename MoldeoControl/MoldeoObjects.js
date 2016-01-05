@@ -2780,11 +2780,11 @@ var ConsoleInterface = {
 	"AddValue": function( moblabel, param, preconfig, value ) {
 		if (config.log.full) console.log("AddValue: moblabel:",moblabel, "param:",param, "preconfig:",preconfig,"value:",value );
 		Editor.SaveNeeded = true;
-		if (value==undefined) 
-			return OscMoldeoSend( { 'msg': '/moldeo','val0': 'valueadd', 'val1': moblabel, 'val2': param, 'val3': preconfig } );
-		OscMoldeoSend( { 'msg': '/moldeo','val0': 'valueadd', 'val1': moblabel, 'val2': param, 'val3': preconfig, 'val4': value } );
-		OscMoldeoSend( { 'msg': '/moldeo','val0': 'preconfigset', 'val1': moblabel, 'val2': preconfig } );
-		OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectget', 'val1': moblabel } );		
+		if (value==undefined) {
+			OscMoldeoSend( { 'msg': '/moldeo','val0': 'valueadd', 'val1': moblabel, 'val2': param, 'val3': preconfig } );
+		} else {
+			OscMoldeoSend( { 'msg': '/moldeo','val0': 'valueadd', 'val1': moblabel, 'val2': param, 'val3': preconfig, 'val4': value } );
+		}				
 		if (Editor.SaveNeeded) {
 			activateClass( document.getElementById("buttonED_SaveProject"), "saveneeded" );
 			activateClass( document.getElementById("buttonED_SaveProjectAs"), "saveneeded" );
