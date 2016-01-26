@@ -2209,7 +2209,7 @@ function ExecuteStandardSlider( group, moblabel, selector, preconfig, sliderValu
 				for( var subsel in Editor.CustomInspectors[group][selector]) {
 					var subsel_active = Editor.CustomInspectors[group][selector][subsel];
 					if (subsel_active) {
-						composed_selector+=coma+subsel;
+						composed_selector+= coma + subsel;
 						coma = ",";
 					}
 				}
@@ -2421,7 +2421,7 @@ function selectorToSubselector( selector ) {
 	return subselec;
 } 
 
-function selectorToSelector( selector ) {
+function selectorToParamSelector( selector ) {
 	var Selector = selector;
 	
 	if (selector=="color:0"
@@ -2455,13 +2455,13 @@ function SetSaveNeeded() {
 function RefreshValue( moblabel, selector, preconfig ) {
 
 	var subselec = selectorToSubselector(selector);
-	selector = selectorToSelector(selector);
+	paramname = selectorToParamSelector(selector);
 
 	var APIObj = { 
 				"msg": "/moldeo",
 				"val0": "valuerefresh", 
 				"val1": moblabel, 
-				"val2": selector,
+				"val2": paramname,
 				"val3": preconfig
 				};
 	if (config.log.full) console.log("RefreshValue > APIObj:",APIObj);
@@ -2479,14 +2479,14 @@ function SetValue( moblabel, selector, preconfig, value ) {
 	var clselector=selector;
 
 	subselec = selectorToSubselector(selector);
-	selector = selectorToSelector(selector);
+	paramname = selectorToParamSelector(selector);
 
 	var success = false;
 	try {
 		/**WE UPDATE THE VALUE IN CONTROL MEMORY (to optimize for now not to fetch all object parameters values: MUST TODO NEXT: wait until fetch new value)*/
 		var Params = Editor.Parameters[moblabel];
 		if (Params) {
-			var Param = Params[selector];
+			var Param = Params[paramname];
 			if (Param) {
 				var ParamValues = Param.paramvalues;
 				if (ParamValues) {
@@ -2498,15 +2498,17 @@ function SetValue( moblabel, selector, preconfig, value ) {
 								//Data[];
 								//explode( color
 								if (config.log.full) console.log("SetValue of a color:",value,"subselec:",subselec,"ParamValue:",ParamValue );
-								
+								/*
 								if ( !isNaN(Number(value)) && !isNaN(Number(subselec)) && ParamValue.length>=3 ) {
 									ParamValue[subselec]["value"] = value;
 									value = rgbToHex( ParamValue[0]["value"]*255,
 													ParamValue[1]["value"]*255,
 													ParamValue[2]["value"]*255);
-									if (config.log.full) console.log("SetValue COLOR (rgbToHex) is ",selector,value );
-								} else if (value!=undefined && value.indexOf("#")>=0 && ParamValue.length>=3) {
-									if (config.log.full) console.log("SetValue COLOR (hexToRgb) is ",selector,value );
+									if (config.log.full) console.log("SetValue COLOR (rgbToHex) is ",paramname,value );
+								} else */
+								//HEXA: #FA3C05
+								if (value!=undefined && value.indexOf("#")>=0 && ParamValue.length>=3) {
+									if (config.log.full) console.log("SetValue COLOR (hexToRgb) is ",paramname,value );
 									var resColor = hexToRgb(value);
 									if (resColor) {
 										if (resColor.r) ParamValue[0]["value"] = resColor.r / 255.0;
@@ -2514,25 +2516,23 @@ function SetValue( moblabel, selector, preconfig, value ) {
 										if (resColor.b) ParamValue[2]["value"] = resColor.b / 255.0;
 										if (ParamValue[3]) ParamValue[3]["value"] = 1.0;
 									}
-								} else if (isNaN(Number(value)) && subselec>=0 ) {
-									selector = clselector;								
-									if (config.log.full) console.log("SetValue COLOR (function) is ",selector,value );									
-								} else console.error("SetValue > ERROR: param "+selector+" is a color has no values.",value);
+									selector = paramname;
+								}
 							} else {							
 								Data["value"] = value;
 							}
 							
 							success = true;
 							
-						} else console.error("SetValue > no Data for " + selector +" preconf:"+preconfig+" subvalue: 0 ");
+						} else console.error("SetValue > no Data for paramname:" + paramname +" preconf:"+preconfig+" subvalue: 0 ");
 					} else {
-						moCI.AddValue( moblabel, selector, preconfig, value );
+						moCI.AddValue( moblabel, paramname, preconfig, value );
 						OscMoldeoSend( { 'msg': '/moldeo','val0': 'preconfigset', 'val1': moblabel, 'val2': preconfig } );
 						OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectget', 'val1': moblabel } );
 						console.error("SetValue > no ParamValue for " + preconfig,value);
 					}
-				} else console.error("SetValue > no ParamValues for " + selector,value);
-			} else console.error("SetValue > no Param for " + selector,value);
+				} else console.error("SetValue > no ParamValues for paramname:" + paramname,value);
+			} else console.error("SetValue > no Param for paramname:" + paramname,value);
 		} else console.error("SetValue > no Params for " + moblabel,value);
 		
 		
@@ -2664,7 +2664,9 @@ function CreateInspectorValue( inspectorElement, moblabel, paramName, paramType,
 	var codeName = datavDef.codename;
 	
 	var subs = "";
-	if (sub>0) subs="_"+sub;
+	if (paramValue.length>1)
+		subs="_"+sub;
+
 	var selectortype = paramType+subs;
 	var selector = paramName+subs;
 
@@ -2906,8 +2908,7 @@ function UpdateStandardInspector( TabInspector, inspectorElement, moblabel, prec
 					//now that we have	it, assign it to inspector...
 					var inputInspector;
 					var inputInspectorName = "selector_"+paramType+"_"+paramName+"_input";
-
-					if (sub>0 && subvalues) {
+					if (subvalues) {
 						inputInspectorName = "selector_"+paramType+"_"+paramName+"_"+sub+"_input";
 					}				
 					
@@ -3294,7 +3295,4 @@ function hasParam( moblabel, param_name ) {
 	
 	return res;
 }
-
-
-
 
