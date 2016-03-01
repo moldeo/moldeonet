@@ -1,4 +1,4 @@
-#bin/linux/nw MoldeoControl
+#!/bin/bash
 
 platform='unknown'
 processor='unknown'
@@ -13,7 +13,8 @@ fi
 processor="$unameprocessor"
 echo "procesor is $processor"
 echo "platform is $platform"
-
+echo "copying config.init.js to moldeocontrol"
+cp config.init.js moldeocontrol/config.init.js
 #if [[ $platform == 'linux' ]]; then
 #elif [[ $platform == 'freebsd' ]]; then
 #fi
