@@ -1,0 +1,1 @@
+gst-launch-1.0 -e v4l2src do-timestamp=true ! video/x-raw,format=RGB,width=320,height=240,framerate=30/1 ! decodebin ! videoconvert ! video/x-raw,format=I420 ! jpegenc ! rtpjpegpay ! udpsink host=192.168.1.135 port=5200 sync=false

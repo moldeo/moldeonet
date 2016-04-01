@@ -1,8 +1,9 @@
 #!/bin/bash
-NWJS_VERSION=v0.12.2
-NWJS_PACKAGE_NAME=nwjs-$NWJS_VERSION-linux-ia32
+#https://github.com/jtg-gg/node-webkit/releases/download/nw-v0.12.0/nwjs-v0.12.0-linux-arm.tar.gz
+NWJS_VERSION=v0.12.0
+NWJS_PACKAGE_NAME=nwjs-$NWJS_VERSION-linux-arm
 NWJS_PACKAGE_FILE=$NWJS_PACKAGE_NAME.tar.gz
-NWJS_URL=http://dl.nwjs.io/$NWJS_VERSION/$NWJS_PACKAGE_FILE
+NWJS_URL=https://github.com/jtg-gg/node-webkit/releases/download/nw-$NWJS_VERSION/$NWJS_PACKAGE_FILE
 
 echo "Installing nwjs (node-webkit) version $NWJS_VERSION"
 
