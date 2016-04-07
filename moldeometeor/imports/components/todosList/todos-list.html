@@ -1,0 +1,16 @@
+<header>
+	<h1>Robot Chat - Interactive</h1>
+	<form class="new-task" ng-submit="todosList.addTask(todosList.newTask)">
+		<input ng-model="todosList.newTask" type="text" name="text" placeholder="Type to add new tasks"/>
+	</form>
+</header>
+<ul>
+	<li ng-repeat="task in todosList.tasks"  ng-class="{'checked': task.checked}">
+		<button class="delete" ng-click="todosList.removeTask(task)">&times;</button>
+		<button class="send" ng-click="todosList.processingTask(task)">SEND <b>[{{task.tcommand}}]</b></button>
+    		<input type="checkbox" ng-checked="task.checked" ng-click="todosList.setChecked(task)" class="toggle-checked"/>
+		<span class="text">{{task.text}}</span>
+		<span id="result_{{task._id}}" class="text result">-</span>
+	</li>
+</ul>
+

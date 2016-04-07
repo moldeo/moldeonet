@@ -1,13 +1,15 @@
 <head>
   <title>molduino, Robot Group & Moldeo Interactive</title>
+  
 </head>
 
 <body>
   <h1>Welcome to Molduino, DuinoBot remote interface!</h1>
-
-  <div class="container" ng-app="simple-todos">
-
-    <todos-list></todos-list>
-
+   
+  <div class="container" ng-app="robot-molduino" ng-strict-di="">
+    <div class=""><todos-list></todos-list></div>
+    <div class=""><controls-list></controls-list></div>
   </div>
+
+<script src="/js/bootstrap.min.js"></script>
 </body>

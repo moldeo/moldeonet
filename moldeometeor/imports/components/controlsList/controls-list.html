@@ -1,0 +1,9 @@
+<header>
+	<h1>Robot Controls</h1>
+</header>
+
+	<button type="button" id="{{control.name}}" ng-repeat="control in controlsList.controls" ng-click="controlsList.clickControl(control)">
+		<span class="glyhicon {{control.class}}"></span><span class="text">{{control.label}}</span>
+	</button>
+
+

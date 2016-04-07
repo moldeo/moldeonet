@@ -1,8 +1,31 @@
+/*
 import { Meteor } from 'meteor/meteor';
 import '../imports/api/tasks.js';
+*/
+
+//require('../imports/api/tasks.js');
+//import Tasks from '../imports/api/tasks.js';
 
 Meteor.startup(() => {
   // code to run on server at startup
+
+  if (Tasks.find().count() === 0) { 
+    var tasks = [
+	{
+	'text': "comando 1",
+	'checked': "off",
+	},
+	{
+	'text': "comando 2",
+	'checked': "on",
+	},
+    ];
+
+    for( var i=0; i<tasks.length; i++) {
+      Tasks.insert( tasks[i] );
+    }
+    console.log("We have started with two tasks!");
+  } else console.log("We have tasks!");
 
 // Load future from fibers
   var Future = Npm.require("fibers/future");
@@ -21,7 +44,8 @@ Meteor.startup(() => {
       exec(command,function(error,stdout,stderr){
         if(error){
           console.log(error);
-          throw new Meteor.Error(500,command+" failed");
+          //throw new Meteor.Error(500,command+" failed");
+	  return future.return(command+" failed");
         }
         future.return(stdout.toString());
       });

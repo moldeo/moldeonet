@@ -1,7 +1,11 @@
-import angular from 'angular';
-import angularMeteor from 'angular-meteor';
-import { Tasks } from '../../api/tasks.js';
-import template from './todosList.html';
+//import angular from 'angular';
+require('angular');
+//import angularMeteor from 'angular-meteor';
+require('angular-meteor');
+//import { Tasks } from '../../api/tasks.js';
+require('../../api/tasks.js');
+//import template from './todosList.html';
+require('./todosList.html');
 
 var RM_STATUS = 101;
 var RM_SOUND = 1;
@@ -153,7 +157,8 @@ class TodosListCtrl {
 }
 
 
-export default angular.module('todosList', [angularMeteor])
+//export default angular.module('todosList', [angularMeteor])
+exports = angular.module('todosList', [angularMeteor])
 .component('todosList',
                         {
                             templateUrl: 'imports/components/todosList/todosList.html',
