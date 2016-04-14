@@ -1,0 +1,16 @@
+{
+  "name"         : "moldeonode",
+  "version"      : "0.0.0",
+  "description"  : "RobotGroup - Moldeo integration",
+  "main"         : "server.js",
+  "author"       : "Fabricio Costa Alisedo",
+  "dependencies" : {
+    "body-parser"    : "^1.4.3",
+    "express"        : "^4.13.4",
+    "method-override": "^2.1.3",
+    "mongodb"          : "^2.1.16",
+    "mongoose"       : "^4.4.12",
+    "morgan"         : "^1.1.1",
+    "fibers"         : "^1.0.10"
+  }
+}

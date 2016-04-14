@@ -1,0 +1,95 @@
+<!--<head>
+  <title>molduino, Robot Group & Moldeo Interactive</title>
+</head>
+
+<body>
+  <h1>Welcome to Molduino, DuinoBot remote interface!</h1>
+
+  <div class="container" ng-app="simple-todos">
+
+    <todos-list></todos-list>
+
+  </div>
+</body>
+-->
+
+
+<!-- index.html -->
+<!doctype html>
+
+<!-- ASSIGN OUR ANGULAR MODULE -->
+<html ng-app="molduinoTasks">
+<head>
+    <!-- META -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Optimize mobile viewport -->
+    <link rel="shortcut icon" href="/moldeologo.ico">
+    <title>Node/Angular Todo App</title>
+
+    <!-- SCROLLS -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- load bootstrap -->
+    <style>
+        html                    { overflow-y:scroll; }
+        body                    { padding-top:50px; }
+        #todo-list              { margin-bottom:30px; }
+    </style>
+    <link rel="stylesheet" href="main.css">
+
+    <!-- SPELLS -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- load jquery -->
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script><!-- load angular -->
+    <script src="core.js"></script>
+
+</head>
+<!-- SET THE CONTROLLER AND GET ALL TODOS -->
+<body ng-controller="mainController">
+    <div class="container">
+
+        <!-- HEADER AND TODO COUNT -->
+        <div class="jumbotron text-center">
+            <h1>Robot Tasks <span class="label label-info">{{ tasks.length }}</span></h1>
+            <div id="previewcam"><img width="300" height="200" src="http://192.168.1.156:8080/?action=snapshot"/></div><button ng-click="refreshpreviewcam();">A</button>
+        </div>
+
+        <!-- TODO LIST -->
+        <div id="todo-list" class="row">
+            <div class="col-sm-8 col-sm-offset-2">
+
+                <ul>
+
+                  <li ng-repeat="task in tasks" ng-class="{'checked': task.checked}">
+                    <button class="delete" ng-click="deleteTask(task._id)">&times;</button>
+                    <button class="send" ng-click="processingTask(task)">SEND</button>
+                    <!--<input type="checkbox" ng-checked="task.checked" ng-click="setChecked(task)" class="toggle-checked"/>-->
+                    <span class="text">{{task.text}}</span>
+                    <span id="task_{{task._id}}_result" class="text">...</span>
+                  </li>
+
+                </ul>
+
+            </div>
+        </div>
+
+        <!-- FORM TO CREATE TODOS -->
+        <div id="todo-form" class="row">
+            <div class="col-sm-8 col-sm-offset-2 text-center">
+                <form>
+                    <div class="form-group">
+
+                        <!-- BIND THIS VALUE TO formData.text IN ANGULAR -->
+                        <input type="text" class="form-control input-lg text-center" placeholder="Talk to the robot" ng-model="formData.text">
+                        <!--<input type="text" class="form-control input-lg text-center" placeholder="Talk to the robot" ng-model="formData.autosend">-->
+                    </div>
+
+                    <!-- createToDo() WILL CREATE NEW TODOS -->
+                    <button type="submit" class="btn btn-primary btn-lg" ng-click="createTask()">Add</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
+
+
