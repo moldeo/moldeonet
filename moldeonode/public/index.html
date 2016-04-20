@@ -46,7 +46,8 @@ function createImageLayer() {
   img.style.zIndex = -1;
   img.onload = imageOnload;
   img.onclick = imageOnclick;
-  img.src = "http://192.168.43.252:8080/?action=snapshot&n=" + (++imageNr);
+  /*img.src = "http://192.168.43.252:8080/?action=snapshot&n=" + (++imageNr);*/
+  img.src = "http://192.168.1.156:8080/?action=snapshot&n=" + (++imageNr);
   var webcam = document.getElementById("previewcam");
   webcam.insertBefore(img, webcam.firstChild);
 }
