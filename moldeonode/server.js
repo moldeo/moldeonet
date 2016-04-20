@@ -7,7 +7,6 @@
     
     var parseArgs = require('minimist')    
     var Fiber = require('fibers');
-    var Future = require('Future');
     var express  = require('express');
     var app      = express();                               // create our app w/ express
     var Mongo = require('mongodb');                     // mongoose for mongodb
