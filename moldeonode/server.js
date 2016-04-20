@@ -1,7 +1,10 @@
 // server.js
 
+
+
     // set up ========================
     var exec = require('child_process').exec;
+    
     var parseArgs = require('minimist')    
     var Fiber = require('fibers');
     var express  = require('express');
@@ -11,7 +14,9 @@
     var morgan = require('morgan');             // log requests to the console (express4)
     var bodyParser = require('body-parser');    // pull information from HTML POST (express4)
     var methodOverride = require('method-override'); // simulate DELETE and PUT (express4)
-
+    var http = require('http');
+    var server = http.createServer(app);
+    var io = require('socket.io').listen(server);
     // configuration =================
 
     //Tasks = new Mongo.Collection("tasks");
@@ -24,6 +29,17 @@
     app.use(bodyParser.json());                                     // parse application/json
     app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
     app.use(methodOverride());
+
+    io.on('connection', function(socket) {
+       socket.on('set nickname', function(nickname) {
+		socket.nickname = nickname;
+                console.log("Just connected:",nickname);
+	});
+	socket.on('msg', function(msg) {
+		socket.msg = msg;
+                io.emit('response',msg);
+	});
+    });
 
     var argv = parseArgs(process.argv.slice(2));
     console.dir(argv);
@@ -190,7 +206,7 @@
                 console.log( "command was processed as RM_REVERSE_SPEED." );
                 shell_command = task.text.replace( "reverse-speed", molduinoroot + "reverse-speed.sh " );
                 execCode( shell_command, function(err,res) {
-                  if (response=="") res = "ok";
+                  if (res=="") res = "ok";
                   resultcallback( err, res );
                 } );
                 break;
@@ -303,7 +319,16 @@
                 if (err)
                     res.send(err)
                 res.json(tasks);
+	
             });
+
+	    processingTask( task, function( err, result ) {
+                //if (err)
+                //    res.send(err)
+                //else res.json(result);
+            } );
+
+
         });
 
     });
@@ -339,13 +364,48 @@
         });
     });
 
-    app.get('*', function(req, res) {
-        res.sendfile('./public/index.html'); // load the single view file (angular will handle the page changes on the front-end)
+    app.get('/', function(req, res) {
+        res.sendFile('/public/index.html'); // load the single view file (angular will handle the page changes on the front-end)
     });
 
 
     // listen (start app with node server.js) ======================================
-    app.listen(8010);
+    //app.listen(8010);
+    server.listen(8010);
+
+
+var osc = require('node-osc');
+//var ioserver = require('socket.io').listen(8081);
+var oscServer, oscClient;
+var configOsc = {
+	/*listen to*/
+	server: {
+		port: 53335,
+		host: '127.0.0.1'
+	},
+	
+	/**speak to */
+	client: {
+		port: 53334,
+		host: '127.0.0.1'
+	}
+};
+
+oscServer = new osc.Server( configOsc.server.port, configOsc.server.host);
+oscClient = new osc.Client( configOsc.client.host, configOsc.client.port);
+oscServer.on('message', function(msg, rinfo) {
+
+	console.log( "moldeosc:",msg );
+	var  moldeoapimessage = msg[2];
+	var moldeo_message = {};
+
+	if (moldeoapimessage[1]=="opencv") {
+	   io.emit('moldeosc',moldeoapimessage);
+	}
+	
+} );
+
+
     console.log("App listening on port 8010");
 
 
