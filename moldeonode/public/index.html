@@ -1,18 +1,3 @@
-<!--<head>
-  <title>molduino, Robot Group & Moldeo Interactive</title>
-</head>
-
-<body>
-  <h1>Welcome to Molduino, DuinoBot remote interface!</h1>
-
-  <div class="container" ng-app="simple-todos">
-
-    <todos-list></todos-list>
-
-  </div>
-</body>
--->
-
 
 <!-- index.html -->
 <!doctype html>
@@ -24,7 +9,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Optimize mobile viewport -->
     <link rel="shortcut icon" href="/moldeologo.ico">
-    <title>Node/Angular Todo App</title>
+    <title>RobotGroup - Moldeo - molduinobot</title>
 
     <!-- SCROLLS -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- load bootstrap -->
@@ -32,6 +17,10 @@
         html                    { overflow-y:scroll; }
         body                    { padding-top:50px; }
         #todo-list              { margin-bottom:30px; }
+	#previewcam img {
+		width: 100% !important;
+		height: auto !important;
+	}
     </style>
     <link rel="stylesheet" href="main.css">
 
@@ -40,20 +29,81 @@
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script><!-- load angular -->
     <script src="core.js"></script>
 
-</head>
+<script type="text/javascript">
+
+/* Copyright (C) 2007 Richard Atterer, richard©atterer.net
+   This program is free software; you can redistribute it and/or modify it
+   under the terms of the GNU General Public License, version 2. See the file
+   COPYING for details. */
+
+var imageNr = 0; // Serial number of current image
+var finished = new Array(); // References to img objects which have finished downloading
+var paused = false;
+
+function createImageLayer() {
+  var img = new Image();
+  img.style.position = "absolute";
+  img.style.zIndex = -1;
+  img.onload = imageOnload;
+  img.onclick = imageOnclick;
+  img.src = "http://192.168.43.252:8080/?action=snapshot&n=" + (++imageNr);
+  var webcam = document.getElementById("previewcam");
+  webcam.insertBefore(img, webcam.firstChild);
+}
+
+// Two layers are always present (except at the very beginning), to avoid flicker
+function imageOnload() {
+  this.style.zIndex = imageNr; // Image finished, bring to front!
+  while (1 < finished.length) {
+    var del = finished.shift(); // Delete old image(s) from document
+    del.parentNode.removeChild(del);
+  }
+  finished.push(this);
+  if (!paused) createImageLayer();
+}
+
+function imageOnclick() { // Clicking on the image will pause the stream
+  paused = !paused;
+  if (!paused) createImageLayer();
+}
+
+</script>
+<body onload="createImageLayer();" >
 <!-- SET THE CONTROLLER AND GET ALL TODOS -->
-<body ng-controller="mainController">
-    <div class="container">
+    <div class="container" ng-controller="mainController">
 
         <!-- HEADER AND TODO COUNT -->
         <div class="jumbotron text-center">
             <h1>Robot Tasks <span class="label label-info">{{ tasks.length }}</span></h1>
-            <div id="previewcam"><img width="300" height="200" src="http://192.168.1.156:8080/?action=snapshot"/></div><button ng-click="refreshpreviewcam();">A</button>
         </div>
 
         <!-- TODO LIST -->
         <div id="todo-list" class="row">
-            <div class="col-sm-8 col-sm-offset-2">
+		<div class="col-sm-4 col-sm-offset-0">
+<div class="row" style="min-height: 350px;">
+			<!--<div id="previewcam"><img width="300" height="200" src="http://192.168.43.252:8080/?action=stream"/></div>-->
+			<div id="previewcam"><noscript><img width="300" height="200" src="http://192.168.43.252:8080/?action=snapshot" /></noscript></div>
+			<button ng-click="refreshpreviewcam();">Actualizar</button>
+</div>
+
+<div class="row">
+			<div id="moldeoosc" class="col-sm-12 col-sm-offset-0">---</div>
+</div>
+<div class="row">
+			<div id="moldeoosc" class="col-sm-12 col-sm-offset-0">
+<button id="left" ng-click="executeAction('turn-speed 100')">L</button>
+<button id="up"  ng-click="executeAction('advance-speed 100')">U</button>
+<button id="down"  ng-click="executeAction('reverse-speed 100')">D</button>
+<button id="right"  ng-click="executeAction('turn-speed -100')">R</button>
+<button id="stop"  ng-click="executeAction('stop')">S</button>
+<textarea id="code" rows="40" cols="15">
+
+</textarea>
+			</div>
+</div>
+		</div>
+
+            <div class="col-sm-8 col-sm-offset-0">
 
                 <ul>
 
@@ -66,29 +116,43 @@
                   </li>
 
                 </ul>
-
+		<!-- FORM TO CREATE TODOS -->
+	        <div id="todo-form" class="row">
+	            <div class="col-sm-12 col-sm-offset-0 text-center">
+	                <form>
+	                    <div class="form-group">
+	
+	                        <!-- BIND THIS VALUE TO formData.text IN ANGULAR -->
+	                        <input type="text" class="form-control input-lg text-center" placeholder="Talk to the robot" ng-model="formData.text">
+	                        <!--<input type="text" class="form-control input-lg text-center" placeholder="Talk to the robot" ng-model="formData.autosend">-->
+	                    </div>
+			   
+	
+	                    <!-- createToDo() WILL CREATE NEW TODOS -->
+	                    <button type="submit" class="btn btn-primary btn-lg" ng-click="createTask()">Add</button>
+	                </form>
+	            </div>
+        </div>
             </div>
         </div>
 
-        <!-- FORM TO CREATE TODOS -->
-        <div id="todo-form" class="row">
-            <div class="col-sm-8 col-sm-offset-2 text-center">
-                <form>
-                    <div class="form-group">
-
-                        <!-- BIND THIS VALUE TO formData.text IN ANGULAR -->
-                        <input type="text" class="form-control input-lg text-center" placeholder="Talk to the robot" ng-model="formData.text">
-                        <!--<input type="text" class="form-control input-lg text-center" placeholder="Talk to the robot" ng-model="formData.autosend">-->
-                    </div>
-
-                    <!-- createToDo() WILL CREATE NEW TODOS -->
-                    <button type="submit" class="btn btn-primary btn-lg" ng-click="createTask()">Add</button>
-                </form>
-            </div>
-        </div>
+        
 
     </div>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+var socket = io();
+socket.on('moldeosc',function(oscmsg) {
 
+	console.log("moldeoosc", oscmsg);
+
+	
+	code = oscmsg[0];
+	if (code!="0") {
+	   $('#moldeoosc').html(oscmsg);
+	}
+});
+</script>
 </body>
 </html>
 

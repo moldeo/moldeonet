@@ -15,6 +15,23 @@ function mainController($scope, $http) {
             console.log('Error: ' + data);
         });
 
+
+$scope.executeAction = function(command) {
+
+	$http.post('/api/tasks', { text: command } )
+            .success(function(data) {
+                $scope.formData = {}; // clear the form so our user is ready to enter another
+                $scope.tasks = data;
+                console.log(data);
+
+		
+            })
+            .error(function(data) {
+                console.log('Error: ' + data);
+            });
+
+}
+
     $scope.refreshpreviewcam = function() {
         var rid = Math.random();
         $("#previewcam").html('<img width="300" height="200" src="http://192.168.1.156:8080/?action=snapshot&id='+rid+'"/>');
@@ -26,7 +43,7 @@ function mainController($scope, $http) {
             .success(function(data) {
                 $scope.formData = {}; // clear the form so our user is ready to enter another
                 $scope.tasks = data;
-                console.log(data);
+                console.log(data);			
             })
             .error(function(data) {
                 console.log('Error: ' + data);
