@@ -4,8 +4,8 @@
 
     // set up ========================
     var exec = require('child_process').exec;
-    
-    var parseArgs = require('minimist')    
+
+    var parseArgs = require('minimist')
     var Fiber = require('fibers');
     var express  = require('express');
     var app      = express();                               // create our app w/ express
@@ -66,16 +66,21 @@
 
     var RM_STATUS = 101;
     var RM_PWD = 102;
+    var RM_REBOOT = 103;
+    var RM_SHUTDOWN = 104;
+    var RM_FACEDETECTION = 105;
 
     //var moldeonetroot = "../../../../../../";
     var moldeonetroot = "/home/pi/moldeoinstaller/moldeonet/";
     var utilsroot = moldeonetroot+"utils/";
-    var molduinoroot = utilsroot+"molduino/"; 
+    var molduinoroot = utilsroot+"molduino/";
 
     var MolduinoSyntax = {
       "sound": RM_SOUND,
       "speak": RM_SPEAK,
       "hello": RM_HELLO,
+      "reboot": RM_REBOOT,
+      "shutdown": RM_SHUTDOWN,
       "status": RM_STATUS,
       "motor": RM_MOTOR,
       "pwd": RM_PWD,
@@ -87,6 +92,7 @@
       "turn-speed": RM_TURN_SPEED,
       "stop": RM_STOP,
       "i2ccheck": RM_I2CCHECK,
+      "facedetection": RM_FACEDETECTION,
     };
 
  // define model =================
@@ -114,7 +120,7 @@
                 if(error){
                   console.log(error);
                   //throw new Meteor.Error(500,command+" failed");
-                }                
+                }
                 //future.return(stdout.toString());
                 callc( error, stdout.toString() );
             });
@@ -255,6 +261,38 @@
                 /// check in the server if the sound process is running
                 console.log( "command was processed as RM_MOTOR." );
                 break;
+
+
+            case RM_FACEDETECTION:
+                /// check in the server if the sound process is running
+                console.log( "command was processed as RM_FACEDETECTION." );
+                shell_command = utilsroot + "start_facedetection.sh";
+                execCode( shell_command, function(err,res) {
+                  if (res=="") res = "ok";
+                  resultcallback( err, res );
+                } );
+                break;
+
+            case RM_REBOOT:
+                /// check in the server if the sound process is running
+                console.log( "command was processed as RM_REBOOT" );
+                shell_command = "shutdown -r";
+                execCode( shell_command, function(err,res) {
+                  if (res=="") res = "ok";
+                  resultcallback( err, res );
+                } );
+                break;
+
+            case RM_SHUTDOWN:
+                /// check in the server if the sound process is running
+                console.log( "command was processed as RM_REBOOT" );
+                shell_command = "shutdown";
+                execCode( shell_command, function(err,res) {
+                  if (res=="") res = "ok";
+                  resultcallback( err, res );
+                } );
+                break;
+
             default:
                 break;
         }
@@ -319,7 +357,7 @@
                 if (err)
                     res.send(err)
                 res.json(tasks);
-	
+
             });
 
 	    processingTask( task, function( err, result ) {
@@ -383,7 +421,7 @@ var configOsc = {
 		port: 53335,
 		host: '127.0.0.1'
 	},
-	
+
 	/**speak to */
 	client: {
 		port: 53334,
@@ -402,7 +440,7 @@ oscServer.on('message', function(msg, rinfo) {
 	if (moldeoapimessage[1]=="opencv") {
 	   io.emit('moldeosc',moldeoapimessage);
 	}
-	
+
 } );
 
 
