@@ -288,7 +288,7 @@
             case RM_REBOOT:
                 /// check in the server if the sound process is running
                 console.log( "command was processed as RM_REBOOT" );
-                shell_command = "shutdown -r";
+                shell_command = 'echo "moldeonet" | sudo -S shutdown -r';
                 execCode( shell_command, function(err,res) {
                   if (res=="") res = "ok";
                   resultcallback( err, res );
@@ -297,8 +297,8 @@
 
             case RM_SHUTDOWN:
                 /// check in the server if the sound process is running
-                console.log( "command was processed as RM_REBOOT" );
-                shell_command = "shutdown";
+                console.log( "command was processed as RM_SHUTDOWN" );
+                shell_command = 'echo "moldeonet" | sudo -S shutdown -h';
                 execCode( shell_command, function(err,res) {
                   if (res=="") res = "ok";
                   resultcallback( err, res );
