@@ -69,6 +69,7 @@
     var RM_REBOOT = 103;
     var RM_SHUTDOWN = 104;
     var RM_FACEDETECTION = 105;
+    var RM_STOPFACEDETECTION = 106;
 
     //var moldeonetroot = "../../../../../../";
     var moldeonetroot = "/home/pi/moldeoinstaller/moldeonet/";
@@ -93,6 +94,7 @@
       "stop": RM_STOP,
       "i2ccheck": RM_I2CCHECK,
       "facedetection": RM_FACEDETECTION,
+      "stopfacedetection": RM_STOPFACEDETECTION,
     };
 
  // define model =================
@@ -267,6 +269,16 @@
                 /// check in the server if the sound process is running
                 console.log( "command was processed as RM_FACEDETECTION." );
                 shell_command = utilsroot + "start_facedetection.sh";
+                execCode( shell_command, function(err,res) {
+                  if (res=="") res = "ok";
+                  resultcallback( err, res );
+                } );
+                break;
+
+            case RM_STOPFACEDETECTION:
+                /// check in the server if the sound process is running
+                console.log( "command was processed as RM_FACEDETECTION." );
+                shell_command = utilsroot + "stop_facedetection.sh";
                 execCode( shell_command, function(err,res) {
                   if (res=="") res = "ok";
                   resultcallback( err, res );
