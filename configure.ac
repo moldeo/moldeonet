@@ -107,6 +107,6 @@ AC_TYPE_SIZE_T
 AC_OUTPUT([
     Makefile
     MoldeoControl/Makefile
-    moldeo.desktop.in    
+    moldeo.desktop    
 ]
 )
