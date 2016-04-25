@@ -8,9 +8,9 @@ nwjsdir=${prefix}/bin/nwjs
 nwjslocalesdir=${nwjsdir}/locales
 
 #bin_PROGRAMS = 
-bin_SCRIPTS = moldeocontrol
+bin_SCRIPTS = moldeo
 CLEANFILES = $(bin_SCRIPTS)
-EXTRA_DIST = moldeocontrol.in
+EXTRA_DIST = moldeo.in
 
 dist_bin_SCRIPTS = moldeo
 dist_moldeonet_DATA = moldeocontrol.sh
