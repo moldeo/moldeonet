@@ -5,15 +5,21 @@
   "single-instance": true,
   "always-on-top": true,
   "window": {
-	"icon": "moldeocontrol.png",
+    "icon": "moldeocontrol.png",
     "show": true,
     "frame": false,
     "toolbar": false,
     "position": "null",
     "width": 834,
     "height": 164,
-	"heightx": 544,
+    "heightx": 544,
     "min_width": 834,
     "min_height": 164
+  },
+  "dependencies": {
+    "md5-node": "^1.0.1",
+    "moment": "^2.13.0",
+    "node-osc": "^2.0.3",
+    "osenv": "^0.1.3"
   }
 }
