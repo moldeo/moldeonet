@@ -69,7 +69,7 @@ AC_SUBST([nwjslocalesdir],$nwjslocalesdir)
 AC_SUBST([nwjsfiles],$nwjsfiles)
 AC_SUBST([nwjslocalesfiles],$nwjslocalesfiles)
 
-AC_CONFIG_FILES([moldeocontrol], [chmod +x moldeocontrol])
+AC_CONFIG_FILES([moldeo], [chmod +x moldeo])
 
 dnl autoscan results
 AC_CHECK_FUNCS([floor])
