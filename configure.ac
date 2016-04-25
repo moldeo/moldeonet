@@ -32,6 +32,9 @@ moldeocontroldir=${prefix}/share/moldeonet/moldeocontrol
 nwjsdir=${prefix}/bin/nwjs
 nwjsexe=${nwjsdir}/nw
 nwjslocalesdir=${nwjsdir}/locales
+nwjsfileszip=
+nwjsfilesunzip=
+nwjspermissions="chmod +rx ${nwjsexe}"
 
 AC_ARG_ENABLE(host,
 [--enable-host[=host name] Specify the host os name:
@@ -48,9 +51,12 @@ AC_ARG_ENABLE(host,
 	
   elif test "x$enableval" = "xosx" ; then
     	host_name="osx"
-	nwjsexe=${nwjsdir}/nwjs.app/Contents/MacOS/nwjs
-	nwjsfiles=nwjs/nwjs.app nwjs/nwjc nwjs/credits.html
+	nwjsexe="${nwjsdir}/nwjs.app/Contents/MacOS/nwjs"
+	nwjsfiles="nwjs/nwjs.app.zip nwjs/nwjc nwjs/credits.html"
+	nwjsfileszip="${nwjsdir}/nwjs.app.zip"
+    nwjsfilesunzip="unzip ${nwjsfileszip} -d ${nwjsdir} && "
 	nwjslocalesfiles=
+    nwjspermissions="chmod -R +rx ${nwjsdir}/nwjs.app && chown -R root:wheel ${nwjsdir}/nwjs.app"
   else
 	echo
 	echo "Error!"
@@ -60,7 +66,7 @@ AC_ARG_ENABLE(host,
 ])
 
 
-
+AC_SUBST([nwjsfilesunzip],$nwjsfilesunzip)
 AC_SUBST([moldeonetdir],$moldeonetdir)
 AC_SUBST([moldeocontroldir],$moldeocontroldir)
 AC_SUBST([nwjsdir],$nwjsdir)
@@ -68,6 +74,7 @@ AC_SUBST([nwjsexe],$nwjsexe)
 AC_SUBST([nwjslocalesdir],$nwjslocalesdir)
 AC_SUBST([nwjsfiles],$nwjsfiles)
 AC_SUBST([nwjslocalesfiles],$nwjslocalesfiles)
+AC_SUBST([nwjspermissions],$nwjspermissions)
 
 AC_CONFIG_FILES([moldeo], [chmod +x moldeo])
 
