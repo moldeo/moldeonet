@@ -18,4 +18,4 @@ echo "copying config.init.js to moldeocontrol"
 #if [[ $platform == 'linux' ]]; then
 #elif [[ $platform == 'freebsd' ]]; then
 #fi
-@nwjsdir@/nw @moldeocontroldir@
+@nwjsexe@ @moldeocontroldir@

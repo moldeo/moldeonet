@@ -18,9 +18,9 @@ dist_bin_SCRIPTS = moldeocontrol
 dist_moldeonet_DATA = moldeocontrol.sh
 dist_desktop_DATA = moldeo.desktop
 
-nwjs_DATA = nwjs/nw nwjs/nwjc nwjs/nw.pak nwjs/credits.html nwjs/libffmpegsumo.so nwjs/icudtl.dat
-nwjslocales_DATA = nwjs/locales/*.*
+nwjs_DATA=${nwjsfiles}
+nwjslocales_DATA=${nwjslocalesfiles}
 
 install-data-hook:
-	chmod +x $(bindir)/nwjs/nw
+	chmod +x $(nwjsexe)
 
