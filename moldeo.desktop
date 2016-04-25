@@ -1,9 +1,9 @@
 [Desktop Entry]
 Name=Moldeo 1.0
-GenericName=Moldeo - Graphic Interface Controller
-Version=1.0.0.155
+GenericName=Moldeo - Multimedia Interactive Software Platform
+Version=1.0.0.160
 Comment=Mix and animate videos, images, colors, 3d effects. Play and compose Moldeo's multimedia interactive projects.
-Exec=moldeocontrol -mol %f
+Exec=moldeo -mol %f
 Icon=/usr/share/moldeo/data/icons/moldeologo.png
 Terminal=false
 Type=Application
