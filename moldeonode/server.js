@@ -2,6 +2,9 @@
 
 
 
+    var os = require('os');
+    var ifaces = os.networkInterfaces();
+
     // set up ========================
     var exec = require('child_process').exec;
 
@@ -75,6 +78,7 @@
     var RM_SHUTDOWN = 104;
     var RM_FACEDETECTION = 105;
     var RM_STOPFACEDETECTION = 106;
+    var RM_BODYDETECTION = 107;
 
     //var moldeonetroot = "../../../../../../";
     var moldeonetroot = "/home/pi/moldeoinstaller/moldeonet/";
@@ -101,7 +105,37 @@
       "i2ccheck": RM_I2CCHECK,
       "facedetection": RM_FACEDETECTION,
       "stopfacedetection": RM_STOPFACEDETECTION,
+      "bodydetection": RM_BODYDETECTION,
     };
+
+    function execCode( command, callc ) {
+        //this.unblock();
+        //var future=new Future();
+        //var command="pwd";
+        exec( command, function(error,stdout,stderr){
+            if(error){
+              console.log(error);
+              //throw new Meteor.Error(500,command+" failed");
+            }
+            //future.return(stdout.toString());
+            callc( error, stdout.toString() );
+        });
+        //return future.wait();
+    }
+
+    var MolduinoApi = {
+      "speak": function( text_to_speech, apiresultcallback ) {
+          console.log("MolduinoApi::speak",text_to_speech);
+          shell_command = "pico2wave -l es-ES -w testpicospeak.wav \""+ text_to_speech +"\" && aplay testpicospeak.wav";
+          execCode( shell_command, function(err,res) {
+            if (res=="") res = "ok";
+            if (apiresultcallback) apiresultcallback( err, res );
+          } );
+      },
+
+    };
+
+
 
  // define model =================
     var Task = mongoose.model('Task', {
@@ -120,20 +154,7 @@
         console.log("Processing command task: ", task);
         var shell_command = task.tcommand;
 
-        function execCode( command, callc ) {
-            //this.unblock();
-            //var future=new Future();
-            //var command="pwd";
-            exec( command,function(error,stdout,stderr){
-                if(error){
-                  console.log(error);
-                  //throw new Meteor.Error(500,command+" failed");
-                }
-                //future.return(stdout.toString());
-                callc( error, stdout.toString() );
-            });
-            //return future.wait();
-        }
+
 
         console.log("Processing command task.tcommandid: ", task.tcommandid);
         switch(task.tcommandid) {
@@ -291,6 +312,16 @@
                 } );
                 break;
 
+            case RM_BODYDETECTION:
+                /// check in the server if the sound process is running
+                console.log( "command was processed as RM_FACEDETECTION." );
+                shell_command = utilsroot + "start_bodydetection.sh";
+                execCode( shell_command, function(err,res) {
+                  if (res=="") res = "ok";
+                  resultcallback( err, res );
+                } );
+                break;
+
             case RM_SUDOPASS:
                 console.log( "command was processed as RM_SUDOPASS" );
                 sudopass = task.text.replace("sudopass","").trim().replace('\"','');
@@ -329,7 +360,29 @@
 
 // routes ======================================================================
 
+
     // api ---------------------------------------------------------------------
+
+    //coding
+    app.post('/api/code', function(req, res) {
+        if (req.body.text==undefined) {
+            res.send("ERROR");
+        }
+        if (req.body.text.trim()!="")
+        try {
+          console.log("code received:", req.body.text );
+          result = eval(req.body.text);
+          console.log("code result:", result );
+          res.json(result);
+        } catch(err) {
+          console.log("code compile error:", err );
+          if (err)
+                res.send(err)
+        }
+
+
+    });
+
     // get all tasks
     app.get('/api/tasks', function(req, res) {
 
@@ -460,7 +513,7 @@ oscServer = new osc.Server( configOsc.server.port, configOsc.server.host);
 oscClient = new osc.Client( configOsc.client.host, configOsc.client.port);
 oscServer.on('message', function(msg, rinfo) {
 
-	console.log( "moldeosc:",msg );
+	//console.log( "moldeosc:",msg );
 	var  moldeoapimessage = msg[2];
 	var moldeo_message = {};
 

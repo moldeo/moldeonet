@@ -12,7 +12,8 @@
     <title>RobotGroup - Moldeo - molduinobot</title>
 
     <!-- SCROLLS -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- load bootstrap -->
+    <!--<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">--><!-- load bootstrap -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
     <style>
         html                    { overflow-y:scroll; }
         body                    { padding-top:50px; }
@@ -21,6 +22,14 @@
 		width: 100% !important;
 		height: auto !important;
 	}
+	    #editor {
+        position: relative;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        height: 500px;
+    }
     </style>
     <link rel="stylesheet" href="main.css">
 
@@ -39,6 +48,9 @@
 var imageNr = 0; // Serial number of current image
 var finished = new Array(); // References to img objects which have finished downloading
 var paused = false;
+//var ipserver = '192.168.43.252';
+//var ipserver = '192.168.1.156';
+var ipserver = 'localhost';
 
 function createImageLayer() {
   var img = new Image();
@@ -46,9 +58,7 @@ function createImageLayer() {
   img.style.zIndex = -1;
   img.onload = imageOnload;
   img.onclick = imageOnclick;
-  /*img.src = "http://192.168.43.252:8080/?action=snapshot&n=" + (++imageNr);*/
-  /*img.src = "http://192.168.1.156:8080/?action=snapshot&n=" + (++imageNr);*/
-  img.src = "http://localhost:8080/?action=snapshot&n=" + (++imageNr);
+  img.src = "http://"+ipserver+":8080/?action=snapshot&n=" + (++imageNr);
   var webcam = document.getElementById("previewcam");
   webcam.insertBefore(img, webcam.firstChild);
 }
@@ -82,7 +92,7 @@ function imageOnclick() { // Clicking on the image will pause the stream
         <!-- TODO LIST -->
         <div id="todo-list" class="row">
 		<div class="col-sm-4 col-sm-offset-0">
-<div class="row" style="min-height: 350px;">
+<div class="row" style="min-height: 500px;">
 			<!--<div id="previewcam"><img width="300" height="200" src="http://192.168.43.252:8080/?action=stream"/></div>-->
 			<div id="previewcam"><noscript><img width="300" height="200" src="http://192.168.43.252:8080/?action=snapshot" /></noscript></div>
 			<button ng-click="refreshpreviewcam();">Actualizar</button>
@@ -93,14 +103,11 @@ function imageOnclick() { // Clicking on the image will pause the stream
 </div>
 <div class="row">
 			<div id="moldeoosc" class="col-sm-12 col-sm-offset-0">
-<button id="left" ng-click="executeAction('turn-speed 100')">L</button>
-<button id="up"  ng-click="executeAction('advance-speed 100')">U</button>
-<button id="down"  ng-click="executeAction('reverse-speed 100')">D</button>
-<button id="right"  ng-click="executeAction('turn-speed -100')">R</button>
-<button id="stop"  ng-click="executeAction('stop')">S</button>
-<textarea id="code" rows="40" cols="15">
-
-</textarea>
+        <button id="left" title="Girar Izquierda (turn-speed)" class="glyphicon glyphicon-arrow-left" ng-click="executeAction('turn-speed 100')"></button>
+        <button id="up" title="Adelante (advance-speed)" class="glyphicon glyphicon-arrow-up"  ng-click="executeAction('advance-speed 100')"></button>
+        <button id="down" title="Atrás (reverse-speed)" class="glyphicon glyphicon-arrow-down"  ng-click="executeAction('reverse-speed 100')"></button>
+        <button id="right" title="Girar Derecha  (turn-right-speed)" class="glyphicon glyphicon-arrow-right"  ng-click="executeAction('turn-right-speed 100')"></button>
+        <button id="stop" title="Parar" class="glyphicon glyphicon-remove-sign"  ng-click="executeAction('stop')"></button>
 			</div>
 </div>
 		</div>
@@ -118,7 +125,7 @@ function imageOnclick() { // Clicking on the image will pause the stream
                   </li>
 
                 </ul>
-		<!-- FORM TO CREATE TODOS -->
+<!-- FORM TO CREATE TODOS -->
 	        <div id="todo-form" class="row">
 	            <div class="col-sm-12 col-sm-offset-0 text-center">
 	                <form>
@@ -135,6 +142,19 @@ function imageOnclick() { // Clicking on the image will pause the stream
 	                </form>
 	            </div>
         </div>
+
+<!-- FORM TO CREATE CODE -->
+      <div id="code-form" class="row ">
+        <div class="btn-group ">
+          <button id="code-play"  ng-click="executeAction('code-play')">PLAY</button>
+          <button id="code-abort"  ng-click="executeAction('code-abort')">STOP</button>
+        </div>
+        <div id="editor" class="col-sm-12">
+/** Escribe tu código aquí*/
+        </div>
+      </div>
+
+
             </div>
         </div>
 
@@ -147,13 +167,22 @@ var socket = io();
 socket.on('moldeosc',function(oscmsg) {
 
 	console.log("moldeoosc", oscmsg);
-
-
 	code = oscmsg[0];
+
 	if (code!="0") {
 	   $('#moldeoosc').html(oscmsg);
 	}
+
 });
+</script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    //editor.setTheme("ace/theme/monokai");
+    editor.setTheme("ace/theme/chrome");
+    editor.getSession().setMode("ace/mode/javascript");
+
 </script>
 </body>
 </html>
