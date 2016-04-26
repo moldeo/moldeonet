@@ -47,7 +47,8 @@ function createImageLayer() {
   img.onload = imageOnload;
   img.onclick = imageOnclick;
   /*img.src = "http://192.168.43.252:8080/?action=snapshot&n=" + (++imageNr);*/
-  img.src = "http://192.168.1.156:8080/?action=snapshot&n=" + (++imageNr);
+  /*img.src = "http://192.168.1.156:8080/?action=snapshot&n=" + (++imageNr);*/
+  img.src = "http://localhost:8080/?action=snapshot&n=" + (++imageNr);
   var webcam = document.getElementById("previewcam");
   webcam.insertBefore(img, webcam.firstChild);
 }
@@ -106,7 +107,7 @@ function imageOnclick() { // Clicking on the image will pause the stream
 
             <div class="col-sm-8 col-sm-offset-0">
 
-                <ul>
+                <ul id="chatbot" class="chatbot">
 
                   <li ng-repeat="task in tasks" ng-class="{'checked': task.checked}">
                     <button class="delete" ng-click="deleteTask(task._id)">&times;</button>
@@ -122,13 +123,13 @@ function imageOnclick() { // Clicking on the image will pause the stream
 	            <div class="col-sm-12 col-sm-offset-0 text-center">
 	                <form>
 	                    <div class="form-group">
-	
+
 	                        <!-- BIND THIS VALUE TO formData.text IN ANGULAR -->
 	                        <input type="text" class="form-control input-lg text-center" placeholder="Talk to the robot" ng-model="formData.text">
 	                        <!--<input type="text" class="form-control input-lg text-center" placeholder="Talk to the robot" ng-model="formData.autosend">-->
 	                    </div>
-			   
-	
+
+
 	                    <!-- createToDo() WILL CREATE NEW TODOS -->
 	                    <button type="submit" class="btn btn-primary btn-lg" ng-click="createTask()">Add</button>
 	                </form>
@@ -137,7 +138,7 @@ function imageOnclick() { // Clicking on the image will pause the stream
             </div>
         </div>
 
-        
+
 
     </div>
 <script src="/socket.io/socket.io.js"></script>
@@ -147,7 +148,7 @@ socket.on('moldeosc',function(oscmsg) {
 
 	console.log("moldeoosc", oscmsg);
 
-	
+
 	code = oscmsg[0];
 	if (code!="0") {
 	   $('#moldeoosc').html(oscmsg);

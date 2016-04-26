@@ -31,19 +31,23 @@
     app.use(methodOverride());
 
     io.on('connection', function(socket) {
-       socket.on('set nickname', function(nickname) {
-		socket.nickname = nickname;
-                console.log("Just connected:",nickname);
-	});
-	socket.on('msg', function(msg) {
-		socket.msg = msg;
-                io.emit('response',msg);
-	});
+
+      socket.on('set nickname', function(nickname) {
+        socket.nickname = nickname;
+        console.log("Just connected:",nickname);
+      });
+
+      socket.on('msg', function(msg) {
+        socket.msg = msg;
+        io.emit('response',msg);
+      });
+
     });
 
     var argv = parseArgs(process.argv.slice(2));
     console.dir(argv);
 
+    var sudopass = '';
     var RM_SOUND = 1;
     var RM_HELLO = 7;
     var RM_I2CCHECK = 8;
@@ -64,6 +68,7 @@
     var RM_TURN = 45;
     var RM_TURN_SPEED = 46;
 
+    var RM_SUDOPASS = 100;
     var RM_STATUS = 101;
     var RM_PWD = 102;
     var RM_REBOOT = 103;
@@ -85,6 +90,7 @@
       "status": RM_STATUS,
       "motor": RM_MOTOR,
       "pwd": RM_PWD,
+      "sudopass": RM_SUDOPASS,
       "advance": RM_ADVANCE,
       "advance-speed": RM_ADVANCE_SPEED,
       "reverse": RM_REVERSE,
@@ -285,10 +291,19 @@
                 } );
                 break;
 
+            case RM_SUDOPASS:
+                console.log( "command was processed as RM_SUDOPASS" );
+                sudopass = task.text.replace("sudopass","").trim().replace('\"','');
+                err = "";
+                if (sudopass!="") err = "";
+                else err = "sudo password undefined!";
+                resultcallback( err, "sudopass received as:["+sudopass+"]" );
+                break;
+
             case RM_REBOOT:
                 /// check in the server if the sound process is running
                 console.log( "command was processed as RM_REBOOT" );
-                shell_command = 'echo "moldeonet" | sudo -S shutdown -r';
+                shell_command = 'echo "'+sudopass+'" | sudo -S shutdown -r';
                 execCode( shell_command, function(err,res) {
                   if (res=="") res = "ok";
                   resultcallback( err, res );
@@ -298,7 +313,7 @@
             case RM_SHUTDOWN:
                 /// check in the server if the sound process is running
                 console.log( "command was processed as RM_SHUTDOWN" );
-                shell_command = 'echo "moldeonet" | sudo -S shutdown -h';
+                shell_command = 'echo "'+sudopass+'" | sudo -S shutdown -h';
                 execCode( shell_command, function(err,res) {
                   if (res=="") res = "ok";
                   resultcallback( err, res );
@@ -345,7 +360,7 @@
         } else tshell_command = newTask;
 
 
-        console.log( "new task shell_command:", tshell_command );
+        console.log( "new task shell_command: ["+tshell_command+"]" );
 
         ///PARSE TASK
         cid = MolduinoSyntax[ tshell_command ];
@@ -371,13 +386,13 @@
                 res.json(tasks);
 
             });
-
+/*
 	    processingTask( task, function( err, result ) {
                 //if (err)
                 //    res.send(err)
                 //else res.json(result);
             } );
-
+*/
 
         });
 
