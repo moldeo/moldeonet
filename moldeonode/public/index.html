@@ -91,26 +91,26 @@ function imageOnclick() { // Clicking on the image will pause the stream
 
         <!-- TODO LIST -->
         <div id="todo-list" class="row">
-		<div class="col-sm-4 col-sm-offset-0">
-<div class="row" style="min-height: 500px;">
-			<!--<div id="previewcam"><img width="300" height="200" src="http://192.168.43.252:8080/?action=stream"/></div>-->
-			<div id="previewcam"><noscript><img width="300" height="200" src="http://192.168.43.252:8080/?action=snapshot" /></noscript></div>
-			<button ng-click="refreshpreviewcam();">Actualizar</button>
-</div>
+          <div class="col-sm-4 col-sm-offset-0">
+            <div class="row" style="min-height: 410px;">
+                  <!--<div id="previewcam"><img width="300" height="200" src="http://192.168.43.252:8080/?action=stream"/></div>-->
+                  <div id="previewcam"><noscript><img width="300" height="200" src="http://192.168.43.252:8080/?action=snapshot" /></noscript></div>
+                  <button ng-click="refreshpreviewcam();" title="Actualizar" class="btn btn-lg glyphicon glyphicon-refresh"></button>
+            </div>
 
-<div class="row">
-			<div id="moldeoosc" class="col-sm-12 col-sm-offset-0">---</div>
-</div>
-<div class="row">
-			<div id="moldeoosc" class="col-sm-12 col-sm-offset-0">
-        <button id="left" title="Girar Izquierda (turn-speed)" class="glyphicon glyphicon-arrow-left" ng-click="executeAction('turn-speed 100')"></button>
-        <button id="up" title="Adelante (advance-speed)" class="glyphicon glyphicon-arrow-up"  ng-click="executeAction('advance-speed 100')"></button>
-        <button id="down" title="Atrás (reverse-speed)" class="glyphicon glyphicon-arrow-down"  ng-click="executeAction('reverse-speed 100')"></button>
-        <button id="right" title="Girar Derecha  (turn-right-speed)" class="glyphicon glyphicon-arrow-right"  ng-click="executeAction('turn-right-speed 100')"></button>
-        <button id="stop" title="Parar" class="glyphicon glyphicon-remove-sign"  ng-click="executeAction('stop')"></button>
-			</div>
-</div>
-		</div>
+            <div class="row">
+                  <div id="moldeoosc" class="col-sm-12 col-sm-offset-0">---</div>
+            </div>
+            <div class="row">
+                  <div id="moldeoosc" class="col-sm-12 col-sm-offset-0">
+                    <button id="left" title="Girar Izquierda (turn-speed)" class="btn btn-lg glyphicon glyphicon-arrow-left" ng-click="executeAction('turn-speed 100')"></button>
+                    <button id="up" title="Adelante (advance-speed)" class="btn btn-lg glyphicon glyphicon-arrow-up"  ng-click="executeAction('advance-speed 100')"></button>
+                    <button id="down" title="Atrás (reverse-speed)" class="btn btn-lg glyphicon glyphicon-arrow-down"  ng-click="executeAction('reverse-speed 100')"></button>
+                    <button id="right" title="Girar Derecha  (turn-right-speed)" class="btn btn-lg glyphicon glyphicon-arrow-right"  ng-click="executeAction('turn-right-speed 100')"></button>
+                    <button id="stop" title="Parar" class="btn btn-lg glyphicon glyphicon-remove-sign"  ng-click="executeAction('stop')"></button>
+                  </div>
+            </div>
+          </div>
 
             <div class="col-sm-8 col-sm-offset-0">
 
@@ -118,49 +118,50 @@ function imageOnclick() { // Clicking on the image will pause the stream
 
                   <li ng-repeat="task in tasks" ng-class="{'checked': task.checked}">
                     <button class="delete" ng-click="deleteTask(task._id)">&times;</button>
-                    <button class="send" ng-click="processingTask(task)">SEND</button>
+
                     <!--<input type="checkbox" ng-checked="task.checked" ng-click="setChecked(task)" class="toggle-checked"/>-->
                     <span class="text">{{task.text}}</span>
                     <span id="task_{{task._id}}_result" class="text">...</span>
+                    <button class="send glyphicon glyphicon-repeat" ng-click="processingTask(task)"  title="Reenviar" style="float:right;"></button>
                   </li>
 
                 </ul>
 <!-- FORM TO CREATE TODOS -->
-	        <div id="todo-form" class="row">
-	            <div class="col-sm-12 col-sm-offset-0 text-center">
-	                <form>
-	                    <div class="form-group">
+                <div id="todo-form" class="row">
+                    <div class="col-sm-12 col-sm-offset-0 text-center">
+                        <form>
 
-	                        <!-- BIND THIS VALUE TO formData.text IN ANGULAR -->
-	                        <input type="text" class="form-control input-lg text-center" placeholder="Talk to the robot" ng-model="formData.text">
-	                        <!--<input type="text" class="form-control input-lg text-center" placeholder="Talk to the robot" ng-model="formData.autosend">-->
-	                    </div>
+                            <!-- BIND THIS VALUE TO formData.text IN ANGULAR -->
+                            <input type="text" class="col-sm-6 input-lg text-left" placeholder="Habla con el robot" ng-model="formData.text">
+                            <!--<input type="text" class="form-control input-lg text-center" placeholder="Talk to the robot" ng-model="formData.autosend">-->
+                            <!-- createToDo() WILL CREATE NEW TODOS -->
+                            <button type="submit" class="btn btn-primary col-sm-1 btn-lg glyphicon glyphicon-send" ng-click="createTask()"></button>
 
-
-	                    <!-- createToDo() WILL CREATE NEW TODOS -->
-	                    <button type="submit" class="btn btn-primary btn-lg" ng-click="createTask()">Add</button>
-	                </form>
-	            </div>
-        </div>
+                        </form>
+                    </div>
+                </div>
 
 <!-- FORM TO CREATE CODE -->
-      <div id="code-form" class="row ">
-        <div class="btn-group ">
-          <button id="code-play"  ng-click="executeAction('code-play')">PLAY</button>
-          <button id="code-abort"  ng-click="executeAction('code-abort')">STOP</button>
-        </div>
-        <div id="editor" class="col-sm-12">
-/** Escribe tu código aquí*/
-        </div>
-      </div>
+  <br/>
+                <div id="code-form" class="panel panel-default">
+                  <div class="panel-heading"><h4>Programa</h4>
+                      <button id="code-play" title="Ejecutar" class="btn btn-lg glyphicon glyphicon-play" ng-click="executeAction('code-play')"></button>
+                      <button id="code-abort" title="Parar" class="btn btn-lg glyphicon glyphicon-stop"  ng-click="executeAction('code-abort')"></button>
+                  </div>
+                  <div class="panel-body">
+                    <div id="editor" class="col-sm-12">/** Escribe tu código aquí*/</div>
+                  </div>
+
+                </div>
 
 
             </div>
-        </div>
+        </div><!-- TODO LIST -->
 
 
 
-    </div>
+    </div><!--container-->
+
 <script src="/socket.io/socket.io.js"></script>
 <script>
 var socket = io();
