@@ -9,7 +9,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Optimize mobile viewport -->
     <link rel="shortcut icon" href="/moldeologo.ico">
-    <title>RobotGroup - Moldeo - molduinobot</title>
+    <title>Molduinobot - RobotGroup + Moldeo Interactive</title>
 
     <!-- SCROLLS -->
     <!--<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">--><!-- load bootstrap -->
@@ -19,7 +19,7 @@
         body                    { padding-top:50px; }
         #todo-list              { margin-bottom:30px; }
 	#previewcam img {
-		width: 100% !important;
+		width: 256px !important;
 		height: auto !important;
 	}
 	    #editor {
@@ -37,6 +37,9 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- load jquery -->
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script><!-- load angular -->
     <script src="core.js"></script>
+    <script type="text/javascript" src="js/underscore-min.js"></script>
+    <script type="text/javascript" src="js/backbone-min.js"></script>
+    <script type="text/javascript" src="js/joystick_view.js"></script>
 
 <script type="text/javascript">
 
@@ -50,6 +53,9 @@ var finished = new Array(); // References to img objects which have finished dow
 var paused = false;
 //var ipserver = '192.168.43.252';
 //var ipserver = '192.168.1.156';
+var urlr = window.location.href;
+var urlip = new String(urlr);
+urlip = urlip.replace("8010","8080");
 var ipserver = 'localhost';
 
 function createImageLayer() {
@@ -58,7 +64,9 @@ function createImageLayer() {
   img.style.zIndex = -1;
   img.onload = imageOnload;
   img.onclick = imageOnclick;
-  img.src = "http://"+ipserver+":8080/?action=snapshot&n=" + (++imageNr);
+  //img.src = "http://"+ipserver+":8080/?action=snapshot&n=" + (++imageNr);
+  console.log("urlip:"+urlip);
+  img.src = urlip+"?action=snapshot&n=" + (++imageNr);
   var webcam = document.getElementById("previewcam");
   webcam.insertBefore(img, webcam.firstChild);
 }
@@ -85,47 +93,78 @@ function imageOnclick() { // Clicking on the image will pause the stream
     <div class="container" ng-controller="mainController">
 
         <!-- HEADER AND TODO COUNT -->
+        <!--
         <div class="jumbotron text-center">
             <h1>Robot Tasks <span class="label label-info">{{ tasks.length }}</span></h1>
+        </div>-->
+        <div class="panel panel-default">
+          <div class="panel-heading"><h3>Molduinobot - RobotGroup + Moldeo Interactive</h3></div>
+          <div class="panel-body">
+            0.1 Beta
+          </div>
         </div>
 
         <!-- TODO LIST -->
         <div id="todo-list" class="row">
           <div class="col-sm-4 col-sm-offset-0">
-            <div class="row" style="min-height: 410px;">
-                  <!--<div id="previewcam"><img width="300" height="200" src="http://192.168.43.252:8080/?action=stream"/></div>-->
-                  <div id="previewcam"><noscript><img width="300" height="200" src="http://192.168.43.252:8080/?action=snapshot" /></noscript></div>
-                  <button ng-click="refreshpreviewcam();" title="Actualizar" class="btn btn-lg glyphicon glyphicon-refresh"></button>
+
+            <div id="code-form" class="panel panel-default">
+              <div class="panel-heading"><h4>Camara<button ng-click="refreshpreviewcam();" title="Actualizar" class="btn glyphicon glyphicon-refresh" style="float: right;"></button></h4></div>
+              <div class="panel-body">
+                <!--<div id="previewcam"><img width="300" height="200" src="http://192.168.43.252:8080/?action=stream"/></div>-->
+                <!--<div id="previewcam"><noscript><img src="http://192.168.43.252:8080/?action=snapshot" /></noscript></div>-->
+                <div id="previewcam"></div>
+              </div>
             </div>
 
-            <div class="row">
-                  <div id="moldeoosc" class="col-sm-12 col-sm-offset-0">---</div>
+            <div id="osc-info" class="panel panel-default">
+              <div class="panel-heading"><h4>Osc Info</h4></div>
+              <div class="panel-body">
+                  <div id="moldeoosc" class="col-sm-12 col-sm-offset-0"></div>
+              </div>
             </div>
-            <div class="row">
-                  <div id="moldeoosc" class="col-sm-12 col-sm-offset-0">
-                    <button id="left" title="Girar Izquierda (turn-speed)" class="btn btn-lg glyphicon glyphicon-arrow-left" ng-click="executeAction('turn-speed 100')"></button>
-                    <button id="up" title="Adelante (advance-speed)" class="btn btn-lg glyphicon glyphicon-arrow-up"  ng-click="executeAction('advance-speed 100')"></button>
-                    <button id="down" title="Atrás (reverse-speed)" class="btn btn-lg glyphicon glyphicon-arrow-down"  ng-click="executeAction('reverse-speed 100')"></button>
-                    <button id="right" title="Girar Derecha  (turn-right-speed)" class="btn btn-lg glyphicon glyphicon-arrow-right"  ng-click="executeAction('turn-right-speed 100')"></button>
-                    <button id="stop" title="Parar" class="btn btn-lg glyphicon glyphicon-remove-sign"  ng-click="executeAction('stop')"></button>
+
+
+            <div id="osc-info" class="panel panel-default">
+              <div class="panel-heading"><h4>Controles</h4></div>
+              <div class="panel-body">
+                  <button id="left" title="Girar Izquierda (turn-speed)" class="btn btn-lg glyphicon glyphicon-arrow-left" ng-click="executeAction('turn-speed 100')"></button>
+                  <button id="up" title="Adelante (advance-speed)" class="btn btn-lg glyphicon glyphicon-arrow-up"  ng-click="executeAction('advance-speed 100')"></button>
+                  <button id="down" title="Atrás (reverse-speed)" class="btn btn-lg glyphicon glyphicon-arrow-down"  ng-click="executeAction('reverse-speed 100')"></button>
+                  <button id="right" title="Girar Derecha  (turn-right-speed)" class="btn btn-lg glyphicon glyphicon-arrow-right"  ng-click="executeAction('turn-right-speed 100')"></button>
+                  <button id="stop" title="Parar" class="btn btn-lg glyphicon glyphicon-remove-sign"  ng-click="executeAction('stop')"></button>
+                  <button id="stop" title="Sonido" class="btn btn-lg glyphicon glyphicon-play-circle"  ng-click="executeAction('hello')"></button>
+
+                  <script type="text/html" id="joystick-view">
+                  <canvas id="joystickCanvas" width="<%= squareSize %>" height="<%= squareSize %>" style="width: <%= squareSize %>px; height: <%= squareSize %>px;">
+                      </canvas>
+                  </script>
+                  <div id="joystickContent">
                   </div>
+                  <div>
+                      x: <span id="xVal"></span><br/>
+                      y: <span id="yVal"></span><br/>
+                  </div>
+              </div>
             </div>
           </div>
 
             <div class="col-sm-8 col-sm-offset-0">
+              <div class="panel panel-default">
+                <div class="panel-heading"><h4>Chat</h4></div>
+                <div class="panel-body">
+                  <ul id="chatbot" class="chatbot">
+                    <li ng-repeat="task in tasks" ng-class="{'checked': task.checked}">
+                      <button class="delete" ng-click="deleteTask(task._id)">&times;</button>
 
-                <ul id="chatbot" class="chatbot">
-
-                  <li ng-repeat="task in tasks" ng-class="{'checked': task.checked}">
-                    <button class="delete" ng-click="deleteTask(task._id)">&times;</button>
-
-                    <!--<input type="checkbox" ng-checked="task.checked" ng-click="setChecked(task)" class="toggle-checked"/>-->
-                    <span class="text">{{task.text}}</span>
-                    <span id="task_{{task._id}}_result" class="text">...</span>
-                    <button class="send glyphicon glyphicon-repeat" ng-click="processingTask(task)"  title="Reenviar" style="float:right;"></button>
-                  </li>
-
-                </ul>
+                      <!--<input type="checkbox" ng-checked="task.checked" ng-click="setChecked(task)" class="toggle-checked"/>-->
+                      <span class="text">{{task.text}}</span>
+                      <span id="task_{{task._id}}_result" class="text">...</span>
+                      <button class="send glyphicon glyphicon-repeat" ng-click="processingTask(task)"  title="Reenviar" style="float:right;"></button>
+                    </li>
+                  </ul>
+                </div>
+              </div>
 <!-- FORM TO CREATE TODOS -->
                 <div id="todo-form" class="row">
                     <div class="col-sm-12 col-sm-offset-0 text-center">
@@ -145,7 +184,7 @@ function imageOnclick() { // Clicking on the image will pause the stream
   <br/>
                 <div id="code-form" class="panel panel-default">
                   <div class="panel-heading"><h4>Programa</h4>
-                      <button id="code-play" title="Ejecutar" class="btn btn-lg glyphicon glyphicon-play" ng-click="executeAction('code-play')"></button>
+                      <button id="code-play" title="Ejecutar" class="btn btn-lg glyphicon glyphicon-play-circle" ng-click="executeAction('code-play')"></button>
                       <button id="code-abort" title="Parar" class="btn btn-lg glyphicon glyphicon-stop"  ng-click="executeAction('code-abort')"></button>
                   </div>
                   <div class="panel-body">
@@ -183,8 +222,27 @@ socket.on('moldeosc',function(oscmsg) {
     //editor.setTheme("ace/theme/monokai");
     editor.setTheme("ace/theme/chrome");
     editor.getSession().setMode("ace/mode/javascript");
-
 </script>
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var joystickView = new JoystickView(150, function(callbackView){
+                $("#joystickContent").append(callbackView.render().el);
+                setTimeout(function(){
+                    callbackView.renderSprite();
+                }, 0);
+            });
+            joystickView.bind("verticalMove", function(y){
+                $("#yVal").html(y);
+            });
+            joystickView.bind("horizontalMove", function(x){
+                $("#xVal").html(x);
+            });
+        });
+    </script>
+
 </body>
 </html>
 

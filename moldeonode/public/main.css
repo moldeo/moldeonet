@@ -20,7 +20,7 @@ body {
 }
 
 .container {
-  max-width: 60%;
+  max-width: 100%;
   margin: 0 auto;
   min-height: 100%;
   background: white;
@@ -49,6 +49,18 @@ form {
   margin-top: 10px;
   margin-bottom: -10px;
   position: relative;
+}
+
+.btn-group-lg > .btn, .btn-lg {
+    border-radius: 6px;
+    font-size: 30px;
+    line-height: 1.33333;
+    padding: 3px 7px;
+}
+
+#previewcam {
+  width: 256px;
+  height: 256px;
 }
 
 .new-task input {
