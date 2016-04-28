@@ -59,7 +59,7 @@
 
     var RM_MOTOR = 21;
 
-
+    var RM_STOP_ALL = 39;
     var RM_STOP = 40;
 
     var RM_ADVANCE = 41;
@@ -106,6 +106,7 @@
       "turn-right": RM_TURN_RIGHT,
       "turn-right-speed": RM_TURN_RIGHT_SPEED,
       "stop": RM_STOP,
+      "stopall": RM_STOP_ALL,
       "i2ccheck": RM_I2CCHECK,
       "facedetection": RM_FACEDETECTION,
       "stopfacedetection": RM_STOPFACEDETECTION,
@@ -183,6 +184,13 @@
       "loop": false,
       "stop": function( apiresultcallback ) {
         shell_command = molduinoroot+"stop.sh";
+        execCode( shell_command, function(err,res) {
+          if (res=="") res = "ok";
+          if (apiresultcallback) apiresultcallback( err, res );
+        } );
+      },
+      "stopall": function( apiresultcallback ) {
+        shell_command = molduinoroot+"stopall.sh";
         execCode( shell_command, function(err,res) {
           if (res=="") res = "ok";
           if (apiresultcallback) apiresultcallback( err, res );
@@ -299,6 +307,16 @@
                 /// check in the server if the sound process is running
                 console.log( "command was processed as RM_STOP." );
                 shell_command = molduinoroot+"stop.sh";
+                execCode( shell_command, function(err,res) {
+                  if (res=="") res = "ok";
+                  resultcallback( err, res );
+                } );
+                break;
+
+            case RM_STOP_ALL:
+                /// check in the server if the sound process is running
+                console.log( "command was processed as RM_STOP_ALL." );
+                shell_command = molduinoroot+"stopall.sh";
                 execCode( shell_command, function(err,res) {
                   if (res=="") res = "ok";
                   resultcallback( err, res );
@@ -591,13 +609,13 @@
                 res.json(tasks);
 
             });
-/*
-	    processingTask( task, function( err, result ) {
-                //if (err)
-                //    res.send(err)
-                //else res.json(result);
+
+            processingTask( task, function( err, result ) {
+                if (err)
+                    res.send(err)
+                else res.json(result);
             } );
-*/
+
 
         });
 
