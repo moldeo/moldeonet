@@ -15,7 +15,7 @@ JoystickView = Backbone.View.extend({
     events: {
         "touchstart": "startControl",
         "touchmove": "move",
-        "touchend": "endCotrol",
+        "touchend": "endControl",
         "mousedown": "startControl",
         "mouseup": "endControl",
         "mousemove": "move"

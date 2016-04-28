@@ -132,6 +132,7 @@
             if (apiresultcallback) apiresultcallback( err, res );
           } );
       },
+      "loop": false,
 
     };
 
@@ -304,7 +305,7 @@
 
             case RM_STOPFACEDETECTION:
                 /// check in the server if the sound process is running
-                console.log( "command was processed as RM_FACEDETECTION." );
+                console.log( "command was processed as RM_STOPFACEDETECTION." );
                 shell_command = utilsroot + "stop_facedetection.sh";
                 execCode( shell_command, function(err,res) {
                   if (res=="") res = "ok";
@@ -314,7 +315,7 @@
 
             case RM_BODYDETECTION:
                 /// check in the server if the sound process is running
-                console.log( "command was processed as RM_FACEDETECTION." );
+                console.log( "command was processed as RM_BODYDETECTION." );
                 shell_command = utilsroot + "start_bodydetection.sh";
                 execCode( shell_command, function(err,res) {
                   if (res=="") res = "ok";
@@ -363,6 +364,14 @@
 
     // api ---------------------------------------------------------------------
 
+    function codeInterval() {
+
+        if ( MolduinoApi.Loop && ( typeof MolduinoApi.Loop ) == "function" ) {
+            MolduinoApi.Loop();
+        }
+
+    }
+
     //coding
     app.post('/api/code', function(req, res) {
         if (req.body.text==undefined) {
@@ -374,6 +383,9 @@
           result = eval(req.body.text);
           console.log("code result:", result );
           res.json(result);
+
+          setInterval( codeInterval, 100 );
+
         } catch(err) {
           console.log("code compile error:", err );
           if (err)
@@ -509,6 +521,13 @@ var configOsc = {
 	}
 };
 
+var MOLDEOAPIMESSAGES = {
+  "FACE_DETECTION": false,
+  "BODY_DETECTION": false,
+  "MOTION_DETECTION": false,
+  "FACE_RECOGNITION": false,
+};
+
 oscServer = new osc.Server( configOsc.server.port, configOsc.server.host);
 oscClient = new osc.Client( configOsc.client.host, configOsc.client.port);
 oscServer.on('message', function(msg, rinfo) {
@@ -517,8 +536,21 @@ oscServer.on('message', function(msg, rinfo) {
 	var  moldeoapimessage = msg[2];
 	var moldeo_message = {};
 
-	if (moldeoapimessage[1]=="opencv") {
+	if ( moldeoapimessage[1] == "opencv" ) {
+
+     if (moldeoapimessage[2]=="FACE_DETECTION" && moldeoapimessage[3]>=1 ) {
+          MOLDEOAPIMESSAGES["FACE_DETECTION"] = {
+                                                    x: moldeoapimessage[5],
+                                                    y: moldeoapimessage[7],
+                                                    w: moldeoapimessage[9],
+                                                    h: moldeoapimessage[11]
+                                                };
+     } else {
+          MOLDEOAPIMESSAGES["FACE_DETECTION"] = false;
+     }
+
 	   io.emit('moldeosc',moldeoapimessage);
+
 	}
 
 } );

@@ -45,9 +45,20 @@ function mainController($scope, $http) {
       if (command=='code-debug') {
 
       } else
-      if (command=='code-stop') {
+      if (command=='code-abort') {
         /** send code, compile and run it*/
         console.log("stop and abort any code running right now in server");
+
+        $http.post('/api/code', { text: "MolduinoApi.Loop = false;" } )
+                .success(function(data) {
+                    $scope.runresult = data;
+                    console.log(data);
+
+
+                })
+                .error(function(data) {
+                    console.log('Error: ' + data);
+                });
       }
       else {
            $http.post('/api/tasks', { text: command } )
