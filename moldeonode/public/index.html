@@ -172,18 +172,15 @@ function imageOnclick() { // Clicking on the image will pause the stream
 <!-- FORM TO CREATE CODE -->
   <br/>
                 <div id="code-form" class="panel panel-default">
-                  <div class="panel-heading"><h4>Programa</h4>
+                  <div class="panel-heading"><h4>Programa</h4><button ng-click="refreshprogram();" title="Actualizar" class="btn glyphicon glyphicon-refresh" style="float: right;"></button><textarea id="lastcode" class="hidden">{{codes}}</textarea>
                       <button id="code-play" title="Ejecutar" class="btn btn-lg glyphicon glyphicon-play-circle" ng-click="executeAction('code-play')"></button>
                       <button id="code-abort" title="Parar" class="btn btn-lg glyphicon glyphicon-stop"  ng-click="executeAction('code-abort')"></button>
                   </div>
                   <div class="panel-body">
                     <div id="editor" class="col-sm-6"></div>
                     <div id="blocklyDiv" class="col-sm-6"></div>
-
                   </div>
-
                 </div>
-
 
             </div>
         </div><!-- TODO LIST -->

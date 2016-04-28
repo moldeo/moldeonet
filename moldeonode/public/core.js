@@ -15,6 +15,15 @@ function mainController($scope, $http) {
             console.log('Error: ' + data);
         });
 
+    $http.get('/api/codes')
+        .success(function(data) {
+            $scope.codes = JSON.parse(data);
+            console.log(data);
+        })
+        .error(function(data) {
+            console.log('Error: ' + data);
+        });
+
 
     $scope.executeAction = function(command) {
 
@@ -76,8 +85,11 @@ function mainController($scope, $http) {
     };
 
     $scope.refreshpreviewcam = function() {
-        var rid = Math.random();
-        $("#previewcam").html('<img width="300" height="200" src="http://192.168.1.156:8080/?action=snapshot&id='+rid+'"/>');
+        createImageLayer();
+    };
+
+    $scope.refreshprogram = function() {
+        editor.getSession().setValue( document.getElementById("lastcode").value );
     };
 
     // when submitting the add form, send the text to the node API

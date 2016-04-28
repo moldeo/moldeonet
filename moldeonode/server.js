@@ -150,6 +150,7 @@
       "options": {
         "idinterval": false,
         "delay": 100,
+        "lastcode": false,
       },
       "hello": function(  apiresultcallback ) {
           console.log( "Molduino::hello" );
@@ -168,6 +169,13 @@
           } );
       },
       "loop": false,
+      "stop": function( apiresultcallback ) {
+        shell_command = molduinoroot+"stop.sh";
+        execCode( shell_command, function(err,res) {
+          if (res=="") res = "ok";
+          if (apiresultcallback) apiresultcallback( err, res );
+        } );
+      },
       "turnspeed": function( turn_speed, apiresultcallback ) {
           console.log("Molduino::turnspeed", turn_speed );
           shell_command = molduinoroot + "turn-speed.sh "+turn_speed;
@@ -450,6 +458,7 @@
         if (req.body.text.trim()!="")
         try {
           console.log("code received:", req.body.text );
+          Molduino.options.lastcode = req.body.text;
           result = eval(req.body.text);
           console.log("code result:", result );
           res.json(result);
@@ -465,6 +474,28 @@
 
 
     });
+
+
+//Molduino.options.lastcode
+
+
+    // get all tasks
+    app.get('/api/codes', function(req, res) {
+
+        res.json( Molduino.options.lastcode );
+/*
+        // use mongoose to get all todos in the database
+        Code.find(function(err, codes ) {
+
+            // if there is an error retrieving, send the error. nothing after res.send(err) will execute
+            if (err)
+                res.send(err)
+
+            res.json(codes); // return all todos in JSON format
+        });
+*/
+    });
+
 
     // get all tasks
     app.get('/api/tasks', function(req, res) {
