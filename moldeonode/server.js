@@ -68,8 +68,10 @@
     var RM_REVERSE = 43;
     var RM_REVERSE_SPEED = 44;
 
-    var RM_TURN = 45;
-    var RM_TURN_SPEED = 46;
+    var RM_TURN_LEFT = 45;
+    var RM_TURN_LEFT_SPEED = 46;
+    var RM_TURN_RIGHT = 47;
+    var RM_TURN_RIGHT_SPEED = 48;
 
     var RM_SUDOPASS = 100;
     var RM_STATUS = 101;
@@ -99,8 +101,10 @@
       "advance-speed": RM_ADVANCE_SPEED,
       "reverse": RM_REVERSE,
       "reverse-speed": RM_REVERSE_SPEED,
-      "turn": RM_TURN,
-      "turn-speed": RM_TURN_SPEED,
+      "turn-left": RM_TURN_LEFT,
+      "turn-left-speed": RM_TURN_LEFT_SPEED,
+      "turn-right": RM_TURN_RIGHT,
+      "turn-right-speed": RM_TURN_RIGHT_SPEED,
       "stop": RM_STOP,
       "i2ccheck": RM_I2CCHECK,
       "facedetection": RM_FACEDETECTION,
@@ -160,6 +164,14 @@
             if (apiresultcallback) apiresultcallback( err, res );
           } );
       },
+      "hello2": function(  apiresultcallback ) {
+          console.log( "Molduino::hello2" );
+          shell_command = utilsroot+"hello2.sh";
+          execCode( shell_command, function(err,res) {
+            if (res=="") res = "ok";
+            if (apiresultcallback) apiresultcallback( err, res );
+          } );
+      },
       "speak": function( text_to_speech, apiresultcallback ) {
           console.log("Molduino::speak",text_to_speech);
           shell_command = "pico2wave -l es-ES -w testpicospeak.wav \""+ text_to_speech +"\" && aplay testpicospeak.wav";
@@ -176,9 +188,17 @@
           if (apiresultcallback) apiresultcallback( err, res );
         } );
       },
-      "turnspeed": function( turn_speed, apiresultcallback ) {
-          console.log("Molduino::turnspeed", turn_speed );
-          shell_command = molduinoroot + "turn-speed.sh "+turn_speed;
+      "turnleftspeed": function( turn_speed, apiresultcallback ) {
+          console.log("Molduino::turnleftspeed", turn_speed );
+          shell_command = molduinoroot + "turn-left-speed.sh "+turn_speed;
+          execCode( shell_command, function(err,res) {
+            if (res=="") res = "ok";
+            if (apiresultcallback) apiresultcallback( err, res );
+          } );
+      },
+      "turnrightspeed": function( turn_speed, apiresultcallback ) {
+          console.log("Molduino::turnrightspeed", turn_speed );
+          shell_command = molduinoroot + "turn-right-speed.sh "+turn_speed;
           execCode( shell_command, function(err,res) {
             if (res=="") res = "ok";
             if (apiresultcallback) apiresultcallback( err, res );
@@ -325,10 +345,19 @@
                 } );
                 break;
 
-            case RM_TURN:
+            case RM_TURN_LEFT:
                 /// check in the server if the sound process is running
-                console.log( "command was processed as RM_TURN." );
-                shell_command = molduinoroot+"turn.sh";
+                console.log( "command was processed as RM_TURN_LEFT." );
+                shell_command = molduinoroot+"turn-left.sh";
+                execCode( shell_command, function(err,res) {
+                  if (res=="") res = "ok";
+                  resultcallback( err, res );
+                } );
+                break;
+            case RM_TURN_RIGHT:
+                /// check in the server if the sound process is running
+                console.log( "command was processed as RM_TURN_RIGHT." );
+                shell_command = molduinoroot+"turn-right.sh";
                 execCode( shell_command, function(err,res) {
                   if (res=="") res = "ok";
                   resultcallback( err, res );
@@ -345,10 +374,19 @@
                 } );
                 break;
 
-            case RM_TURN_SPEED:
+            case RM_TURN_LEFT_SPEED:
                 /// check in the server if the sound process is running
-                console.log( "command was processed as RM_TURN_SPEED." );
-                shell_command = task.text.replace( "turn-speed", molduinoroot + "turn-speed.sh " );
+                console.log( "command was processed as RM_TURN_LEFT_SPEED." );
+                shell_command = task.text.replace( "turn-left-speed", molduinoroot + "turn-left-speed.sh " );
+                execCode( shell_command, function(err,res) {
+                  if (res=="") res = "ok";
+                  resultcallback( err, res );
+                } );
+                break;
+            case RM_TURN_RIGHT_SPEED:
+                /// check in the server if the sound process is running
+                console.log( "command was processed as RM_TURN_RIGHT_SPEED." );
+                shell_command = task.text.replace( "turn-right-speed", molduinoroot + "turn-right-speed.sh " );
                 execCode( shell_command, function(err,res) {
                   if (res=="") res = "ok";
                   resultcallback( err, res );
