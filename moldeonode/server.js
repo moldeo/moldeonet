@@ -123,9 +123,44 @@
         //return future.wait();
     }
 
-    var MolduinoApi = {
+    var MOLDEOAPIMESSAGES = {
+      "FACE_DETECTION": false,
+      "BODY_DETECTION": false,
+      "MOTION_DETECTION": false,
+      "FACE_RECOGNITION": false,
+    };
+
+
+    function sleep(milliseconds) {
+      var start = new Date().getTime();
+      for (var i = 0; i < 1e7; i++) {
+        if ((new Date().getTime() - start) > milliseconds){
+          break;
+        }
+      }
+    }
+
+    function delay( delay_interval ) {
+      Molduino.options.delay = delay_interval;
+      if (Molduino.options.idinterval) clearInterval( Molduino.options.idinterval );
+      Molduino.options.idinterval = setInterval( codeInterval, Molduino.options.delay );
+    }
+
+    var Molduino = {
+      "options": {
+        "idinterval": false,
+        "delay": 100,
+      },
+      "hello": function(  apiresultcallback ) {
+          console.log( "Molduino::hello" );
+          shell_command = utilsroot+"hello.sh";
+          execCode( shell_command, function(err,res) {
+            if (res=="") res = "ok";
+            if (apiresultcallback) apiresultcallback( err, res );
+          } );
+      },
       "speak": function( text_to_speech, apiresultcallback ) {
-          console.log("MolduinoApi::speak",text_to_speech);
+          console.log("Molduino::speak",text_to_speech);
           shell_command = "pico2wave -l es-ES -w testpicospeak.wav \""+ text_to_speech +"\" && aplay testpicospeak.wav";
           execCode( shell_command, function(err,res) {
             if (res=="") res = "ok";
@@ -133,7 +168,42 @@
           } );
       },
       "loop": false,
-
+      "turnspeed": function( turn_speed, apiresultcallback ) {
+          console.log("Molduino::turnspeed", turn_speed );
+          shell_command = molduinoroot + "turn-speed.sh "+turn_speed;
+          execCode( shell_command, function(err,res) {
+            if (res=="") res = "ok";
+            if (apiresultcallback) apiresultcallback( err, res );
+          } );
+      },
+      "advancespeed": function( advance_speed, apiresultcallback ) {
+          console.log("Molduino::advancespeed", advance_speed );
+          shell_command = molduinoroot + "advance-speed.sh "+advance_speed;
+          execCode( shell_command, function(err,res) {
+            if (res=="") res = "ok";
+            if (apiresultcallback) apiresultcallback( err, res );
+          } );
+      },
+      "reversespeed": function( reverse_speed, apiresultcallback ) {
+          console.log("Molduino::reversespeed", reverse_speed );
+          shell_command = molduinoroot + "reverse-speed.sh "+reverse_speed;
+          execCode( shell_command, function(err,res) {
+            if (res=="") res = "ok";
+            if (apiresultcallback) apiresultcallback( err, res );
+          } );
+      },
+      "FaceDetection": function(apiresultcallback) {
+        return (MOLDEOAPIMESSAGES["FACE_DETECTION"]);
+      },
+      "BodyDetection": function(apiresultcallback) {
+        return (MOLDEOAPIMESSAGES["BODY_DETECTION"]);
+      },
+      "MotionDetection": function(apiresultcallback) {
+        return (MOLDEOAPIMESSAGES["MOTION_DETECTION"]);
+      },
+      "FaceRecognition": function(apiresultcallback) {
+        return (MOLDEOAPIMESSAGES["FACE_RECOGNITION"]);
+      },
     };
 
 
@@ -366,8 +436,8 @@
 
     function codeInterval() {
 
-        if ( MolduinoApi.Loop && ( typeof MolduinoApi.Loop ) == "function" ) {
-            MolduinoApi.Loop();
+        if ( Molduino.Loop && ( typeof Molduino.Loop ) == "function" ) {
+            Molduino.Loop();
         }
 
     }
@@ -384,7 +454,8 @@
           console.log("code result:", result );
           res.json(result);
 
-          setInterval( codeInterval, 100 );
+          clearInterval( Molduino.options.idinterval );
+          Molduino.options.idinterval = setInterval( codeInterval, Molduino.options.delay );
 
         } catch(err) {
           console.log("code compile error:", err );
@@ -521,12 +592,7 @@ var configOsc = {
 	}
 };
 
-var MOLDEOAPIMESSAGES = {
-  "FACE_DETECTION": false,
-  "BODY_DETECTION": false,
-  "MOTION_DETECTION": false,
-  "FACE_RECOGNITION": false,
-};
+
 
 oscServer = new osc.Server( configOsc.server.port, configOsc.server.host);
 oscClient = new osc.Client( configOsc.client.host, configOsc.client.port);

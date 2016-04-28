@@ -49,7 +49,7 @@ function mainController($scope, $http) {
         /** send code, compile and run it*/
         console.log("stop and abort any code running right now in server");
 
-        $http.post('/api/code', { text: "MolduinoApi.Loop = false;" } )
+        $http.post('/api/code', { text: "Molduino.Loop = false;" } )
                 .success(function(data) {
                     $scope.runresult = data;
                     console.log(data);
