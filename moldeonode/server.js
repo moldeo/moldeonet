@@ -602,7 +602,15 @@
             if (err)
                 res.send(err);
 
-            // get and return all the todos after you create another
+            processingTask( task, function( err, result ) {
+                if (err) {
+                  //res.send(err)
+                } else {
+                  //res.json(result);
+                  //get and return all the todos after you create another
+                }
+            } );
+
             Task.find(function(err, tasks) {
                 if (err)
                     res.send(err)
@@ -610,11 +618,6 @@
 
             });
 
-            processingTask( task, function( err, result ) {
-                if (err)
-                    res.send(err)
-                else res.json(result);
-            } );
 
 
         });
