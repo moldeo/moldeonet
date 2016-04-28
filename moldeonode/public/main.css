@@ -63,6 +63,22 @@ form {
   height: 256px;
 }
 
+html                    { overflow-y:scroll; }
+body                    { padding-top:50px; }
+#todo-list              { margin-bottom:30px; }
+	#previewcam img {
+		width: 256px !important;
+		height: auto !important;
+	}
+	    #editor, #blocklyDiv {
+        position: relative;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        height: 500px;
+    }
+
 .new-task input {
   box-sizing: border-box;
   padding: 10px 0;

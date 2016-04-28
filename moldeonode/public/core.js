@@ -21,6 +21,13 @@ function mainController($scope, $http) {
 
       if (command=='code-play') {
         /** send code, compile and run it*/
+/**
+        var code = Blockly.JavaScript.workspaceToCode(workspace);
+        window.alert(code);
+        if (code!="") {
+          editor.getSession().setValue(code);
+        }
+*/
         $scope.formCode.text = editor.getSession().getValue();
         console.log("code to be compiled and run in server:", $scope.formCode.text);
 
@@ -34,8 +41,10 @@ function mainController($scope, $http) {
                 .error(function(data) {
                     console.log('Error: ' + data);
                 });
-      }
-      else
+      } else
+      if (command=='code-debug') {
+
+      } else
       if (command=='code-stop') {
         /** send code, compile and run it*/
         console.log("stop and abort any code running right now in server");

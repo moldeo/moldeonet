@@ -14,23 +14,6 @@
     <!-- SCROLLS -->
     <!--<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">--><!-- load bootstrap -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <style>
-        html                    { overflow-y:scroll; }
-        body                    { padding-top:50px; }
-        #todo-list              { margin-bottom:30px; }
-	#previewcam img {
-		width: 256px !important;
-		height: auto !important;
-	}
-	    #editor {
-        position: relative;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        height: 500px;
-    }
-    </style>
     <link rel="stylesheet" href="main.css">
 
     <!-- SPELLS -->
@@ -40,6 +23,12 @@
     <script type="text/javascript" src="js/underscore-min.js"></script>
     <script type="text/javascript" src="js/backbone-min.js"></script>
     <script type="text/javascript" src="js/joystick_view.js"></script>
+
+    <script src="js/blockly/blockly_compressed.js"></script>
+    <script src="js/blockly/blocks_compressed.js"></script>
+    <script src="js/blockly/msg/js/es.js"></script>
+    <script src="js/blockly/javascript_compressed.js"></script>
+    <script src="js/JSInterpreter/acorn_interpreter.js"></script>
 
 <script type="text/javascript">
 
@@ -188,7 +177,9 @@ function imageOnclick() { // Clicking on the image will pause the stream
                       <button id="code-abort" title="Parar" class="btn btn-lg glyphicon glyphicon-stop"  ng-click="executeAction('code-abort')"></button>
                   </div>
                   <div class="panel-body">
-                    <div id="editor" class="col-sm-12">/** Escribe tu código aquí*/</div>
+                    <div id="editor" class="col-sm-6"></div>
+                    <div id="blocklyDiv" class="col-sm-6"></div>
+
                   </div>
 
                 </div>
@@ -200,6 +191,44 @@ function imageOnclick() { // Clicking on the image will pause the stream
 
 
     </div><!--container-->
+
+<xml id="toolbox" style="display: none">
+  <category name="Variables" custom="VARIABLE" colour="0"></category>
+  <category name="Math" colour="120">
+    <block type="math_number"></block>
+    <block type="math_arithmetic"></block>
+    <block type="math_constant"></block>
+    <block type="math_random_int">
+      <value name="FROM">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+      <value name="TO">
+        <shadow type="math_number">
+          <field name="NUM">100</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="math_random_float"></block>
+  </category>
+  <category name="Text" colour="170">
+      <block type="text"></block>
+      <block type="text_join"></block>
+  </category>
+  <category name="Functions" custom="PROCEDURE" colour="30"></category>
+  <category name="Loops"  colour="60">
+    <block type="controls_if"></block>
+    <block type="controls_whileUntil"></block>
+  </category>
+  <category name="Logic" colour="90">
+    <block type="logic_compare"></block>
+    <block type="logic_operation"></block>
+    <block type="logic_boolean"></block>
+  </category>
+
+</xml>
+
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
@@ -222,9 +251,52 @@ socket.on('moldeosc',function(oscmsg) {
     //editor.setTheme("ace/theme/monokai");
     editor.setTheme("ace/theme/chrome");
     editor.getSession().setMode("ace/mode/javascript");
+    editor.getSession().setUseWrapMode(true);
+    document.getElementById('editor').style.fontSize='15px';
+
 </script>
 
+<script>
+  var workspace = Blockly.inject('blocklyDiv',
+      {toolbox: document.getElementById('toolbox')});
+var bloque = {};
 
+function myUpdateFunction(event) {
+
+  var blcode = Blockly.JavaScript.workspaceToCode(workspace);
+  var aRange = ace.require('ace/range').Range;
+  var aSearch = ace.require('ace/search').Search;
+  /**editor.GetSession().setValue( code );*/
+  //editor.GetSession().setValue( code );
+  var ses = editor.getSession();
+  var search = new aSearch();
+
+  var bloquesBegin = search.set({ needle: "{BLOQUES}" }).find(ses);
+  var bloquesEnd = search.set({ needle: "{FINBLOQUES}" }).find(ses);
+
+  if (blcode && blcode!="") {
+    blcode = "/**{BLOQUES}*/"+"\n"
+           + blcode
+           + "/**{FINBLOQUES}*/";
+  }
+
+  if (bloquesBegin && bloquesEnd && blcode ) {
+    bloquesBegin.start.column = 0;
+    bloquesEnd.end.column = bloquesEnd.end.column+2;
+    bloque = new aRange( bloquesBegin.start.row, bloquesBegin.start.column, bloquesEnd.end.row, bloquesEnd.end.column );
+    ses.replace( bloque, blcode );
+  }
+
+  if (bloquesBegin==undefined && bloquesEnd==undefined && blcode!=undefined ) {
+    bloque = new aRange( 0, 0, 0, 0 );
+    ses.replace( bloque, blcode );
+  }
+
+}
+
+workspace.addChangeListener(myUpdateFunction);
+
+</script>
 
     <script type="text/javascript">
         $(document).ready(function(){
@@ -242,6 +314,7 @@ socket.on('moldeosc',function(oscmsg) {
             });
         });
     </script>
+
 
 </body>
 </html>
