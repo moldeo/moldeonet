@@ -705,6 +705,12 @@ oscServer.on('message', function(msg, rinfo) {
           MOLDEOAPIMESSAGES["FACE_DETECTION"] = false;
      }
 
+     if (moldeoapimessage[2]=="BODY_DETECTIONS" ) {
+          MOLDEOAPIMESSAGES["BODY_DETECTION"] = moldeoapimessage[3];/**array of bodies*/
+     } else {
+          MOLDEOAPIMESSAGES["BODY_DETECTION"] = false;
+     }
+
 	   io.emit('moldeosc',moldeoapimessage);
 
 	}
