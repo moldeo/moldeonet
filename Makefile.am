@@ -1,7 +1,6 @@
 ACLOCAL_AMFLAGS=-I m4
 SUBDIRS = MoldeoControl
 
-EXTRA_DIST = AUTHORS
 
 #bindir = ${prefix}/bin
 moldeonetdir = ${prefix}/share/moldeonet
@@ -12,10 +11,10 @@ nwjslocalesdir=${nwjsdir}/locales
 #bin_PROGRAMS = 
 bin_SCRIPTS = moldeo
 CLEANFILES = $(bin_SCRIPTS)
-EXTRA_DIST = moldeo.in
+EXTRA_DIST = AUTHORS moldeo.in
 
 dist_bin_SCRIPTS = moldeo
-dist_moldeonet_DATA = moldeocontrol.sh
+dist_moldeonet_DATA = moldeocontrol.sh MoldeoControl.nw
 dist_desktop_DATA = moldeo.desktop
 
 nwjs_DATA = ${nwjsfiles}
