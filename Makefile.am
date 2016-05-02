@@ -1,6 +1,8 @@
 ACLOCAL_AMFLAGS=-I m4
 SUBDIRS = MoldeoControl
 
+EXTRA_DIST = AUTHORS
+
 #bindir = ${prefix}/bin
 moldeonetdir = ${prefix}/share/moldeonet
 desktopdir = ${prefix}/share/applications
