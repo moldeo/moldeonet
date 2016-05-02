@@ -198,7 +198,7 @@ var config = {
 		if( config.IsOsx() ) {
 			config.player_file_path = "";
 			config.player_full_path = config.player_file_path + config.player_sdl2_exe;
-            		config.moldeo_path = “/opt/local/share/moldeo";
+            		config.moldeo_path = "/opt/local/share/moldeo";
             		config.data_path = config.moldeo_path + "/data";
             		config.sample_path = config.data_path + "/samples";
 			config.moldeouser_path = config.home_path+"/Moldeo";
