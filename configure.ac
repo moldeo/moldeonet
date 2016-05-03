@@ -77,6 +77,7 @@ AC_SUBST([nwjslocalesfiles],$nwjslocalesfiles)
 AC_SUBST([nwjspermissions],$nwjspermissions)
 
 AC_CONFIG_FILES([moldeo], [chmod +x moldeo])
+AC_CONFIG_SUBDIRS()
 
 dnl autoscan results
 AC_CHECK_FUNCS([floor])
@@ -115,5 +116,4 @@ AC_OUTPUT([
     Makefile
     MoldeoControl/Makefile
     moldeo.desktop    
-]
-)
+])
