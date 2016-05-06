@@ -1,0 +1,20 @@
+Source: moldeonet
+Section: unknown
+Priority: optional
+Maintainer: Moldeo Interactive <info@moldeointeractive.com.ar>
+Build-Depends: debhelper (>= 8.0.0), autotools-dev, libmoldeo-dev
+Standards-Version: 3.9.4
+Homepage: http://www.moldeo.org
+#Vcs-Git: git://git.debian.org/collab-maint/moldeonet.git
+#Vcs-Browser: http://git.debian.org/?p=collab-maint/moldeonet.git;a=summary
+
+Package: moldeonet
+Architecture: amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}, libmoldeo, moldeoplugins
+Description: Moldeo Net (MoldeoControl, MoldeoNode, Utils, Molduino)
+ Moldeo Net is a set of interface controls, bash scripts and other tools for Moldeo Software
+
+Package: moldeonet-doc
+Architecture: all
+Description: documentation for moldeonet
+ Documentation
