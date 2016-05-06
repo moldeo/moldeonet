@@ -13,7 +13,6 @@ jsdir  = ${moldeocontroldir}/js
 jsd3masterdir = ${moldeocontroldir}/js/d3-master
 mlibdir = ${moldeocontroldir}/lib
 
-
 dist_moldeocontrol_DATA = *.*
 dist_art_DATA = art/*.*
 dist_buttons_DATA = buttons/*.*
