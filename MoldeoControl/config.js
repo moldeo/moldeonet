@@ -137,13 +137,13 @@ var config = {
 		},
 	},
 	"IsWindows": function() {
-		return config.platform.indexOf("win")>=0;
+		return config.platform.indexOf("wind")>=0;
 	},
 	"IsLinux": function() {
 		return config.platform.indexOf("linux")>=0;
 	},
 	"IsOsx": function() {
-		return config.platform.indexOf("mac")>=0;
+		return config.platform.indexOf("darwin")>=0 || config.platform.indexOf("osx")>=0;
 	},
 	"Init": function( options ) {
 
@@ -174,7 +174,7 @@ var config = {
 			config.bin_path = config.player_file_path;
 			config.moldeo_path = config.bin_path.replace(/\\bin\\win\\/gi,'');			
 			config.data_path = config.moldeo_path + "\\data";
-			config.sample_path = config.data_path + "\\samples";
+			config.sample_path = config.moldeo_path + "\\samples";
 			config.player_full_path = config.player_file_path + config.player_sdl2_exe;
 			config.moldeouser_path = config.home_path+"\\Documents\\Moldeo";
 			config.desktop_path = config.home_path+"\\Desktop";
@@ -196,14 +196,21 @@ var config = {
 
 
 		if( config.IsOsx() ) {
-			config.player_file_path = "";
+            config.bin_path = process.cwd().replace("Resources/app.nw","MacOS/");
+            
+			config.player_file_path = config.bin_path;
 			config.player_full_path = config.player_file_path + config.player_sdl2_exe;
-            		config.moldeo_path = “/opt/local/share/moldeo";
+            //config.moldeo_path = "/opt/local/share/moldeo";
+            config.moldeo_path = process.cwd().replace("/app.nw","");
+            
             		config.data_path = config.moldeo_path + "/data";
-            		config.sample_path = config.data_path + "/samples";
+            		config.sample_path = config.moldeo_path + "/samples";
 			config.moldeouser_path = config.home_path+"/Moldeo";
 			config.desktop_path = config.home_path+"/Desktop";
 			config.moldeo_version = config.moldeo_path+"/moldeoversion.txt";
+            
+            console.log("fullArgv:",gui.App.fullArgv," dataPath:",gui.App.dataPath," process.execPath:",process.execPath,"process.cwd():",process.cwd());
+            console.log("config",config);
 		}
 	},
 

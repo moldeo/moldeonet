@@ -220,6 +220,7 @@ fs.walk = function (currentDirPath, callback) {
 	
     moCI.fs.readdirSync(currentDirPath).forEach(function(name) {
 	try {
+        if (name.indexOf(".")==0) return;
         var filePath = path.join(currentDirPath, name);		
         var stat = moCI.fs.statSync(filePath);
         if (stat.isFile() && callback) {
