@@ -2,6 +2,9 @@
 
 
 
+    var os = require('os');
+    var ifaces = os.networkInterfaces();
+
     // set up ========================
     var exec = require('child_process').exec;
 
@@ -31,19 +34,23 @@
     app.use(methodOverride());
 
     io.on('connection', function(socket) {
-       socket.on('set nickname', function(nickname) {
-		socket.nickname = nickname;
-                console.log("Just connected:",nickname);
-	});
-	socket.on('msg', function(msg) {
-		socket.msg = msg;
-                io.emit('response',msg);
-	});
+
+      socket.on('set nickname', function(nickname) {
+        socket.nickname = nickname;
+        console.log("Just connected:",nickname);
+      });
+
+      socket.on('msg', function(msg) {
+        socket.msg = msg;
+        io.emit('response',msg);
+      });
+
     });
 
     var argv = parseArgs(process.argv.slice(2));
     console.dir(argv);
 
+    var sudopass = '';
     var RM_SOUND = 1;
     var RM_HELLO = 7;
     var RM_I2CCHECK = 8;
@@ -52,7 +59,7 @@
 
     var RM_MOTOR = 21;
 
-
+    var RM_STOP_ALL = 39;
     var RM_STOP = 40;
 
     var RM_ADVANCE = 41;
@@ -61,15 +68,19 @@
     var RM_REVERSE = 43;
     var RM_REVERSE_SPEED = 44;
 
-    var RM_TURN = 45;
-    var RM_TURN_SPEED = 46;
+    var RM_TURN_LEFT = 45;
+    var RM_TURN_LEFT_SPEED = 46;
+    var RM_TURN_RIGHT = 47;
+    var RM_TURN_RIGHT_SPEED = 48;
 
+    var RM_SUDOPASS = 100;
     var RM_STATUS = 101;
     var RM_PWD = 102;
     var RM_REBOOT = 103;
     var RM_SHUTDOWN = 104;
     var RM_FACEDETECTION = 105;
     var RM_STOPFACEDETECTION = 106;
+    var RM_BODYDETECTION = 107;
 
     //var moldeonetroot = "../../../../../../";
     var moldeonetroot = "/home/pi/moldeoinstaller/moldeonet/";
@@ -85,17 +96,153 @@
       "status": RM_STATUS,
       "motor": RM_MOTOR,
       "pwd": RM_PWD,
+      "sudopass": RM_SUDOPASS,
       "advance": RM_ADVANCE,
       "advance-speed": RM_ADVANCE_SPEED,
       "reverse": RM_REVERSE,
       "reverse-speed": RM_REVERSE_SPEED,
-      "turn": RM_TURN,
-      "turn-speed": RM_TURN_SPEED,
+      "turn-left": RM_TURN_LEFT,
+      "turn-left-speed": RM_TURN_LEFT_SPEED,
+      "turn-right": RM_TURN_RIGHT,
+      "turn-right-speed": RM_TURN_RIGHT_SPEED,
       "stop": RM_STOP,
+      "stopall": RM_STOP_ALL,
       "i2ccheck": RM_I2CCHECK,
       "facedetection": RM_FACEDETECTION,
       "stopfacedetection": RM_STOPFACEDETECTION,
+      "bodydetection": RM_BODYDETECTION,
     };
+
+    function execCode( command, callc ) {
+        //this.unblock();
+        //var future=new Future();
+        //var command="pwd";
+        exec( command, function(error,stdout,stderr){
+            if(error){
+              console.log(error);
+              //throw new Meteor.Error(500,command+" failed");
+            }
+            //future.return(stdout.toString());
+            callc( error, stdout.toString() );
+        });
+        //return future.wait();
+    }
+
+    var MOLDEOAPIMESSAGES = {
+      "FACE_DETECTION": false,
+      "BODY_DETECTION": false,
+      "MOTION_DETECTION": false,
+      "FACE_RECOGNITION": false,
+    };
+
+
+    function sleep(milliseconds) {
+      var start = new Date().getTime();
+      for (var i = 0; i < 1e7; i++) {
+        if ((new Date().getTime() - start) > milliseconds){
+          break;
+        }
+      }
+    }
+
+    function delay( delay_interval ) {
+      Molduino.options.delay = delay_interval;
+      if (Molduino.options.idinterval) clearInterval( Molduino.options.idinterval );
+      Molduino.options.idinterval = setInterval( codeInterval, Molduino.options.delay );
+    }
+
+    var Molduino = {
+      "options": {
+        "idinterval": false,
+        "delay": 100,
+        "lastcode": false,
+      },
+      "hello": function(  apiresultcallback ) {
+          console.log( "Molduino::hello" );
+          shell_command = utilsroot+"hello.sh";
+          execCode( shell_command, function(err,res) {
+            if (res=="") res = "ok";
+            if (apiresultcallback) apiresultcallback( err, res );
+          } );
+      },
+      "hello2": function(  apiresultcallback ) {
+          console.log( "Molduino::hello2" );
+          shell_command = utilsroot+"hello2.sh";
+          execCode( shell_command, function(err,res) {
+            if (res=="") res = "ok";
+            if (apiresultcallback) apiresultcallback( err, res );
+          } );
+      },
+      "speak": function( text_to_speech, apiresultcallback ) {
+          console.log("Molduino::speak",text_to_speech);
+          shell_command = "pico2wave -l es-ES -w testpicospeak.wav \""+ text_to_speech +"\" && aplay testpicospeak.wav";
+          execCode( shell_command, function(err,res) {
+            if (res=="") res = "ok";
+            if (apiresultcallback) apiresultcallback( err, res );
+          } );
+      },
+      "loop": false,
+      "stop": function( apiresultcallback ) {
+        shell_command = molduinoroot+"stop.sh";
+        execCode( shell_command, function(err,res) {
+          if (res=="") res = "ok";
+          if (apiresultcallback) apiresultcallback( err, res );
+        } );
+      },
+      "stopall": function( apiresultcallback ) {
+        shell_command = molduinoroot+"stopall.sh";
+        execCode( shell_command, function(err,res) {
+          if (res=="") res = "ok";
+          if (apiresultcallback) apiresultcallback( err, res );
+        } );
+      },
+      "turnleftspeed": function( turn_speed, apiresultcallback ) {
+          console.log("Molduino::turnleftspeed", turn_speed );
+          shell_command = molduinoroot + "turn-left-speed.sh "+turn_speed;
+          execCode( shell_command, function(err,res) {
+            if (res=="") res = "ok";
+            if (apiresultcallback) apiresultcallback( err, res );
+          } );
+      },
+      "turnrightspeed": function( turn_speed, apiresultcallback ) {
+          console.log("Molduino::turnrightspeed", turn_speed );
+          shell_command = molduinoroot + "turn-right-speed.sh "+turn_speed;
+          execCode( shell_command, function(err,res) {
+            if (res=="") res = "ok";
+            if (apiresultcallback) apiresultcallback( err, res );
+          } );
+      },
+      "advancespeed": function( advance_speed, apiresultcallback ) {
+          console.log("Molduino::advancespeed", advance_speed );
+          shell_command = molduinoroot + "advance-speed.sh "+advance_speed;
+          execCode( shell_command, function(err,res) {
+            if (res=="") res = "ok";
+            if (apiresultcallback) apiresultcallback( err, res );
+          } );
+      },
+      "reversespeed": function( reverse_speed, apiresultcallback ) {
+          console.log("Molduino::reversespeed", reverse_speed );
+          shell_command = molduinoroot + "reverse-speed.sh "+reverse_speed;
+          execCode( shell_command, function(err,res) {
+            if (res=="") res = "ok";
+            if (apiresultcallback) apiresultcallback( err, res );
+          } );
+      },
+      "FaceDetection": function(apiresultcallback) {
+        return (MOLDEOAPIMESSAGES["FACE_DETECTION"]);
+      },
+      "BodyDetection": function(apiresultcallback) {
+        return (MOLDEOAPIMESSAGES["BODY_DETECTION"]);
+      },
+      "MotionDetection": function(apiresultcallback) {
+        return (MOLDEOAPIMESSAGES["MOTION_DETECTION"]);
+      },
+      "FaceRecognition": function(apiresultcallback) {
+        return (MOLDEOAPIMESSAGES["FACE_RECOGNITION"]);
+      },
+    };
+
+
 
  // define model =================
     var Task = mongoose.model('Task', {
@@ -114,20 +261,7 @@
         console.log("Processing command task: ", task);
         var shell_command = task.tcommand;
 
-        function execCode( command, callc ) {
-            //this.unblock();
-            //var future=new Future();
-            //var command="pwd";
-            exec( command,function(error,stdout,stderr){
-                if(error){
-                  console.log(error);
-                  //throw new Meteor.Error(500,command+" failed");
-                }
-                //future.return(stdout.toString());
-                callc( error, stdout.toString() );
-            });
-            //return future.wait();
-        }
+
 
         console.log("Processing command task.tcommandid: ", task.tcommandid);
         switch(task.tcommandid) {
@@ -179,6 +313,16 @@
                 } );
                 break;
 
+            case RM_STOP_ALL:
+                /// check in the server if the sound process is running
+                console.log( "command was processed as RM_STOP_ALL." );
+                shell_command = molduinoroot+"stopall.sh";
+                execCode( shell_command, function(err,res) {
+                  if (res=="") res = "ok";
+                  resultcallback( err, res );
+                } );
+                break;
+
             case RM_ADVANCE:
                 /// check in the server if the sound process is running
                 console.log( "command was processed as RM_ADVANCE." );
@@ -219,10 +363,19 @@
                 } );
                 break;
 
-            case RM_TURN:
+            case RM_TURN_LEFT:
                 /// check in the server if the sound process is running
-                console.log( "command was processed as RM_TURN." );
-                shell_command = molduinoroot+"turn.sh";
+                console.log( "command was processed as RM_TURN_LEFT." );
+                shell_command = molduinoroot+"turn-left.sh";
+                execCode( shell_command, function(err,res) {
+                  if (res=="") res = "ok";
+                  resultcallback( err, res );
+                } );
+                break;
+            case RM_TURN_RIGHT:
+                /// check in the server if the sound process is running
+                console.log( "command was processed as RM_TURN_RIGHT." );
+                shell_command = molduinoroot+"turn-right.sh";
                 execCode( shell_command, function(err,res) {
                   if (res=="") res = "ok";
                   resultcallback( err, res );
@@ -239,10 +392,19 @@
                 } );
                 break;
 
-            case RM_TURN_SPEED:
+            case RM_TURN_LEFT_SPEED:
                 /// check in the server if the sound process is running
-                console.log( "command was processed as RM_TURN_SPEED." );
-                shell_command = task.text.replace( "turn-speed", molduinoroot + "turn-speed.sh " );
+                console.log( "command was processed as RM_TURN_LEFT_SPEED." );
+                shell_command = task.text.replace( "turn-left-speed", molduinoroot + "turn-left-speed.sh " );
+                execCode( shell_command, function(err,res) {
+                  if (res=="") res = "ok";
+                  resultcallback( err, res );
+                } );
+                break;
+            case RM_TURN_RIGHT_SPEED:
+                /// check in the server if the sound process is running
+                console.log( "command was processed as RM_TURN_RIGHT_SPEED." );
+                shell_command = task.text.replace( "turn-right-speed", molduinoroot + "turn-right-speed.sh " );
                 execCode( shell_command, function(err,res) {
                   if (res=="") res = "ok";
                   resultcallback( err, res );
@@ -277,7 +439,7 @@
 
             case RM_STOPFACEDETECTION:
                 /// check in the server if the sound process is running
-                console.log( "command was processed as RM_FACEDETECTION." );
+                console.log( "command was processed as RM_STOPFACEDETECTION." );
                 shell_command = utilsroot + "stop_facedetection.sh";
                 execCode( shell_command, function(err,res) {
                   if (res=="") res = "ok";
@@ -285,10 +447,29 @@
                 } );
                 break;
 
+            case RM_BODYDETECTION:
+                /// check in the server if the sound process is running
+                console.log( "command was processed as RM_BODYDETECTION." );
+                shell_command = utilsroot + "start_bodydetection.sh";
+                execCode( shell_command, function(err,res) {
+                  if (res=="") res = "ok";
+                  resultcallback( err, res );
+                } );
+                break;
+
+            case RM_SUDOPASS:
+                console.log( "command was processed as RM_SUDOPASS" );
+                sudopass = task.text.replace("sudopass","").trim().replace('\"','');
+                err = "";
+                if (sudopass!="") err = "";
+                else err = "sudo password undefined!";
+                resultcallback( err, "sudopass received as:["+sudopass+"]" );
+                break;
+
             case RM_REBOOT:
                 /// check in the server if the sound process is running
                 console.log( "command was processed as RM_REBOOT" );
-                shell_command = 'echo "moldeonet" | sudo -S shutdown -r';
+                shell_command = 'echo "'+sudopass+'" | sudo -S shutdown -r';
                 execCode( shell_command, function(err,res) {
                   if (res=="") res = "ok";
                   resultcallback( err, res );
@@ -298,7 +479,7 @@
             case RM_SHUTDOWN:
                 /// check in the server if the sound process is running
                 console.log( "command was processed as RM_SHUTDOWN" );
-                shell_command = 'echo "moldeonet" | sudo -S shutdown -h';
+                shell_command = 'echo "'+sudopass+'" | sudo -S shutdown -h';
                 execCode( shell_command, function(err,res) {
                   if (res=="") res = "ok";
                   resultcallback( err, res );
@@ -314,7 +495,64 @@
 
 // routes ======================================================================
 
+
     // api ---------------------------------------------------------------------
+
+    function codeInterval() {
+
+        if ( Molduino.Loop && ( typeof Molduino.Loop ) == "function" ) {
+            Molduino.Loop();
+        }
+
+    }
+
+    //coding
+    app.post('/api/code', function(req, res) {
+        if (req.body.text==undefined) {
+            res.send("ERROR");
+        }
+        if (req.body.text.trim()!="")
+        try {
+          console.log("code received:", req.body.text );
+          Molduino.options.lastcode = req.body.text;
+          result = eval(req.body.text);
+          console.log("code result:", result );
+          res.json(result);
+
+          clearInterval( Molduino.options.idinterval );
+          Molduino.options.idinterval = setInterval( codeInterval, Molduino.options.delay );
+
+        } catch(err) {
+          console.log("code compile error:", err );
+          if (err)
+                res.send(err)
+        }
+
+
+    });
+
+
+//Molduino.options.lastcode
+
+
+    // get all tasks
+    app.get('/api/codes', function(req, res) {
+
+        res.json( Molduino.options.lastcode );
+/*
+        // use mongoose to get all todos in the database
+        Code.find(function(err, codes ) {
+
+            // if there is an error retrieving, send the error. nothing after res.send(err) will execute
+            if (err)
+                res.send(err)
+
+            res.json(codes); // return all todos in JSON format
+        });
+*/
+    });
+
+
     // get all tasks
     app.get('/api/tasks', function(req, res) {
 
@@ -345,7 +583,7 @@
         } else tshell_command = newTask;
 
 
-        console.log( "new task shell_command:", tshell_command );
+        console.log( "new task shell_command: ["+tshell_command+"]" );
 
         ///PARSE TASK
         cid = MolduinoSyntax[ tshell_command ];
@@ -364,7 +602,15 @@
             if (err)
                 res.send(err);
 
-            // get and return all the todos after you create another
+            processingTask( task, function( err, result ) {
+                if (err) {
+                  //res.send(err)
+                } else {
+                  //res.json(result);
+                  //get and return all the todos after you create another
+                }
+            } );
+
             Task.find(function(err, tasks) {
                 if (err)
                     res.send(err)
@@ -372,11 +618,6 @@
 
             });
 
-	    processingTask( task, function( err, result ) {
-                //if (err)
-                //    res.send(err)
-                //else res.json(result);
-            } );
 
 
         });
@@ -441,16 +682,37 @@ var configOsc = {
 	}
 };
 
+
+
 oscServer = new osc.Server( configOsc.server.port, configOsc.server.host);
 oscClient = new osc.Client( configOsc.client.host, configOsc.client.port);
 oscServer.on('message', function(msg, rinfo) {
 
-	console.log( "moldeosc:",msg );
+	//console.log( "moldeosc:",msg );
 	var  moldeoapimessage = msg[2];
 	var moldeo_message = {};
 
-	if (moldeoapimessage[1]=="opencv") {
+	if ( moldeoapimessage[1] == "opencv" ) {
+
+     if (moldeoapimessage[2]=="FACE_DETECTION" && moldeoapimessage[3]>=1 ) {
+          MOLDEOAPIMESSAGES["FACE_DETECTION"] = {
+                                                    x: moldeoapimessage[5],
+                                                    y: moldeoapimessage[7],
+                                                    w: moldeoapimessage[9],
+                                                    h: moldeoapimessage[11]
+                                                };
+     } else {
+          MOLDEOAPIMESSAGES["FACE_DETECTION"] = false;
+     }
+
+     if (moldeoapimessage[2]=="BODY_DETECTIONS" ) {
+          MOLDEOAPIMESSAGES["BODY_DETECTION"] = moldeoapimessage[3];/**array of bodies*/
+     } else {
+          MOLDEOAPIMESSAGES["BODY_DETECTION"] = false;
+     }
+
 	   io.emit('moldeosc',moldeoapimessage);
+
 	}
 
 } );

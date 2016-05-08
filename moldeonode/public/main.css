@@ -20,7 +20,7 @@ body {
 }
 
 .container {
-  max-width: 60%;
+  max-width: 100%;
   margin: 0 auto;
   min-height: 100%;
   background: white;
@@ -51,6 +51,34 @@ form {
   position: relative;
 }
 
+.btn-group-lg > .btn, .btn-lg {
+    border-radius: 6px;
+    font-size: 30px;
+    line-height: 1.33333;
+    padding: 3px 7px;
+}
+
+#previewcam {
+  width: 256px;
+  height: 256px;
+}
+
+html                    { overflow-y:scroll; }
+body                    { padding-top:50px; }
+#todo-list              { margin-bottom:30px; }
+	#previewcam img {
+		width: 256px !important;
+		height: auto !important;
+	}
+	    #editor, #blocklyDiv {
+        position: relative;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        height: 500px;
+    }
+
 .new-task input {
   box-sizing: border-box;
   padding: 10px 0;
@@ -65,11 +93,16 @@ form {
   outline: 0;
 }
 
-ul {
+ul.chatbot {
   margin: 0;
   padding: 0;
   background: white;
+  overflow-y: scroll;
+  overflow-x: auto;
+  height: 200px;
 }
+
+
 
 .delete {
   float: right;

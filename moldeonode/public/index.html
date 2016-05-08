@@ -9,25 +9,26 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Optimize mobile viewport -->
     <link rel="shortcut icon" href="/moldeologo.ico">
-    <title>RobotGroup - Moldeo - molduinobot</title>
+    <title>Molduinobot - RobotGroup + Moldeo Interactive</title>
 
     <!-- SCROLLS -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- load bootstrap -->
-    <style>
-        html                    { overflow-y:scroll; }
-        body                    { padding-top:50px; }
-        #todo-list              { margin-bottom:30px; }
-	#previewcam img {
-		width: 100% !important;
-		height: auto !important;
-	}
-    </style>
+    <!--<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">--><!-- load bootstrap -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="main.css">
 
     <!-- SPELLS -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- load jquery -->
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script><!-- load angular -->
     <script src="core.js"></script>
+    <script type="text/javascript" src="js/underscore-min.js"></script>
+    <script type="text/javascript" src="js/backbone-min.js"></script>
+    <script type="text/javascript" src="js/joystick_view.js"></script>
+
+    <script src="js/blockly/blockly_compressed.js"></script>
+    <script src="js/blockly/blocks_compressed.js"></script>
+    <script src="js/blockly/msg/js/es.js"></script>
+    <script src="js/blockly/javascript_compressed.js"></script>
+    <script src="js/JSInterpreter/acorn_interpreter.js"></script>
 
 <script type="text/javascript">
 
@@ -39,6 +40,12 @@
 var imageNr = 0; // Serial number of current image
 var finished = new Array(); // References to img objects which have finished downloading
 var paused = false;
+//var ipserver = '192.168.43.252';
+//var ipserver = '192.168.1.156';
+var urlr = window.location.href;
+var urlip = new String(urlr);
+urlip = urlip.replace("8010","8080");
+var ipserver = 'localhost';
 
 function createImageLayer() {
   var img = new Image();
@@ -46,8 +53,9 @@ function createImageLayer() {
   img.style.zIndex = -1;
   img.onload = imageOnload;
   img.onclick = imageOnclick;
-  /*img.src = "http://192.168.43.252:8080/?action=snapshot&n=" + (++imageNr);*/
-  img.src = "http://192.168.1.156:8080/?action=snapshot&n=" + (++imageNr);
+  //img.src = "http://"+ipserver+":8080/?action=snapshot&n=" + (++imageNr);
+  console.log("urlip:"+urlip);
+  img.src = urlip+"?action=snapshot&n=" + (++imageNr);
   var webcam = document.getElementById("previewcam");
   webcam.insertBefore(img, webcam.firstChild);
 }
@@ -74,86 +82,237 @@ function imageOnclick() { // Clicking on the image will pause the stream
     <div class="container" ng-controller="mainController">
 
         <!-- HEADER AND TODO COUNT -->
+        <!--
         <div class="jumbotron text-center">
             <h1>Robot Tasks <span class="label label-info">{{ tasks.length }}</span></h1>
+        </div>-->
+        <div class="panel panel-default">
+          <div class="panel-heading"><h3>Molduinobot - RobotGroup + Moldeo Interactive</h3></div>
+          <div class="panel-body">
+            0.1 Beta
+          </div>
         </div>
 
         <!-- TODO LIST -->
         <div id="todo-list" class="row">
-		<div class="col-sm-4 col-sm-offset-0">
-<div class="row" style="min-height: 350px;">
-			<!--<div id="previewcam"><img width="300" height="200" src="http://192.168.43.252:8080/?action=stream"/></div>-->
-			<div id="previewcam"><noscript><img width="300" height="200" src="http://192.168.43.252:8080/?action=snapshot" /></noscript></div>
-			<button ng-click="refreshpreviewcam();">Actualizar</button>
-</div>
+          <div class="col-sm-4 col-sm-offset-0">
 
-<div class="row">
-			<div id="moldeoosc" class="col-sm-12 col-sm-offset-0">---</div>
-</div>
-<div class="row">
-			<div id="moldeoosc" class="col-sm-12 col-sm-offset-0">
-<button id="left" ng-click="executeAction('turn-speed 100')">L</button>
-<button id="up"  ng-click="executeAction('advance-speed 100')">U</button>
-<button id="down"  ng-click="executeAction('reverse-speed 100')">D</button>
-<button id="right"  ng-click="executeAction('turn-speed -100')">R</button>
-<button id="stop"  ng-click="executeAction('stop')">S</button>
-<textarea id="code" rows="40" cols="15">
+            <div id="code-form" class="panel panel-default">
+              <div class="panel-heading"><h4>Camara<button ng-click="refreshpreviewcam();" title="Actualizar" class="btn glyphicon glyphicon-refresh" style="float: right;"></button></h4></div>
+              <div class="panel-body">
+                <!--<div id="previewcam"><img width="300" height="200" src="http://192.168.43.252:8080/?action=stream"/></div>-->
+                <!--<div id="previewcam"><noscript><img src="http://192.168.43.252:8080/?action=snapshot" /></noscript></div>-->
+                <div id="previewcam"></div>
+              </div>
+            </div>
 
-</textarea>
-			</div>
-</div>
-		</div>
+            <div id="osc-info" class="panel panel-default">
+              <div class="panel-heading"><h4>Osc Info</h4></div>
+              <div class="panel-body">
+                  <div id="moldeoosc" class="col-sm-12 col-sm-offset-0"></div>
+              </div>
+            </div>
+
+
+            <div id="osc-info" class="panel panel-default">
+              <div class="panel-heading"><h4>Controles</h4></div>
+              <div class="panel-body">
+                  <button id="left" title="Girar Izquierda (turn-speed)" class="btn btn-lg glyphicon glyphicon-arrow-left" ng-click="executeAction('turn-left-speed 100')"></button>
+                  <button id="up" title="Adelante (advance-speed)" class="btn btn-lg glyphicon glyphicon-arrow-up"  ng-click="executeAction('advance-speed 110')"></button>
+                  <button id="down" title="Atrás (reverse-speed)" class="btn btn-lg glyphicon glyphicon-arrow-down"  ng-click="executeAction('reverse-speed 110')"></button>
+                  <button id="right" title="Girar Derecha  (turn-right-speed)" class="btn btn-lg glyphicon glyphicon-arrow-right"  ng-click="executeAction('turn-right-speed 100')"></button>
+                  <button id="stop" title="Parar" class="btn btn-lg glyphicon glyphicon-remove-sign"  ng-click="executeAction('stop')"></button>
+                  <button id="stop" title="Sonido" class="btn btn-lg glyphicon glyphicon-play-circle"  ng-click="executeAction('hello')"></button>
+
+                  <script type="text/html" id="joystick-view">
+                  <canvas id="joystickCanvas" width="<%= squareSize %>" height="<%= squareSize %>" style="width: <%= squareSize %>px; height: <%= squareSize %>px;">
+                      </canvas>
+                  </script>
+                  <div id="joystickContent">
+                  </div>
+                  <div>
+                      x: <span id="xVal"></span><br/>
+                      y: <span id="yVal"></span><br/>
+                  </div>
+              </div>
+            </div>
+          </div>
 
             <div class="col-sm-8 col-sm-offset-0">
+              <div class="panel panel-default">
+                <div class="panel-heading"><h4>Chat</h4></div>
+                <div class="panel-body">
+                  <ul id="chatbot" class="chatbot">
+                    <li ng-repeat="task in tasks" ng-class="{'checked': task.checked}">
+                      <button class="delete" ng-click="deleteTask(task._id)">&times;</button>
 
-                <ul>
+                      <!--<input type="checkbox" ng-checked="task.checked" ng-click="setChecked(task)" class="toggle-checked"/>-->
+                      <span class="text">{{task.text}}</span>
+                      <span id="task_{{task._id}}_result" class="text">...</span>
+                      <button class="send glyphicon glyphicon-repeat" ng-click="processingTask(task)"  title="Reenviar" style="float:right;"></button>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+<!-- FORM TO CREATE TODOS -->
+                <div id="todo-form" class="row">
+                    <div class="col-sm-12 col-sm-offset-0 text-center">
+                        <form>
 
-                  <li ng-repeat="task in tasks" ng-class="{'checked': task.checked}">
-                    <button class="delete" ng-click="deleteTask(task._id)">&times;</button>
-                    <button class="send" ng-click="processingTask(task)">SEND</button>
-                    <!--<input type="checkbox" ng-checked="task.checked" ng-click="setChecked(task)" class="toggle-checked"/>-->
-                    <span class="text">{{task.text}}</span>
-                    <span id="task_{{task._id}}_result" class="text">...</span>
-                  </li>
+                            <!-- BIND THIS VALUE TO formData.text IN ANGULAR -->
+                            <input type="text" class="col-sm-6 input-lg text-left" placeholder="Habla con el robot" ng-model="formData.text">
+                            <!--<input type="text" class="form-control input-lg text-center" placeholder="Talk to the robot" ng-model="formData.autosend">-->
+                            <!-- createToDo() WILL CREATE NEW TODOS -->
+                            <button type="submit" class="btn btn-primary col-sm-1 btn-lg glyphicon glyphicon-send" ng-click="createTask()"></button>
 
-                </ul>
-		<!-- FORM TO CREATE TODOS -->
-	        <div id="todo-form" class="row">
-	            <div class="col-sm-12 col-sm-offset-0 text-center">
-	                <form>
-	                    <div class="form-group">
-	
-	                        <!-- BIND THIS VALUE TO formData.text IN ANGULAR -->
-	                        <input type="text" class="form-control input-lg text-center" placeholder="Talk to the robot" ng-model="formData.text">
-	                        <!--<input type="text" class="form-control input-lg text-center" placeholder="Talk to the robot" ng-model="formData.autosend">-->
-	                    </div>
-			   
-	
-	                    <!-- createToDo() WILL CREATE NEW TODOS -->
-	                    <button type="submit" class="btn btn-primary btn-lg" ng-click="createTask()">Add</button>
-	                </form>
-	            </div>
-        </div>
+                        </form>
+                    </div>
+                </div>
+
+<!-- FORM TO CREATE CODE -->
+  <br/>
+                <div id="code-form" class="panel panel-default">
+                  <div class="panel-heading"><h4>Programa</h4><button ng-click="refreshprogram();" title="Actualizar" class="btn glyphicon glyphicon-refresh" style="float: right;"></button><textarea id="lastcode" class="hidden">{{codes}}</textarea>
+                      <button id="code-play" title="Ejecutar" class="btn btn-lg glyphicon glyphicon-play-circle" ng-click="executeAction('code-play')"></button>
+                      <button id="code-abort" title="Parar" class="btn btn-lg glyphicon glyphicon-stop"  ng-click="executeAction('code-abort')"></button>
+                  </div>
+                  <div class="panel-body">
+                    <div id="editor" class="col-sm-6"></div>
+                    <div id="blocklyDiv" class="col-sm-6"></div>
+                  </div>
+                </div>
+
             </div>
-        </div>
+        </div><!-- TODO LIST -->
 
-        
 
-    </div>
+
+    </div><!--container-->
+
+<xml id="toolbox" style="display: none">
+  <category name="Variables" custom="VARIABLE" colour="0"></category>
+  <category name="Math" colour="120">
+    <block type="math_number"></block>
+    <block type="math_arithmetic"></block>
+    <block type="math_constant"></block>
+    <block type="math_random_int">
+      <value name="FROM">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+      <value name="TO">
+        <shadow type="math_number">
+          <field name="NUM">100</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="math_random_float"></block>
+  </category>
+  <category name="Text" colour="170">
+      <block type="text"></block>
+      <block type="text_join"></block>
+  </category>
+  <category name="Functions" custom="PROCEDURE" colour="30"></category>
+  <category name="Loops"  colour="60">
+    <block type="controls_if"></block>
+    <block type="controls_whileUntil"></block>
+  </category>
+  <category name="Logic" colour="90">
+    <block type="logic_compare"></block>
+    <block type="logic_operation"></block>
+    <block type="logic_boolean"></block>
+  </category>
+
+</xml>
+
+
 <script src="/socket.io/socket.io.js"></script>
 <script>
 var socket = io();
 socket.on('moldeosc',function(oscmsg) {
 
 	console.log("moldeoosc", oscmsg);
-
-	
 	code = oscmsg[0];
+
 	if (code!="0") {
 	   $('#moldeoosc').html(oscmsg);
 	}
+
 });
 </script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    //editor.setTheme("ace/theme/monokai");
+    editor.setTheme("ace/theme/chrome");
+    editor.getSession().setMode("ace/mode/javascript");
+    editor.getSession().setUseWrapMode(true);
+    document.getElementById('editor').style.fontSize='15px';
+
+</script>
+
+<script>
+  var workspace = Blockly.inject('blocklyDiv',
+      {toolbox: document.getElementById('toolbox')});
+var bloque = {};
+
+function myUpdateFunction(event) {
+
+  var blcode = Blockly.JavaScript.workspaceToCode(workspace);
+  var aRange = ace.require('ace/range').Range;
+  var aSearch = ace.require('ace/search').Search;
+  /**editor.GetSession().setValue( code );*/
+  //editor.GetSession().setValue( code );
+  var ses = editor.getSession();
+  var search = new aSearch();
+
+  var bloquesBegin = search.set({ needle: "{BLOQUES}" }).find(ses);
+  var bloquesEnd = search.set({ needle: "{FINBLOQUES}" }).find(ses);
+
+  if (blcode && blcode!="") {
+    blcode = "/**{BLOQUES}*/"+"\n"
+           + blcode
+           + "/**{FINBLOQUES}*/";
+  }
+
+  if (bloquesBegin && bloquesEnd && blcode ) {
+    bloquesBegin.start.column = 0;
+    bloquesEnd.end.column = bloquesEnd.end.column+2;
+    bloque = new aRange( bloquesBegin.start.row, bloquesBegin.start.column, bloquesEnd.end.row, bloquesEnd.end.column );
+    ses.replace( bloque, blcode );
+  }
+
+  if (bloquesBegin==undefined && bloquesEnd==undefined && blcode!=undefined ) {
+    bloque = new aRange( 0, 0, 0, 0 );
+    ses.replace( bloque, blcode );
+  }
+
+}
+
+workspace.addChangeListener(myUpdateFunction);
+
+</script>
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var joystickView = new JoystickView(150, function(callbackView){
+                $("#joystickContent").append(callbackView.render().el);
+                setTimeout(function(){
+                    callbackView.renderSprite();
+                }, 0);
+            });
+            joystickView.bind("verticalMove", function(y){
+                $("#yVal").html(y);
+            });
+            joystickView.bind("horizontalMove", function(x){
+                $("#xVal").html(x);
+            });
+        });
+    </script>
+
+
 </body>
 </html>
 

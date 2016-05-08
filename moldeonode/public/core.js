@@ -1,9 +1,9 @@
 // public/core.js
 var molduinoTasks = angular.module('molduinoTasks', []);
 
-
 function mainController($scope, $http) {
     $scope.formData = {};
+    $scope.formCode = {};
 
     // when landing on the page, get all todos and show them
     $http.get('/api/tasks')
@@ -15,26 +15,81 @@ function mainController($scope, $http) {
             console.log('Error: ' + data);
         });
 
+    $http.get('/api/codes')
+        .success(function(data) {
+            $scope.codes = JSON.parse(data);
+            console.log(data);
+        })
+        .error(function(data) {
+            console.log('Error: ' + data);
+        });
 
-$scope.executeAction = function(command) {
 
-	$http.post('/api/tasks', { text: command } )
-            .success(function(data) {
-                $scope.formData = {}; // clear the form so our user is ready to enter another
-                $scope.tasks = data;
-                console.log(data);
+    $scope.executeAction = function(command) {
 
-		
-            })
-            .error(function(data) {
-                console.log('Error: ' + data);
-            });
 
-}
+      if (command=='code-play') {
+        /** send code, compile and run it*/
+/**
+        var code = Blockly.JavaScript.workspaceToCode(workspace);
+        window.alert(code);
+        if (code!="") {
+          editor.getSession().setValue(code);
+        }
+*/
+        $scope.formCode.text = editor.getSession().getValue();
+        console.log("code to be compiled and run in server:", $scope.formCode.text);
+
+        $http.post('/api/code', { text: $scope.formCode.text } )
+                .success(function(data) {
+                    $scope.runresult = data;
+                    console.log(data);
+
+
+                })
+                .error(function(data) {
+                    console.log('Error: ' + data);
+                });
+      } else
+      if (command=='code-debug') {
+
+      } else
+      if (command=='code-abort') {
+        /** send code, compile and run it*/
+        console.log("stop and abort any code running right now in server");
+
+        $http.post('/api/code', { text: "Molduino.Loop = false;" } )
+                .success(function(data) {
+                    $scope.runresult = data;
+                    console.log(data);
+
+
+                })
+                .error(function(data) {
+                    console.log('Error: ' + data);
+                });
+      }
+      else {
+           $http.post('/api/tasks', { text: command } )
+                .success(function(data) {
+                    $scope.formData = {}; // clear the form so our user is ready to enter another
+                    $scope.tasks = data;
+                    console.log(data);
+
+
+                })
+                .error(function(data) {
+                    console.log('Error: ' + data);
+                });
+      }
+    };
 
     $scope.refreshpreviewcam = function() {
-        var rid = Math.random();
-        $("#previewcam").html('<img width="300" height="200" src="http://192.168.1.156:8080/?action=snapshot&id='+rid+'"/>');
+        createImageLayer();
+    };
+
+    $scope.refreshprogram = function() {
+        editor.getSession().setValue( document.getElementById("lastcode").value );
     };
 
     // when submitting the add form, send the text to the node API
@@ -43,7 +98,7 @@ $scope.executeAction = function(command) {
             .success(function(data) {
                 $scope.formData = {}; // clear the form so our user is ready to enter another
                 $scope.tasks = data;
-                console.log(data);			
+                console.log(data);
             })
             .error(function(data) {
                 console.log('Error: ' + data);
