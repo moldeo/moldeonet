@@ -2054,7 +2054,8 @@ var ConsoleInterface = {
 							this.close(true);
 						});
 						//setTimeout( moCI.Browser.initBrowser, 1000 );
-						moCI.Browser.winBrowser.focus();
+						
+                        setTimeout( function() { moCI.Browser.winBrowser.focus(); }, 1000 );
 					} else {
 						console.error("moCI.Browser.Open > moCI.Browser.winBrowser NULL: ", moCI.Browser.winBrowser);
 					}

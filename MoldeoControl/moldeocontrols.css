@@ -99,7 +99,7 @@ button.control_button,
 }
 
 .titlebar {
-	-webkit-app-region: drag;
+	/*-webkit-app-region: drag;*/
 }
 
 .titlebar .x_drag {	
