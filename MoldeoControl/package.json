@@ -9,7 +9,7 @@
     "icon": "moldeocontrol.png",
     "show": true,
     "frame": false,
-    "toolbar": false,
+    "toolbar": true,
     "position": "null",
     "width": 834,
     "height": 164,

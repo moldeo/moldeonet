@@ -137,13 +137,13 @@ var config = {
 		},
 	},
 	"IsWindows": function() {
-		return config.platform.indexOf("wind")>=0;
+		return config.platform.indexOf("win32")>=0;
 	},
 	"IsLinux": function() {
-		return config.platform.indexOf("linux")>=0;
+		return config.platform.indexOf("linux")>=0 || config.platform.indexOf("freebsd")>=0 || config.platform.indexOf("sunos")>=0;
 	},
 	"IsOsx": function() {
-		return config.platform.indexOf("darwin")>=0 || config.platform.indexOf("osx")>=0;
+		return config.platform.indexOf("darwin")>=0;
 	},
 	"Init": function( options ) {
 
@@ -171,11 +171,12 @@ var config = {
 				console.log(" player_file_path:" + config.player_file_path );				
 			}
 
+			config.player_full_path = config.player_file_path + config.player_sdl2_exe;
+
 			config.bin_path = config.player_file_path;
 			config.moldeo_path = config.bin_path.replace(/\\bin\\win\\/gi,'');			
 			config.data_path = config.moldeo_path + "\\data";
 			config.sample_path = config.moldeo_path + "\\samples";
-			config.player_full_path = config.player_file_path + config.player_sdl2_exe;
 			config.moldeouser_path = config.home_path+"\\Documents\\Moldeo";
 			config.desktop_path = config.home_path+"\\Desktop";
 			config.moldeo_version = config.bin_path+"/moldeoversion.txt";
