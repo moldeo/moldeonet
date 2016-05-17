@@ -1,4 +1,4 @@
-﻿var md5 = require('md5-node');
+var md5 = require('md5-node');
 
 var ConsoleInterface = {
 	Options: {
@@ -1866,6 +1866,8 @@ var ConsoleInterface = {
 						},
 					],
 				};
+                if (moCI.Project.config==undefined) return;
+                if (moCI.Project.config.parameters==undefined) return;
 
 				var preeffect = moCI.Project.config.parameters["preeffect"].paramvalues;
 				var effect = moCI.Project.config.parameters["effect"].paramvalues;
@@ -1874,6 +1876,7 @@ var ConsoleInterface = {
 				var resources = moCI.Project.config.parameters["resources"].paramvalues;
 				//var devices = moCI.Project.config.parameters["devices"].paramvalues;
 				/* TODO: do it right, searching full objects, with moldeo ids*/
+
 				var moldeo_ids = 0;
 
 				for( var group_i in console_tree.children  ) {
@@ -2703,8 +2706,8 @@ var ConsoleInterface = {
 		var paramValue = Param.paramvalues[preconfig];
 		if (paramValue && paramValue.length) {
 			for(var sub=0; sub<paramValue.length; sub++) {
-				var valuedef = paramValue[sub]["valuedefinition"];
-				data+= coma+paramValue[sub]["value"];
+				var valuedef = paramValue[sub]["d"];
+				data+= coma+paramValue[sub]["v"];
 				coma = ",";
 			}
 		}

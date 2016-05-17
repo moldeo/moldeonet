@@ -1,4 +1,4 @@
-﻿/*
+/*
 	needs
 	MoldeoObjects.js
 
@@ -12,7 +12,7 @@ var configOsc = {
 	/**MoldeoControl listen to MoldeoPlayer in port 3335 > netoscout (moldeo osc client plugin) must be configured to write to 3335*/
 	server: {
 		port: 3335,
-		host: '127.0.0.1'
+		host: '0.0.0.0'
 	},
 
 	/**MoldeoControl Speak to MoldeoPlayer in port 3334 > netoscin (molde osc server plugin) must be configured listening in port 3334*/
@@ -223,7 +223,7 @@ var ReceiverFunction = function(msg, rinfo) {
 
 		// how many fields ??
 		if (moldeoapimessage[0]=="moldeo") {
-      moldeo_message["int"] = moldeoapimessage.length-1;
+      		moldeo_message["int"] = moldeoapimessage.length-1;
 		} else moldeo_message["int"] = moldeoapimessage[0];
 		// which command code ??
 		moldeo_message["code"] = moldeoapimessage[1];
