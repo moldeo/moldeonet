@@ -9,13 +9,13 @@ var osc = require('node-osc');
 //var ioserver = require('socket.io').listen(8081);
 var oscServer, oscClient;
 var configOsc = {
-	/*MoldeoControl listen to MoldeoPlayer Server in port 3335*/
+	/**MoldeoControl listen to MoldeoPlayer in port 3335 > netoscout (moldeo osc client plugin) must be configured to write to 3335*/
 	server: {
 		port: 3335,
 		host: '127.0.0.1'
 	},
-	
-	/**MoldeoControl Speak to MoldeoPlayer as a Client in port 3334*/
+
+	/**MoldeoControl Speak to MoldeoPlayer in port 3334 > netoscin (molde osc server plugin) must be configured listening in port 3334*/
 	client: {
 		port: 3334,
 		host: '127.0.0.1'
@@ -27,16 +27,16 @@ var MoldeoApiReceiver = {
 	/** CONSOLE */
 	"consoleget": function( message ) {
 		if (config.log.full) console.log("processing api message: consoleget > ", message);
-		
+
 		moCI.UpdateConsole( message["target"], message["info"] );
-		
+
 		if (Editor.ObjectRequested!=undefined
 			&& Editor.ObjectRequested!="")
 			OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectget', 'val1': '' + Editor.ObjectRequested + '' } );
 
 	},
 	"consolegetstate": function( message ) {
-		if (config.log.full) console.log("processing api message: consolegetstate > message: ",  message);		
+		if (config.log.full) console.log("processing api message: consolegetstate > message: ",  message);
 		moCI.UpdateState( message["info"] );
 	},
 	"consolesaveas": function( message ) {
@@ -55,29 +55,29 @@ var MoldeoApiReceiver = {
 
 		deactivateClass( document.getElementById("buttonED_SaveProject"), "saveneeded" );
 		deactivateClass( document.getElementById("buttonED_SaveProjectAs"), "saveneeded" );
-		
+
 		if (message["target"]=="success") {
 			alert("Se guardó el proyecto");
 			Editor.SaveNeeded = false;
-		}	
-	
+		}
+
 	},
 	"consolescreenshot": function( message ) {
 		var info = message["info"];
 		if (message["target"]=="success") {
 			if (info && info["lastscreenshot"]) {
-			
+
 				var fullscreenshotpath = info["lastscreenshot"];
 				if (config.log.full) console.log("fullscreenshotpath: ",fullscreenshotpath);
 
 				var saveasscreenshot = document.getElementById("saveasscreenshot");
 				saveasscreenshot.setAttribute("lastscreenshot",fullscreenshotpath);
 				saveasscreenshot.click();
-				
+
 			}
 		}
 	},
-	
+
 	"consolerendersession": function( message ) {
 		//
 		console.log("consolerendersession");
@@ -90,21 +90,21 @@ var MoldeoApiReceiver = {
 		console.log("message:",message);
 		moCI.RecordSession(message["info"]);
 	},
-		
+
 	"console": function( message ) {
-	
+
 	},	/** EFFECT */
 	"effectgetstate": function( message ) {
 
 		if (config.log.full) console.log("processing api message: effectgetstate: ",message );
 		var info = message["info"];
-		// use moldeo_message_target, 
-		// to update all controls that 
+		// use moldeo_message_target,
+		// to update all controls that
 		// are observers of the object states
 		var effect_label_name = message["target"];
 		var effect_activated = info["activated"];
 		var fxbuttons = document.getElementsByClassName(effect_label_name);
-		
+
 		if (config.log.full) console.log( "fxbuttons:", fxbuttons);
 		for( var i=0; i<fxbuttons.length; i++ ) {
 			var fxbutton = fxbuttons[i];
@@ -120,53 +120,53 @@ var MoldeoApiReceiver = {
 				}
 			}
 		}
-		
+
 		Editor.States[effect_label_name] = info;
-		
-		if (Editor.ObjectSelected==effect_label_name) {			
+
+		if (Editor.ObjectSelected==effect_label_name) {
 			Editor.UpdateState(effect_label_name);
 		}
-		
+
 		//update Control objects
 		if (Control.ObjectSelected==effect_label_name) {
 			UpdateControl( effect_label_name );
 		}
-		
+
 		if (Scenes.ObjectSelected==effect_label_name) {
 			UpdateScene( effect_label_name );
 		}
-				
+
 	},
-	
+
 	/** PARAM */
 	"paramget": function( message ) {
 		if (config.log.full) console.log("paramget: ", message );
 		Editor.UpdateEditorParam( message["target"], message["info"] )
 	},
-	
+
 	/** VALUE */
 	"valueget": function( message ) {
 		if (config.log.full) console.log("valueget rec: message: ", message);
 		valuegetResponse( message["target"], message["param"], message["preconf"], message["info"]);
-		
+
 	},
-	
+
 	/** OBJECT */
 	"objectget": function( message ) {
 		Editor.Update( message["target"], message["info"] );
 	},
-	
+
 	"objectgetstate": function( message ) {
 		if (config.log.full) console.log("objectgetstate ", message);
 		//UpdateEditor( message["target"], message["info"] );
 		var info = message["info"];
-		// use moldeo_message_target, 
-		// to update all controls that 
+		// use moldeo_message_target,
+		// to update all controls that
 		// are observers of the object states
 		var object_label_name = message["target"];
 		var object_activated = info["activated"];
 		var fxbuttons = document.getElementsByClassName(object_label_name);
-		
+
 		if (config.log.full) console.log( "fxbuttons:", fxbuttons);
 		for( var i=0; i<fxbuttons.length; i++ ) {
 			var fxbutton = fxbuttons[i];
@@ -182,24 +182,24 @@ var MoldeoApiReceiver = {
 				}
 			}
 		}
-		
+
 		Editor.States[object_label_name] = info;
-		
-		if (Editor.ObjectSelected==object_label_name) {			
+
+		if (Editor.ObjectSelected==object_label_name) {
 			Editor.UpdateState(object_label_name);
 		}
-		
+
 		//update Control objects
 		if (Control.ObjectSelected==object_label_name) {
 			UpdateControl( object_label_name );
 		}
-		
+
 		if (Scenes.ObjectSelected==object_label_name) {
 			UpdateScene( object_label_name );
 		}
-		
+
 	},
-	
+
 };
 
 var MoldeoMessenger = {
@@ -207,13 +207,13 @@ var MoldeoMessenger = {
 		"name": "this",
 		"subscriptions": {},
 		"object": null,
-	}]	
+	}]
 };
 
 var ReceiverFunction = function(msg, rinfo) {
 
 	try {
-		//console.log( "oscServer.on('message'.....) receive ! msg: " + msg, ' rinfo:' + rinfo);  
+		//console.log( "oscServer.on('message'.....) receive ! msg: " + msg, ' rinfo:' + rinfo);
 		if (config.log.full) console.log( "oscServer.on('message'.....) receive ! msg: ",msg );
 		//socket.emit("message", msg);
 		var object_regexp = /({.*})/i
@@ -222,7 +222,9 @@ var ReceiverFunction = function(msg, rinfo) {
 		var moldeo_message = {};
 
 		// how many fields ??
-		moldeo_message["int"] = moldeoapimessage[0];
+		if (moldeoapimessage[0]=="moldeo") {
+      moldeo_message["int"] = moldeoapimessage.length-1;
+		} else moldeo_message["int"] = moldeoapimessage[0];
 		// which command code ??
 		moldeo_message["code"] = moldeoapimessage[1];
 		// object ??
@@ -238,8 +240,8 @@ var ReceiverFunction = function(msg, rinfo) {
 			//console.log( "oscServer.on('message'.....) objectinfo:" + JSON.stringify( objectinfo,"", "\n") );
 			if (config.log.full) console.log( "oscServer.on('message',...)");
 			//console.log( "oscServer.on('message'.....) objectinfo:",objectinfo );
-			
-			if ( moldeo_message["int"]>3) {		
+
+			if ( moldeo_message["int"]>3) {
 				//console.error("objectinfo: is an array");
 				moldeo_message["param"] = moldeoapimessage[3];
 				moldeo_message["preconf"] = moldeoapimessage[4];
@@ -259,19 +261,19 @@ var ReceiverFunction = function(msg, rinfo) {
 			if (config.log.full) console.log( "objetinfo:",objectinfo);
 			moldeo_message["info"] = JSON.parse( objectinfo );
 		}
-	  
-		if (config.log.full) console.log( "moldeo_message > ",moldeo_message ); 
+
+		if (config.log.full) console.log( "moldeo_message > ",moldeo_message );
 
 		var CallingApiFunction = false;
 		if (moldeo_message["code"])
 			CallingApiFunction = MoldeoApiReceiver[ moldeo_message["code"] ];
 
 		if (CallingApiFunction) {
-			CallingApiFunction( moldeo_message );		
+			CallingApiFunction( moldeo_message );
 		} else {
 			console.error("No Moldeo Osc Api function registered for calling code:", moldeo_message["code"] );
 		}
-  
+
 	} catch(err) {
 		console.error("oscServer > on message: ",err);
 		alert("Error en el formato de recepción de datos",err);
