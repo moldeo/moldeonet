@@ -253,6 +253,13 @@
         status: Boolean,
     });
 
+    var Program = mongoose.model('Program', {
+        name: String,
+        text: String,
+        createdAt: Date,
+        status: Boolean,
+    });
+
 
     function processingTask(task, resultcallback ) {
         //Tasks.find( { sort: { name: task } } );
@@ -260,8 +267,6 @@
         //command = parse( task.name );
         console.log("Processing command task: ", task);
         var shell_command = task.tcommand;
-
-
 
         console.log("Processing command task.tcommandid: ", task.tcommandid);
         switch(task.tcommandid) {
@@ -507,7 +512,7 @@
     }
 
     //coding
-    app.post('/api/code', function(req, res) {
+    app.post('/api/program/run', function(req, res) {
         if (req.body.text==undefined) {
             res.send("ERROR");
         }
@@ -536,20 +541,18 @@
 
 
     // get all tasks
-    app.get('/api/codes', function(req, res) {
+    app.get('/api/program', function(req, res) {
 
-        res.json( Molduino.options.lastcode );
-/*
+        //res.json( Molduino.options.lastcode );
         // use mongoose to get all todos in the database
-        Code.find(function(err, codes ) {
+        Program.find(function(err, programs ) {
 
             // if there is an error retrieving, send the error. nothing after res.send(err) will execute
             if (err)
                 res.send(err)
 
-            res.json(codes); // return all todos in JSON format
+            res.json(programs); // return all todos in JSON format
         });
-*/
     });
 
 
@@ -564,6 +567,20 @@
                 res.send(err)
 
             res.json(tasks); // return all todos in JSON format
+        });
+    });
+
+    // get all tasks
+    app.get('/api/programs', function(req, res) {
+
+        // use mongoose to get all todos in the database
+        Program.find(function(err, programs) {
+
+            // if there is an error retrieving, send the error. nothing after res.send(err) will execute
+            if (err)
+                res.send(err)
+
+            res.json(programs); // return all todos in JSON format
         });
     });
 
@@ -625,16 +642,122 @@
     });
 
 // create todo and send back all tasks after creation
-    app.post('/api/tasks/send', function(req, res) {
+    app.post('/api/programs', function(req, res) {
 
-        console.log( "Sended req task:", req.body);
-        if (req.body.text) {
-            task = req.body;
+        console.log( "req:",req );
+        var programName = req.body.name || "noname";
+        var programCode = req.body.text || "";
+
+        var mobj = {
+          name: programName,
+          text: programCode,
+          createdAt: new Date,
+          status: false,
+        };
+        console.log( "new program command:", mobj );
+
+        // create a todo, information comes from AJAX request from Angular
+        Program.create( mobj, function( err, program ) {
+            if (err)
+                res.send(err);
+
+            Program.find(function(err, programs) {
+                if (err)
+                    res.send(err)
+                res.json(programs);
+
+            });
+
+        });
+
+    });
+
+
+//load program
+    app.post('/api/programs/load', function(req, res) {
+
+        console.log( "Load req program:", req);
+        if (req.body) {
+            //program = req.body;
+            console.log("loading program:", req.body._id );
+            /*
             processingTask( task, function( err, result ) {
                 if (err)
                     res.send(err)
                 else res.json(result);
             } );
+            */
+            Program.findById( req.body._id, function(err, program ) {
+                if (err)
+                    res.send(err)
+
+                res.json(program);
+            });
+
+            /*
+            Program.find({ _id : req.params.program_id }, function(err, programs) {
+                if (err)
+                    res.send(err)
+                res.json(programs);
+            });
+            */
+        }
+    });
+
+        app.post('/api/programs/save', function(req, res) {
+
+        console.log( "Save program:", req);
+        if (req.body) {
+            //program = req.body;
+            console.log("Saving program:", req.body.id );
+            /*
+            processingTask( task, function( err, result ) {
+                if (err)
+                    res.send(err)
+                else res.json(result);
+            } );
+            */
+            //res.json(req.body);
+
+            Program.findById( req.body.id, function(err, program ) {
+                if (err)
+                    res.send(err)
+                else
+                if (req.body==undefined || program==undefined) res.send("error");
+                else {
+                    program.text = req.body.text;
+                    program.save( function(err2 ) {
+                      if (err2)
+                              res.send(err2)
+                      else console.log("SAVED!", res);
+                        Program.find( function(err3, programs) {
+                            if (err3)
+                                res.send(err3)
+                            console.log("programs:",programs);
+                            res.json(programs);
+                        });
+                    } );
+                }
+            });
+
+        }
+    });
+
+
+
+// create todo and send back all tasks after creation
+    app.post('/api/tasks/send', function(req, res) {
+
+        console.log( "Sended req program:", req.body);
+        if (req.body.text) {
+            task = req.body;
+
+            processingTask( task, function( err, result ) {
+                if (err)
+                    res.send(err)
+                else res.json(result);
+            } );
+
         }
     });
 
@@ -651,6 +774,23 @@
                 if (err)
                     res.send(err)
                 res.json(tasks);
+            });
+        });
+    });
+
+    // delete a program
+    app.delete('/api/programs/:program_id', function(req, res) {
+        Program.remove({
+            _id : req.params.program_id
+        }, function(err, program) {
+            if (err)
+                res.send(err);
+
+            // get and return all the todos after you create another
+            Program.find(function(err, programs) {
+                if (err)
+                    res.send(err)
+                res.json(programs);
             });
         });
     });

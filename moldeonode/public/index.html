@@ -20,9 +20,10 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- load jquery -->
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script><!-- load angular -->
     <script src="core.js"></script>
+    <!--
     <script type="text/javascript" src="js/underscore-min.js"></script>
     <script type="text/javascript" src="js/backbone-min.js"></script>
-    <script type="text/javascript" src="js/joystick_view.js"></script>
+    <script type="text/javascript" src="js/joystick_view.js"></script>-->
 
     <script src="js/blockly/blockly_compressed.js"></script>
     <script src="js/blockly/blocks_compressed.js"></script>
@@ -123,7 +124,7 @@ function imageOnclick() { // Clicking on the image will pause the stream
                   <button id="right" title="Girar Derecha  (turn-right-speed)" class="btn btn-lg glyphicon glyphicon-arrow-right"  ng-click="executeAction('turn-right-speed 100')"></button>
                   <button id="stop" title="Parar" class="btn btn-lg glyphicon glyphicon-remove-sign"  ng-click="executeAction('stop')"></button>
                   <button id="stop" title="Sonido" class="btn btn-lg glyphicon glyphicon-play-circle"  ng-click="executeAction('hello')"></button>
-
+<!--
                   <script type="text/html" id="joystick-view">
                   <canvas id="joystickCanvas" width="<%= squareSize %>" height="<%= squareSize %>" style="width: <%= squareSize %>px; height: <%= squareSize %>px;">
                       </canvas>
@@ -134,6 +135,7 @@ function imageOnclick() { // Clicking on the image will pause the stream
                       x: <span id="xVal"></span><br/>
                       y: <span id="yVal"></span><br/>
                   </div>
+                  -->
               </div>
             </div>
           </div>
@@ -170,13 +172,29 @@ function imageOnclick() { // Clicking on the image will pause the stream
                 </div>
 
 <!-- FORM TO CREATE CODE -->
+
   <br/>
                 <div id="code-form" class="panel panel-default">
-                  <div class="panel-heading"><h4>Programa</h4><button ng-click="refreshprogram();" title="Actualizar" class="btn glyphicon glyphicon-refresh" style="float: right;"></button><textarea id="lastcode" class="hidden">{{codes}}</textarea>
-                      <button id="code-play" title="Ejecutar" class="btn btn-lg glyphicon glyphicon-play-circle" ng-click="executeAction('code-play')"></button>
-                      <button id="code-abort" title="Parar" class="btn btn-lg glyphicon glyphicon-stop"  ng-click="executeAction('code-abort')"></button>
+                  <div class="panel-heading"><h4>Programa</h4><!--<button ng-click="refreshprogram();" title="Actualizar" class="btn glyphicon glyphicon-refresh" style="float: right;"></button>--><!--<textarea id="lastcode" class="hidden">{{codes}}</textarea>-->
+                      <button id="code-play" title="Ejecutar" class="btn btn-lg glyphicon glyphicon-play-circle" ng-click="executeAction('program-play')"></button>
+                      <button id="code-save" title="Salvar" class="btn btn-lg glyphicon glyphicon-save" ng-click="executeAction('program-save')"></button>
+                      <button id="code-abort" title="Parar" class="btn btn-lg glyphicon glyphicon-stop"  ng-click="executeAction('program-abort')"></button>
+                      <form class="newprogram">
+                        <input type="text" class="input-sg text-left" placeholder="Nombre..." ng-model="formProgram.name">
+                        <input type="text" class="hidden input-sg text-left" placeholder="Codigo..." value="" ng-model="formProgram.text">
+                        <button id="code-new" type="submit"  title="Nuevo programa" class="btn btn-lg glyphicon glyphicon-plus"  ng-click="createProgram()"></button>
+                      </form>
                   </div>
+                  <ul class="nav nav-pills">
+                      <li role="presentation" ng-repeat="program in programs" idp="{{program._id}}">
+                        <button class="delete" ng-click="deleteProgram(program._id)">&times;</button>
+                        <span class="text" title="[{{program._id}}]">{{program.name}}</span>
+                        <span id="program_{{program._id}}_result" class="text">::</span>
+                        <button class="send glyphicon glyphicon-repeat" ng-click="loadProgram(program)"  title="Cargar" style="float:right;"></button>
+                      </li>
+                  </ul>
                   <div class="panel-body">
+                    <h3 id="selprogram" class="" idp=""></h3>
                     <div id="editor" class="col-sm-6"></div>
                     <div id="blocklyDiv" class="col-sm-6"></div>
                   </div>
@@ -242,14 +260,17 @@ socket.on('moldeosc',function(oscmsg) {
 });
 </script>
 <script src="/js/bootstrap.js"></script>
+
+
 <script src="/js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
 <script>
-    var editor = ace.edit("editor");
+    editor = ace.edit("editor");
     //editor.setTheme("ace/theme/monokai");
     editor.setTheme("ace/theme/chrome");
     editor.getSession().setMode("ace/mode/javascript");
     editor.getSession().setUseWrapMode(true);
     document.getElementById('editor').style.fontSize='15px';
+    document.getElementById('editor').editor = editor;
 
 </script>
 
@@ -257,6 +278,12 @@ socket.on('moldeosc',function(oscmsg) {
   var workspace = Blockly.inject('blocklyDiv',
       {toolbox: document.getElementById('toolbox')});
 var bloque = {};
+
+function upcode(code) {
+
+  //document.editor.GetSession().setValue( code );
+  //alert(code);
+}
 
 function myUpdateFunction(event) {
 
@@ -292,9 +319,11 @@ function myUpdateFunction(event) {
 }
 
 workspace.addChangeListener(myUpdateFunction);
-
 </script>
 
+
+
+<!--
     <script type="text/javascript">
         $(document).ready(function(){
             var joystickView = new JoystickView(150, function(callbackView){
@@ -311,7 +340,7 @@ workspace.addChangeListener(myUpdateFunction);
             });
         });
     </script>
-
+-->
 
 </body>
 </html>

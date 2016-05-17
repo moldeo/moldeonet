@@ -137,6 +137,15 @@ li.private {
   border-color: #ddd;
 }
 
+.newprogram {
+  float: right !important;
+  clear: none !important;
+  margin: 0px !important;
+}
+
+#selprogram {
+}
+
 header .hide-completed {
   float: right;
 }
