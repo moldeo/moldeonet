@@ -1,4 +1,4 @@
-﻿/*
+/*
 	needs
 	MoldeoObjects.js
 
@@ -6,13 +6,50 @@
 
 
 var osc = require('node-osc');
+
+/**
+ var serialn = require('serialport');
+ 
+ var osc2 = require('osc');
+var OscReceiver = require('osc-receiver')
+, receiver = new OscReceiver();
+
+receiver.bind(3335);
+receiver.on('message', function() {
+            // handle all messages
+            console.log("udp");
+            var address = arguments[0];
+            var args = Array.prototype.slice.call(arguments, 1);
+            });
+*/
+/*
+var udpPort = new osc2.UDPPort({
+                              localAddress: "0.0.0.0",
+                              localPort: 3335
+                              });
+
+udpPort.on("raw",function(msg) {
+           console.log("udp");
+});
+
+udpPort.on("bundle", function (oscBundle, timeTag, info) {
+           console.log("An OSC bundle just arrived for time tag", timeTag, ":",oscBundle);
+           console.log("Remote info is: ", info);
+           });
+
+udpPort.on("error", function (error) {
+        console.log("An error occurred: ", error.message);
+        });
+// Open the socket.
+udpPort.open();
+*/
 //var ioserver = require('socket.io').listen(8081);
 var oscServer, oscClient;
 var configOsc = {
 	/*MoldeoControl listen to MoldeoPlayer Server in port 3335*/
 	server: {
 		port: 3335,
-		host: '127.0.0.1'
+		host: '0.0.0.0'
 	},
 	
 	/**MoldeoControl Speak to MoldeoPlayer as a Client in port 3334*/
@@ -223,6 +260,9 @@ var ReceiverFunction = function(msg, rinfo) {
 
 		// how many fields ??
 		moldeo_message["int"] = moldeoapimessage[0];
+        if (moldeo_message["int"]=="/moldeo") {
+            moldeo_message["int"]=moldeoapimessage.length-1;
+        }
 		// which command code ??
 		moldeo_message["code"] = moldeoapimessage[1];
 		// object ??

@@ -661,22 +661,22 @@ function UpdateValue( moblabel, param, preconf, value ) {
 	
 	//REACTIVATE ACTIVE INSPECTOR SO VALUES ARE UPDATED
 	if (param=="texture") {
-		if (value[0] && value[0]["value"])
-			UpdateImage( moblabel, param, preconf, value[0]["value"] );
+		if (value[0] && value[0]["v"])
+			UpdateImage( moblabel, param, preconf, value[0]["v"] );
 		//ImportMovie( moblabel, param, preconf, value );
 	}
 	if (param=="movies") {
-		if (value[0] && value[0]["value"])
-			UpdateMovie( moblabel, param, preconf, value[0]["value"] );
+		if (value[0] && value[0]["v"])
+			UpdateMovie( moblabel, param, preconf, value[0]["v"] );
 		//ImportMovie( moblabel, param, preconf, value );
 	}
 	if (param=="sound") {
-		if (value[0] && value[0]["value"])
-			UpdateSound( moblabel, param, preconf, value[0]["value"] );
+		if (value[0] && value[0]["v"])
+			UpdateSound( moblabel, param, preconf, value[0]["v"] );
 	}
 	if (param=="color") {
-		if (value[0] && value[0]["value"])
-			UpdateColor( moblabel, param, preconf, value[0]["value"] );
+		if (value[0] && value[0]["v"])
+			UpdateColor( moblabel, param, preconf, value[0]["v"] );
 	}
 }
 
@@ -870,7 +870,7 @@ function fetchMovie( moblabel, param_name, preconfig, remote ) {
 		if (MOVOBJECT==undefined) { OEMP[preconfidx] = {}; MOVOBJECT = OEMP[ preconfidx ]; }
 		
 		if (MOVOBJECT) {
-			MOVOBJECT["src"] = ParamValue[0]["value"];
+			MOVOBJECT["src"] = ParamValue[0]["v"];
 			/*			
 			if (MOVOBJECT["img"]==undefined) {
 				MOVOBJECT["img"] = new Image();
@@ -968,7 +968,7 @@ function fetchAudio( moblabel, param_name, preconfig, remote ) {
 		if (SNDOBJECT==undefined) { OESP[preconfidx] = {}; SNDOBJECT = OESP[ preconfidx ]; }
 		
 		if (SNDOBJECT) {
-			SNDOBJECT["src"] = ParamValue[0]["value"];
+			SNDOBJECT["src"] = ParamValue[0]["v"];
 			/*			
 			if (SNDOBJECT["img"]==undefined) {
 				SNDOBJECT["img"] = new Image();
@@ -1145,7 +1145,7 @@ function fetchImage( moblabel, param_name, preconfig, remote ) {
 		if (IMGOBJECT==undefined) { OEIP[preconfidx] = {}; IMGOBJECT = OEIP[ preconfidx ]; }
 		
 		if (IMGOBJECT) {
-			IMGOBJECT["src"] = ParamValue[0]["value"];		
+			IMGOBJECT["src"] = ParamValue[0]["v"];
 			if (IMGOBJECT["img"]==undefined) {
 				IMGOBJECT["img"] = new Image();
 			}
@@ -1155,7 +1155,7 @@ function fetchImage( moblabel, param_name, preconfig, remote ) {
 			IMGOBJECT["img"].remote = remote;			
 			IMGOBJECT["img"].onload = onloadImage;				
 			//using real-path for this image, if we are in local-control
-			var newsrc = ValueToSrc( ParamValue[0]["value"] );
+			var newsrc = ValueToSrc( ParamValue[0]["v"] );
 			if (IMGOBJECT["img"].filesrc!=newsrc || global_refresh) {
 			//if (newsrc) {
 				global_refresh = false;
@@ -1281,9 +1281,9 @@ function selectEditorColor( preconfig_index ) {
 	
 	//create hexa color:
 	if (Color && Color.length>3) {
-		var red = Math.round( Color[0]["value"]*255 );
-		var green = Math.round( Color[1]["value"]*255 );
-		var blue = Math.round( Color[2]["value"]*255 );
+		var red = Math.round( Color[0]["v"]*255 );
+		var green = Math.round( Color[1]["v"]*255 );
+		var blue = Math.round( Color[2]["v"]*255 );
 		if (config.log.full) console.log("rgbToHex( ",red,", ",green,",", blue," ):",rgbToHex( red, green, blue ));
 		object_color_sel.setAttribute( "style" , "background-color:"+ rgbToHex( red, green, blue )+";");
 	}
@@ -1677,7 +1677,7 @@ function CreateMovieParameter( MOB_label, param_name, preconfig, prewindow ) {
 
 		if ( param_name=="movies" ) {
 			if (OM[ param_name ][ preconfidx ]==undefined) OM[param_name][ preconfidx ] = {};
-			 OM[param_name][ preconfidx ]["src"] = ParamValues[preconfig][0]["value"];
+			 OM[param_name][ preconfidx ]["src"] = ParamValues[preconfig][0]["v"];
 			selectEditorMovie( MOB_label,param_name, 0);
 		}
 		
@@ -1703,8 +1703,8 @@ function CreateSoundParameter( MOB_label, param_name, preconfig, psideWin ) {
 	if (ObjectSounds[param_name][preconfidx]==undefined) ObjectSounds[param_name][preconfidx] = {};
 	
 	if (ParamValues[preconfig]) {
-		if (config.log.full) console.log("CreateSoundParameter > value: ", ParamValues[preconfig][0]["value"] );
-		ObjectSounds[param_name][preconfidx]["src"] = ParamValues[preconfig][0]["value"];
+		if (config.log.full) console.log("CreateSoundParameter > value: ", ParamValues[preconfig][0]["v"] );
+		ObjectSounds[param_name][preconfidx]["src"] = ParamValues[preconfig][0]["v"];
 		selectEditorSound( MOB_label, param_name, 0);
 	}
 	else
@@ -2374,9 +2374,9 @@ function UpdateColor( moblabel, paramname, preconfig, filename ) {
 	var green = 0;
 	var blue = 0;
 	if (color_value) {
-		red = Math.round(Number(color_value[0]["value"])*255);
-		green = Math.round(Number(color_value[1]["value"])*255);
-		blue = Math.round(Number(color_value[2]["value"])*255);
+		red = Math.round(Number(color_value[0]["v"])*255);
+		green = Math.round(Number(color_value[1]["v"])*255);
+		blue = Math.round(Number(color_value[2]["v"])*255);
 		color = rgbToHex( red, green, blue );
 	}
 	if (config.log.full) console.log("UpdateColor > ",color,"for:",red,green,blue);
@@ -2511,15 +2511,15 @@ function SetValue( moblabel, selector, preconfig, value ) {
 									if (config.log.full) console.log("SetValue COLOR (hexToRgb) is ",paramname,value );
 									var resColor = hexToRgb(value);
 									if (resColor) {
-										if (resColor.r) ParamValue[0]["value"] = resColor.r / 255.0;
-										if (resColor.g) ParamValue[1]["value"] = resColor.g / 255.0;
-										if (resColor.b) ParamValue[2]["value"] = resColor.b / 255.0;
-										if (ParamValue[3]) ParamValue[3]["value"] = 1.0;
+										if (resColor.r) ParamValue[0]["v"] = resColor.r / 255.0;
+										if (resColor.g) ParamValue[1]["v"] = resColor.g / 255.0;
+										if (resColor.b) ParamValue[2]["v"] = resColor.b / 255.0;
+										if (ParamValue[3]) ParamValue[3]["v"] = 1.0;
 									}
 									selector = paramname;
 								}
 							} else {							
-								Data["value"] = value;
+								Data["v"] = value;
 							}
 							
 							success = true;
@@ -2659,8 +2659,8 @@ function CreateInspectorValue( inspectorElement, moblabel, paramName, paramType,
 	var paramValue = Param.paramvalues[preconfig];
 	var paramDefinition = Param.paramdefinition;
 	
-	var datav = paramValue[sub]["value"];
-	var datavDef = paramValue[sub]["valuedefinition"];
+	var datav = paramValue[sub]["v"];
+	var datavDef = paramValue[sub]["d"];
 	var codeName = datavDef.codename;
 	
 	var subs = "";
@@ -2803,7 +2803,7 @@ function UpdateColorInspector( inspectorElement, moblabel, paramName, paramType,
 			
 			if (paramValue.length) {								
 				for(var sub=0; sub<paramValue.length; sub++) {
- 					var datav = paramValue[sub]["value"];
+ 					var datav = paramValue[sub]["v"];
 					
 					//now that we have	it, assign it to inspector...
 					var inputInspector;								
@@ -2903,7 +2903,7 @@ function UpdateStandardInspector( TabInspector, inspectorElement, moblabel, prec
 			
 			if (paramValue.length) {								
 				for(var sub=0; sub<paramValue.length; sub++) {
- 					var datav = paramValue[sub]["value"];
+ 					var datav = paramValue[sub]["v"];
 					
 					//now that we have	it, assign it to inspector...
 					var inputInspector;
@@ -3077,7 +3077,7 @@ function UpdateGroupParam( group, moblabel, paramName, preconfig ) {
 			var data_str = moCI.GetValuesToStr( moblabel, paramName, preconfig );
 			
 			for(var sub=0; sub<paramValues.length; sub++) {
-				var datav = paramValues[sub]["value"];
+				var datav = paramValues[sub]["v"];
 				
 				//now that we have	it, assign it to inspector...
 				
