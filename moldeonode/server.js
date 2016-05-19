@@ -82,6 +82,8 @@
     var RM_STOPFACEDETECTION = 106;
     var RM_BODYDETECTION = 107;
 
+    var RM_LINEFOLLOWER = 108;
+    var RM_COLLISIONDETECTION = 109;
     //var moldeonetroot = "../../../../../../";
     var moldeonetroot = "/home/pi/moldeoinstaller/moldeonet/";
     var utilsroot = moldeonetroot+"utils/";
@@ -111,6 +113,8 @@
       "facedetection": RM_FACEDETECTION,
       "stopfacedetection": RM_STOPFACEDETECTION,
       "bodydetection": RM_BODYDETECTION,
+      "linefollower": RM_LINEFOLLOWER,
+      "collisiondetection": RM_COLLISIONDETECTION,
     };
 
     function execCode( command, callc ) {
@@ -151,11 +155,34 @@
       Molduino.options.idinterval = setInterval( codeInterval, Molduino.options.delay );
     }
 
+    var mconsole = {
+      "log": function(msg) {
+        Molduino.log(msg);
+      },
+      "error": function(msg) {
+        Molduino.error(msg);
+      },
+      "clearlog": function() {
+        Molduino.clearlog();
+      }
+    };
+
     var Molduino = {
       "options": {
         "idinterval": false,
         "delay": 100,
         "lastcode": false,
+      },
+      "log": function( msg ) {
+        console.log(msg);
+        io.emit('log', msg );
+      },
+      "error": function( msg ) {
+        console.error(msg);
+        io.emit('error', msg );
+      },
+      "clearlog": function() {
+        io.emit('clearlog', "" );
       },
       "hello": function(  apiresultcallback ) {
           console.log( "Molduino::hello" );
@@ -229,6 +256,7 @@
           } );
       },
       "FaceDetection": function(apiresultcallback) {
+        ///if not started, start face detection
         return (MOLDEOAPIMESSAGES["FACE_DETECTION"]);
       },
       "BodyDetection": function(apiresultcallback) {
@@ -239,6 +267,12 @@
       },
       "FaceRecognition": function(apiresultcallback) {
         return (MOLDEOAPIMESSAGES["FACE_RECOGNITION"]);
+      },
+      "LineFollower": function(apiresultcallback) {
+        //return (MOLDEOAPIMESSAGES["FACE_RECOGNITION"]);
+      },
+      "CollisionDetection": function(apiresultcallback) {
+        //return (MOLDEOAPIMESSAGES["FACE_RECOGNITION"]);
       },
     };
 
@@ -410,6 +444,16 @@
                 /// check in the server if the sound process is running
                 console.log( "command was processed as RM_TURN_RIGHT_SPEED." );
                 shell_command = task.text.replace( "turn-right-speed", molduinoroot + "turn-right-speed.sh " );
+                execCode( shell_command, function(err,res) {
+                  if (res=="") res = "ok";
+                  resultcallback( err, res );
+                } );
+                break;
+
+            case RM_LINEFOLLOWER:
+                /// check in the server if the sound process is running
+                console.log( "command was processed as RM_REBOOT" );
+                shell_command = task.text.replace( "linefollower", molduinoroot + "linefollower.sh " );
                 execCode( shell_command, function(err,res) {
                   if (res=="") res = "ok";
                   resultcallback( err, res );
@@ -851,22 +895,26 @@ oscServer.on('message', function(msg, rinfo) {
 
      if (moldeoapimessage[2]=="FACE_DETECTION" && moldeoapimessage[3]>=1 ) {
           MOLDEOAPIMESSAGES["FACE_DETECTION"] = {
-                                                    x: moldeoapimessage[5],
-                                                    y: moldeoapimessage[7],
-                                                    w: moldeoapimessage[9],
-                                                    h: moldeoapimessage[11]
+                                                    x: moldeoapimessage[5].toFixed(4),
+                                                    y: moldeoapimessage[7].toFixed(4),
+                                                    w: moldeoapimessage[9].toFixed(4),
+                                                    h: moldeoapimessage[11].toFixed(4)
                                                 };
+          io.emit('FACE_DETECTION', JSON.stringify( MOLDEOAPIMESSAGES["FACE_DETECTION"] ) );
      } else {
           MOLDEOAPIMESSAGES["FACE_DETECTION"] = false;
      }
 
      if (moldeoapimessage[2]=="BODY_DETECTIONS" ) {
+
           MOLDEOAPIMESSAGES["BODY_DETECTION"] = moldeoapimessage[3];/**array of bodies*/
+
+          io.emit('BODY_DETECTION', JSON.stringify( MOLDEOAPIMESSAGES["BODY_DETECTION"] ) );
      } else {
           MOLDEOAPIMESSAGES["BODY_DETECTION"] = false;
      }
 
-	   io.emit('moldeosc',moldeoapimessage);
+
 
 	}
 

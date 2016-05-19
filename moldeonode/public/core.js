@@ -28,17 +28,6 @@ function mainController($scope, $http) {
 
     $scope.executeAction = function(command,parameter) {
 
-      if (command=='cleanchat') {
-        console.log("cleanchat");
-        $http.delete('/api/cleantasks' )
-                .success(function(data) {
-                    //$scope.runresult = data;
-                    console.log(data);
-                })
-                .error(function(data) {
-                    console.log('Error: ' + data);
-                });
-      } else
       if (command=='program-play') {
         /** send code, compile and run it*/
 /**
@@ -68,6 +57,10 @@ function mainController($scope, $http) {
                 //$("#selprogram").html( data.name );
                 console.log( "exec program-load", parameter );
                 editor.getSession().setValue( parameter );
+      } else if (command=='clearlog') {
+                //$("#selprogram").attr("idp", data._id );
+                //$("#selprogram").html( data.name );
+                $('#editor2').html("");
 
       } else
       if (command=='program-save') {

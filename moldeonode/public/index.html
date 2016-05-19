@@ -55,7 +55,7 @@ function createImageLayer() {
   img.onload = imageOnload;
   img.onclick = imageOnclick;
   //img.src = "http://"+ipserver+":8080/?action=snapshot&n=" + (++imageNr);
-  console.log("urlip:"+urlip);
+  //console.log("urlip:"+urlip);
   img.src = urlip+"?action=snapshot&n=" + (++imageNr);
   var webcam = document.getElementById("previewcam");
   webcam.insertBefore(img, webcam.firstChild);
@@ -99,7 +99,13 @@ function imageOnclick() { // Clicking on the image will pause the stream
           <div class="col-sm-4 col-sm-offset-0">
 
             <div id="code-form" class="panel panel-default">
-              <div class="panel-heading"><h4>Camara<button ng-click="refreshpreviewcam();" title="Actualizar" class="btn glyphicon glyphicon-refresh" style="float: right;"></button></h4></div>
+              <div class="panel-heading"><h4>Camara
+              <button ng-click="executeAction('facedetection')" title="Detección de rostro" class="btn glyphicon glyphicon glyphicon-user" style="float: right;"></button>
+              <button ng-click="executeAction('bodydetection')" title="Detección de cuerpo" class="btn glyphicon glyphicon glyphicon-user" style="float: right;"></button>
+              <button ng-click="refreshpreviewcam();" title="Actualizar" class="btn glyphicon glyphicon-refresh" style="float: right;"></button>
+              <button ng-click="executeAction('stopall');" title="Detener cámara" class="btn glyphicon glyphicon-eye-close" style="float: right;"></button>
+              </h4></div>
+
               <div class="panel-body">
                 <!--<div id="previewcam"><img width="300" height="200" src="http://192.168.43.252:8080/?action=stream"/></div>-->
                 <!--<div id="previewcam"><noscript><img src="http://192.168.43.252:8080/?action=snapshot" /></noscript></div>-->
@@ -123,7 +129,9 @@ function imageOnclick() { // Clicking on the image will pause the stream
                   <button id="down" title="Atrás (reverse-speed)" class="btn btn-lg glyphicon glyphicon-arrow-down"  ng-click="executeAction('reverse-speed 110')"></button>
                   <button id="right" title="Girar Derecha  (turn-right-speed)" class="btn btn-lg glyphicon glyphicon-arrow-right"  ng-click="executeAction('turn-right-speed 100')"></button>
                   <button id="stop" title="Parar" class="btn btn-lg glyphicon glyphicon-remove-sign"  ng-click="executeAction('stop')"></button>
-                  <button id="stop" title="Sonido" class="btn btn-lg glyphicon glyphicon-play-circle"  ng-click="executeAction('hello')"></button>
+                  <button id="sonido" title="Sonido" class="btn btn-lg glyphicon glyphicon-play-circle"  ng-click="executeAction('hello')"></button>
+                  <button id="linea" title="Seguimiento de linea" class="btn btn-lg glyphicon glyphicon-retweet"  ng-click="executeAction('linefollower')"></button>
+
 <!--
                   <script type="text/html" id="joystick-view">
                   <canvas id="joystickCanvas" width="<%= squareSize %>" height="<%= squareSize %>" style="width: <%= squareSize %>px; height: <%= squareSize %>px;">
@@ -142,7 +150,9 @@ function imageOnclick() { // Clicking on the image will pause the stream
 
             <div class="col-sm-8 col-sm-offset-0">
               <div class="panel panel-default">
-                <div class="panel-heading"><h4>Chat</h4><button id="cleanchat" title="Limpiar" class="btn btn-lg glyphicon glyphicon-floppy-remove" ng-click="deleteAllTasks()"></button></div>
+                <div class="panel-heading"><h4>Chat
+                <button id="cleanchat" ng-click="deleteAllTasks()" title="Limpiar" class="btn glyphicon glyphicon-floppy-remove"  style="float: right;" ></button>
+                </h4></div>
                 <div class="panel-body">
                   <ul id="chatbot" class="chatbot">
                     <li ng-repeat="task in tasks" ng-class="{'checked': task.checked}">
@@ -176,7 +186,7 @@ function imageOnclick() { // Clicking on the image will pause the stream
   <br/>
                 <div id="code-form" class="panel panel-default">
                   <div class="panel-heading"><h4>Programa</h4><!--<button ng-click="refreshprogram();" title="Actualizar" class="btn glyphicon glyphicon-refresh" style="float: right;"></button>--><!--<textarea id="lastcode" class="hidden">{{codes}}</textarea>-->
-                      <button id="code-play" title="Ejecutar" class="btn btn-lg glyphicon glyphicon-play-circle" ng-click="executeAction('program-play')"></button>
+                      <button id="code-play" title="Ejecutar" class="btn btn-lg glyphicon glyphicon-play-circle" ng-click="executeAction('clearlog');executeAction('program-play');"></button>
                       <button id="code-save" title="Salvar" class="btn btn-lg glyphicon glyphicon-save" ng-click="executeAction('program-save')"></button>
                       <button id="code-abort" title="Parar" class="btn btn-lg glyphicon glyphicon-stop"  ng-click="executeAction('program-abort')"></button>
                       <form class="newprogram">
@@ -197,6 +207,13 @@ function imageOnclick() { // Clicking on the image will pause the stream
                     <h3 id="selprogram" class="" idp=""></h3>
                     <div id="editor" class="col-sm-6"></div>
                     <div id="blocklyDiv" class="col-sm-6"></div>
+                  </div>
+
+
+                  <div class="panel-body">
+                    <h3 id="log" class="" idp="">Log<button id="clearlog" ng-click="executeAction('clearlog')" title="Limpiar" class="btn glyphicon glyphicon-floppy-remove"  style="float: right;" ></button></h3>
+                    <textarea id="editor2" class="col-sm-12" rows="10" style="background-color:black;color:white; font-family: courier">
+                    </textarea>
                   </div>
                 </div>
 
@@ -248,15 +265,40 @@ function imageOnclick() { // Clicking on the image will pause the stream
 <script src="/socket.io/socket.io.js"></script>
 <script>
 var socket = io();
-socket.on('moldeosc',function(oscmsg) {
+socket.on('FACE_DETECTION',function(oscmsg) {
 
-	console.log("moldeoosc", oscmsg);
+	//console.log("moldeoosc", oscmsg );
 	code = oscmsg[0];
 
 	if (code!="0") {
 	   $('#moldeoosc').html(oscmsg);
 	}
 
+});
+socket.on('BODY_DETECTION',function(oscmsg) {
+
+	//console.log("moldeoosc", oscmsg );
+	code = oscmsg[0];
+
+	if (code!="0") {
+	   $('#moldeoosc').html(oscmsg);
+	}
+
+});
+socket.on('log',function(msg) {
+	if (msg!="") {
+	   $('#editor2').html( $('#editor2').html() + '\n'+msg);
+	}
+
+});
+socket.on('error',function(msg) {
+	if (msg!="") {
+	   $('#editor2').html($('#editor2').html() + '\n'+msg);
+	}
+
+});
+socket.on('clearlog',function() {
+  $('#editor2').html("");
 });
 </script>
 <script src="/js/bootstrap.js"></script>
