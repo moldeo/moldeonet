@@ -550,7 +550,12 @@
     function codeInterval() {
 
         if ( Molduino.Loop && ( typeof Molduino.Loop ) == "function" ) {
-            Molduino.Loop();
+            try {
+              Molduino.Loop();
+            } catch( allerrors ) {
+              io.emit("error", "Loop ERROR:" + allerrors );
+              Molduino.Loop = false;
+            }
         }
 
     }
@@ -572,9 +577,13 @@
           Molduino.options.idinterval = setInterval( codeInterval, Molduino.options.delay );
 
         } catch(err) {
-          console.log("code compile error:", err );
+          console.log("ERROR:", err );
+
+          io.emit("error", "ERROR:" + err );
           if (err)
                 res.send(err)
+
+
         }
 
 
