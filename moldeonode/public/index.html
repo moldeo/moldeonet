@@ -142,7 +142,7 @@ function imageOnclick() { // Clicking on the image will pause the stream
 
             <div class="col-sm-8 col-sm-offset-0">
               <div class="panel panel-default">
-                <div class="panel-heading"><h4>Chat</h4></div>
+                <div class="panel-heading"><h4>Chat</h4><button id="cleanchat" title="Limpiar" class="btn btn-lg glyphicon glyphicon-floppy-remove" ng-click="deleteAllTasks()"></button></div>
                 <div class="panel-body">
                   <ul id="chatbot" class="chatbot">
                     <li ng-repeat="task in tasks" ng-class="{'checked': task.checked}">

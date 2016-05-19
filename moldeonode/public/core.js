@@ -28,7 +28,17 @@ function mainController($scope, $http) {
 
     $scope.executeAction = function(command,parameter) {
 
-
+      if (command=='cleanchat') {
+        console.log("cleanchat");
+        $http.delete('/api/cleantasks' )
+                .success(function(data) {
+                    //$scope.runresult = data;
+                    console.log(data);
+                })
+                .error(function(data) {
+                    console.log('Error: ' + data);
+                });
+      } else
       if (command=='program-play') {
         /** send code, compile and run it*/
 /**
@@ -176,6 +186,18 @@ function mainController($scope, $http) {
     // delete a todo after checking it
     $scope.deleteTask = function(id) {
         $http.delete('/api/tasks/' + id)
+            .success(function(data) {
+                $scope.tasks = data;
+                console.log(data);
+            })
+            .error(function(data) {
+                console.log('Error: ' + data);
+            });
+    };
+
+    // delete a todo after checking it
+    $scope.deleteAllTasks = function(id) {
+        $http.delete('/api/cleantasks')
             .success(function(data) {
                 $scope.tasks = data;
                 console.log(data);

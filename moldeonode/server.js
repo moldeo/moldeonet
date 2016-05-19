@@ -778,6 +778,21 @@
         });
     });
 
+    // delete all tasks
+    app.delete('/api/cleantasks', function(req, res) {
+        Task.remove({}, function(err, task) {
+            if (err)
+                res.send(err);
+
+            // get and return all the todos after you delete another
+            Task.find(function(err, tasks) {
+                if (err)
+                    res.send(err)
+                res.json(tasks);
+            });
+        });
+    });
+
     // delete a program
     app.delete('/api/programs/:program_id', function(req, res) {
         Program.remove({
