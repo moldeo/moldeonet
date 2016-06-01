@@ -10,13 +10,14 @@
     "show": true,
     "transparent":true,
     "frame": false,
-    "toolbar": false,
+    "toolbar": true,
     "position": "null",
     "width": 834,
     "height": 164,
     "heightx": 544,
     "min_width": 834,
-    "min_height": 164
+    "min_height": 164,
+    "transparent": true
   },
   "dependencies": {
     "md5-node": "^1.0.1",
