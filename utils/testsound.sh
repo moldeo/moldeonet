@@ -8,7 +8,7 @@ echo 'Check output'
 amixer cget numid=3
 
 echo 'Set analog output'
-amixer cset numid=3 1
+amixer cset numid=3 -300
 
 echo 'Set volume'
 amixer cset numid=1 400

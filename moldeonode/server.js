@@ -184,6 +184,12 @@
       "clearlog": function() {
         io.emit('clearlog', "" );
       },
+      "StopAllScheduled": function() {
+        setTimeout( function() {
+            Molduino.stopall();
+
+        }, 180000 );
+      },
       "hello": function(  apiresultcallback ) {
           console.log( "Molduino::hello" );
           shell_command = utilsroot+"hello.sh";
@@ -484,6 +490,7 @@
                   if (res=="") res = "ok";
                   resultcallback( err, res );
                 } );
+                Molduino.StopAllScheduled();
                 break;
 
             case RM_STOPFACEDETECTION:
@@ -494,6 +501,7 @@
                   if (res=="") res = "ok";
                   resultcallback( err, res );
                 } );
+
                 break;
 
             case RM_BODYDETECTION:
@@ -504,6 +512,7 @@
                   if (res=="") res = "ok";
                   resultcallback( err, res );
                 } );
+                Molduino.StopAllScheduled();
                 break;
 
             case RM_SUDOPASS:
@@ -518,7 +527,7 @@
             case RM_REBOOT:
                 /// check in the server if the sound process is running
                 console.log( "command was processed as RM_REBOOT" );
-                shell_command = 'echo "'+sudopass+'" | sudo -S shutdown -r';
+                shell_command = 'echo "'+sudopass+'" | sudo -S shutdown -r 0';
                 execCode( shell_command, function(err,res) {
                   if (res=="") res = "ok";
                   resultcallback( err, res );
@@ -528,7 +537,7 @@
             case RM_SHUTDOWN:
                 /// check in the server if the sound process is running
                 console.log( "command was processed as RM_SHUTDOWN" );
-                shell_command = 'echo "'+sudopass+'" | sudo -S shutdown -h';
+                shell_command = 'echo "'+sudopass+'" | sudo -S shutdown -h 0';
                 execCode( shell_command, function(err,res) {
                   if (res=="") res = "ok";
                   resultcallback( err, res );
@@ -896,13 +905,13 @@ oscServer = new osc.Server( configOsc.server.port, configOsc.server.host);
 oscClient = new osc.Client( configOsc.client.host, configOsc.client.port);
 oscServer.on('message', function(msg, rinfo) {
 
-	//console.log( "moldeosc:",msg );
+	console.log( "moldeosc:",msg );
 	var  moldeoapimessage = msg[2];
 	var moldeo_message = {};
 
 	if ( moldeoapimessage[1] == "opencv" ) {
 
-     if (moldeoapimessage[2]=="FACE_DETECTION" && moldeoapimessage[3]>=1 ) {
+     if (moldeoapimessage[2]=="FACE_DETECTION" && moldeoapimessage[9]>0 ) {
           MOLDEOAPIMESSAGES["FACE_DETECTION"] = {
                                                     x: moldeoapimessage[5].toFixed(4),
                                                     y: moldeoapimessage[7].toFixed(4),

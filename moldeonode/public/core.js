@@ -109,6 +109,10 @@ function mainController($scope, $http) {
                 .error(function(data) {
                     console.log('Error: ' + data);
                 });
+
+                if (command=="facedetection") {
+                  setTimeout(function() {refreshpreviewcam();}, 10000 );
+                }
       }
     };
 
