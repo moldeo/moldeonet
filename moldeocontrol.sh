@@ -18,4 +18,4 @@ cp config.init.js MoldeoControl/config.init.js
 #if [[ $platform == 'linux' ]]; then
 #elif [[ $platform == 'freebsd' ]]; then
 #fi
-nwjs/nw MoldeoControl
+nwjs/nw MoldeoControl --enable-transparent-visuals --disable-gpu

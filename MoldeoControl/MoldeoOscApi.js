@@ -151,8 +151,33 @@ var MoldeoApiReceiver = {
 
 	},
 
-	/** OBJECT */
+	/** OBJECT GET
+	*
+	* {
+  *   'name': '',
+  *   '': '',
+  * }
+	*/
 	"objectget": function( message ) {
+    /**
+    */
+		MoldeoApiReceiver.message_info = message["info"];
+		Editor.Update( message["target"], message["info"] );
+		OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectgetconfig', 'val1': '' + Editor.ObjectRequested + '' } );
+	},
+
+	"objectgetconfig": function( message ) {
+		Editor.Update( message["target"], message["info"] );
+		//OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectgetpreconfig', 'val1': '' + Editor.ObjectRequested + '' } );
+		var MOB = Editor.Objects[Editor.ObjectRequested];
+		if (MOB) {
+      for(var i = 0; i<MOB["object"]["objectconfig"]["preconfigs"].length; i++ ) {
+        OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectgetpreconfig', 'val1': '' + Editor.ObjectRequested + '', 'val2': Number(i) } );
+      }
+		}
+	},
+
+	"objectgetpreconfig": function( message ) {
 		Editor.Update( message["target"], message["info"] );
 	},
 
