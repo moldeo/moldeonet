@@ -2054,7 +2054,7 @@ div.buttons .buttons {
 			float: left;
 			margin-top: 3px;
 			margin-left: 7px;
-			width: 25px;
+			width: 6%;
 			height: 30px;
 			/*background-image: url(buttons/button_Editor_ObjectEdition.svg);*/
 			border: solid 1px #FFF;
@@ -2072,7 +2072,7 @@ div.buttons .buttons {
 
 
 		.object_edition_collapsed {
-			width: 4% !important;
+			width: 2% !important;
 		}
 
 

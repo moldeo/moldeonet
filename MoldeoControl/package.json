@@ -16,8 +16,7 @@
     "height": 164,
     "heightx": 544,
     "min_width": 834,
-    "min_height": 164,
-    "transparent": true
+    "min_height": 164
   },
   "dependencies": {
     "md5-node": "^1.0.1",
