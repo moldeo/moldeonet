@@ -144,9 +144,17 @@
 
 
     function sleep(milliseconds) {
+      console.log("milliseconds:"+milliseconds);
       var start = new Date().getTime();
-      for (var i = 0; i < 1e7; i++) {
-        if ((new Date().getTime() - start) > milliseconds){
+      var nn = 0;
+      for (var mi = 0; mi < 10000000; mi++) {
+        //mconsole.log((new Date().getTime() - start)  + " > A " + milliseconds);
+        var nn = nn +1;
+        console.log(nn);
+        var ndate = new Date();
+        var actualtime = ndate.getTime() - start;
+        if (actualtime > milliseconds){
+          console.log("reached:"+actualtime);
           break;
         }
       }
@@ -938,11 +946,21 @@ oscServer.on('message', function(msg, rinfo) {
 
      if (moldeoapimessage[2]=="FACE_DETECTION" && moldeoapimessage[9]>0 ) {
           MOLDEOAPIMESSAGES["FACE_DETECTION"] = {
+                                                    n: moldeoapimessage[3].toFixed(4),
                                                     x: moldeoapimessage[5].toFixed(4),
                                                     y: moldeoapimessage[7].toFixed(4),
                                                     w: moldeoapimessage[9].toFixed(4),
                                                     h: moldeoapimessage[11].toFixed(4)
                                                 };
+          if (moldeoapimessage[12]=="FACE_RECOGNITION") {
+            MOLDEOAPIMESSAGES["FACE_RECOGNITION"] = {
+                recognized: moldeoapimessage[13].toFixed(4),
+                label: moldeoapimessage[15]
+            };
+            MOLDEOAPIMESSAGES["FACE_DETECTION"]['recognized'] = MOLDEOAPIMESSAGES["FACE_RECOGNITION"].recognized;
+            MOLDEOAPIMESSAGES["FACE_DETECTION"]['label'] = MOLDEOAPIMESSAGES["FACE_RECOGNITION"].label;
+            io.emit('FACE_RECOGNITION', JSON.stringify( MOLDEOAPIMESSAGES["FACE_RECOGNITION"] ) );
+          }
           io.emit('FACE_DETECTION', JSON.stringify( MOLDEOAPIMESSAGES["FACE_DETECTION"] ) );
      } else {
           MOLDEOAPIMESSAGES["FACE_DETECTION"] = false;
