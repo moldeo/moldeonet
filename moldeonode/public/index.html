@@ -207,7 +207,7 @@ function imageOnclick() { // Clicking on the image will pause the stream
                   <div class="panel-body">
                     <h3 id="selprogram" class="" idp=""></h3>
                     <div id="editor" class="col-sm-6"></div>
-                    <div id="blocklyDiv" class="col-sm-6"></div>
+                    <!--<div id="blocklyDiv" class="col-sm-6"></div>-->
                   </div>
 
 
@@ -318,10 +318,11 @@ socket.on('clearlog',function() {
 </script>
 
 <script>
+/*
   var workspace = Blockly.inject('blocklyDiv',
       {toolbox: document.getElementById('toolbox')});
 var bloque = {};
-
+*/
 function upcode(code) {
 
   //document.editor.GetSession().setValue( code );

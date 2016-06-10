@@ -110,7 +110,7 @@ function mainController($scope, $http) {
                     console.log('Error: ' + data);
                 });
 
-                if (command=="facedetection") {
+                if (command=="facedetection" || command=="facerecognition" || command=="bodydetection") {
                   setTimeout(function() {refreshpreviewcam();}, 10000 );
                 }
       }
