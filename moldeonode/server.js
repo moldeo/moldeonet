@@ -469,6 +469,16 @@
                 } );
                 break;
 
+            case RM_COLLISIONDETECTION:
+                /// check in the server if the sound process is running
+                console.log( "command was processed as RM_COLLISIONDETECTION" );
+                shell_command = task.text.replace( "collisiondetection", molduinoroot + "collisiondetection.sh " );
+                execCode( shell_command, function(err,res) {
+                  if (res=="") res = "ok";
+                  resultcallback( err, res );
+                } );
+                break;
+
             case RM_PWD:
                 /// check in the server if the sound process is running
                 console.log( "command was processed as RM_PWD." );
