@@ -2,7 +2,7 @@ var md5 = require('md5-node');
 
 var ConsoleInterface = {
 	Options: {
-		"MAX_N_PRECONFIGS": 3,
+		"MAX_N_PRECONFIGS": 50,
 	},
 	Log: true,
 	State: {},
@@ -302,22 +302,28 @@ var ConsoleInterface = {
 					Control.Functions["cursor_mouse_up"](event);
 				}
 			},
-			"button_1": {
+			"button_1_": {
 				"click": function(event) {
-					if (config.log.full) console.log("button_1 > click");
+					if (config.log.full) console.log("button_1_ > click");
 					Control.Functions.selectControlPreconfig( Control.ObjectSelected, 0 );
 				},
 			},
-			"button_2": {
+			"button_2_": {
 				"click": function(event) {
-					if (config.log.full) console.log("button_2 > click");
+					if (config.log.full) console.log("button_2_ > click");
 					Control.Functions.selectControlPreconfig( Control.ObjectSelected, 1 );
 				}
 			},
-			"button_3": {
+			"button_3_": {
 				"click": function(event) {
-					if (config.log.full) console.log("button_3 > click");
+					if (config.log.full) console.log("button_3_ > click");
 					Control.Functions.selectControlPreconfig( Control.ObjectSelected, 2 );
+				}
+			},
+			"button_ALL": {
+				"click": function(event) {
+					if (config.log.full) console.log("button_ALL > click");
+					Control.Functions.showAllPreconfigs();
 				}
 			},
 			"button_F1": {
@@ -336,6 +342,12 @@ var ConsoleInterface = {
 				"click": function(event) {
 					if (config.log.full) console.log("button_F3");
 					Control.Functions.selectControlPreset( 2 );
+				}
+			},
+      "button_FALL": {
+				"click": function(event) {
+					if (config.log.full) console.log("button_FALL > click");
+					Control.Functions.showAllPresets();
 				}
 			},
 			"saveasvideo": {
@@ -366,7 +378,8 @@ var ConsoleInterface = {
 		"Functions": {
 			"ObjectsToProjectPanel": function( ConsoleInfo ) {
 				if (config.log.full) console.log("ObjectsToProjectPanel > ", ConsoleInfo);
-				document.getElementById("control_project_header").innerHTML = "<label>"+path.basename( ConsoleInfo.configname )+"</label>";
+				document.getElementById("control_project_header_label").innerHTML = path.basename( ConsoleInfo.configname );
+				document.getElementById("control_project_header_label").setAttribute("title", path.basename( ConsoleInfo.configname) );
 			},
 			"cursor_mouse_down": function(event) {
 				mkey = event.target.getAttribute("key");
@@ -438,6 +451,7 @@ var ConsoleInterface = {
 								};
 
 					Control.PreconfigSelected[object_selection] = preconfig_selection;
+					Control.PreconfigsSelected[object_selection] = preconfig_selection;
 
 					if (forceselect==true) {
 						var key = moCI.mapSelectionsObjectsByLabel[object_selection];
@@ -451,8 +465,14 @@ var ConsoleInterface = {
 
 					if (object_selection==Control.ObjectSelected) {
 						UnselectButtonsCircle();
-						var di = document.getElementById("button_" + (preconfig_selection+1) );
+						var di = document.getElementById("button_" + (preconfig_selection+1)+"_" );
 						if (di) activateClass( di, "circle_selected" );
+
+						var diA = document.getElementById("button_ALL" );
+						if (preconfig_selection>=3) {
+              $("#button_ALL").html((preconfig_selection+1));
+              activateClass( diA, "circle_selected" );
+						}
 					}
 
 
@@ -466,7 +486,46 @@ var ConsoleInterface = {
 					Control.Functions.selectControlPreconfig( object_label, preconfig_selection );
 				}
 			},
+			"showAllPreconfigs": function() {
+        $("#preconfigs_all").html("");
+
+        for(var i=4; i<=moCI.Options["MAX_N_PRECONFIGS"]; i++) {
+          var button = document.createElement("BUTTON");
+          //var label = document.createElement("BUTTON");
+          //var ll = Control.Objects[Control.ObjectSelected];
+          button.setAttribute("id","button_"+i+"_");
+          button.setAttribute("title","Activate Preconfig "+i);
+          button.setAttribute("key",i);
+          button.setAttribute("class","button_"+i+" circle_button");
+          button.addEventListener("click",function(event) {
+            Control.Functions.selectControlPreconfig( Control.ObjectSelected, event.target.getAttribute("key")-1 );
+            if (Editor.ObjectSelected) Editor.selectEditorPreconfig( event.target.getAttribute("key")-1 );
+          });
+          $("#preconfigs_all").append(button);
+          button.innerHTML = i;
+        }
+        $("#preconfigs_all").toggle();
+      },
+      "showAllPresets": function() {
+        $("#presets_all").html("");
+
+        for(var i=4; i<=moCI.Options["MAX_N_PRECONFIGS"]; i++) {
+          var button = document.createElement("BUTTON");
+          button.setAttribute("id","button_F"+i+"_");
+          button.setAttribute("title","Activate all preconfigs #"+i);
+          button.setAttribute("key",i);
+          button.setAttribute("class","button_F"+i+" circle_button");
+          button.addEventListener("click",function(event) {
+            Control.Functions.selectControlPreset( Control.ObjectSelected, event.target.getAttribute("key")-1 );
+            //if (Editor.ObjectSelected) Editor.selectEditorPreconfig( event.target.getAttribute("key")-1 );
+          });
+          $("#presets_all").append(button);
+          button.innerHTML = "F"+i;
+        }
+        $("#presets_all").toggle();
+      },
 		},
+
 		"mapCursorStateMod": {
 			"LEFT": { "member": "alpha", "value": "decrement", "pressed": false },
 			"RIGHT": { "member": "alpha", "value": "increment", "pressed": false },
@@ -481,6 +540,7 @@ var ConsoleInterface = {
 				element.setAttribute( "title", "");
 				element.setAttribute( "data-original-title", "");
 				deactivateClass( element, "object_enabled");
+				deactivateClass( element, "present");
 			});
 
 			for( var key in moCI.mapSelectionsObjects ) {
@@ -496,6 +556,7 @@ var ConsoleInterface = {
 					if (MOBlabel) {
 						//keyBtn.setAttribute("title",moCI.mapSelectionsObjects[key]);
 						keyBtn.setAttribute( "data-original-title",MOBlabel);
+						activateClass( keyBtn, "present");
 						$(keyBtn).tooltip();
 						activateClass( keyBtn, moCI.mapSelectionsObjects[key] );
 					}
@@ -960,23 +1021,29 @@ var ConsoleInterface = {
 
 				}
 			},
-			"buttonED_1": {
+			"buttonED_1_": {
 				"click": function(event) {
 						if (config.log.full) console.log("buttonED_1 > ");
 						Editor.selectEditorPreconfig(0);
 				},
 			},
-			"buttonED_2": {
+			"buttonED_2_": {
 				"click": function(event) {
 						if (config.log.full) console.log("buttonED_2 > ");
 						Editor.selectEditorPreconfig(1);
 				},
 			},
-			"buttonED_3": {
+			"buttonED_3_": {
 				"click": function(event) {
 						if (config.log.full) console.log("buttonED_3 > ");
 						Editor.selectEditorPreconfig(2);
 				},
+			},
+			"buttonED_ALL": {
+				"click": function(event) {
+					if (config.log.full) console.log("buttonED_ALL > click");
+					Editor.showAllEditorPreconfigs();
+				}
 			},
 			"buttonED_OpenProject": {
 				"click": function(event) {
@@ -1294,7 +1361,9 @@ var ConsoleInterface = {
 				element.setAttribute( "data-original-title", "");
 				//element.removeEventListener( "click", Editor.Functions["edit_button_click"] );
 				deactivateClass( element, "object_enabled");
+				deactivateClass( element, "present");
 			});
+
 			for( var key in moCI.mapSelectionsObjects ) {
 
 				var MOBlabel = moCI.mapSelectionsObjects[key];
@@ -1305,11 +1374,29 @@ var ConsoleInterface = {
 					if (MOBlabel) {
 						selObject.setAttribute( "title", "" );
 						selObject.setAttribute( "data-original-title", MOBlabel );
+						activateClass( selObject, "present");
 						$(selObject).tooltip();
 					}
 
 				}
 			}
+
+      var eles = document.getElementsByClassName("keyED_button");
+			for(var eb=0; eb<eles.length; eb++ ) {
+        var ebut = eles[eb];
+        if (ebut) {
+          var key = ebut.getAttribute("key");
+          if (key && moCI.mapSelectionsObjects[key]) {
+            var MOBlabel = moCI.mapSelectionsObjects[key];
+            ebut.addEventListener( "click", Editor.Functions["edit_button_click"]);
+            ebut.setAttribute( "title", "" );
+            ebut.setAttribute( "data-original-title", MOBlabel );
+            activateClass( ebut, "present");
+            $(ebut).tooltip();
+          }
+        }
+			}
+
 /*
 			$(".objects_editor_panel button").each( function(index,element) {
 
@@ -1357,22 +1444,30 @@ var ConsoleInterface = {
 		},
 		"Update": function( MOB_label, fullobjectInfo ) {
 
-			if (config.log.full) console.log("UpdateEditor > MOB_label:"+MOB_label+" fullobjectInfo: ",fullobjectInfo);
+			if (config.log.full) console.log("UpdateEditor > MOB_label: ",MOB_label," fullobjectInfo: ",fullobjectInfo);
+
+      Editor.ObjectRequested = MOB_label;
 
 			if (moCI.Project.datapath==undefined) {
 				console.error("ERROR > no console INFO, trying to get it...");
 				OscMoldeoSend( { 'msg': '/moldeo','val0': 'consoleget', 'val1': '' } );
 				Editor.ObjectRequested = MOB_label;
-				return;
+				return -1;
 			}
 
 			selectEditorEffectByLabel( MOB_label );
 			RegisterEditorLabelObject();
+      if (fullobjectInfo["object"])
+        Editor.Objects[MOB_label] = fullobjectInfo;
 
-			Editor.Objects[MOB_label] = fullobjectInfo;
+
 			var MObject = Editor.Objects[MOB_label];
-			var Config = MObject["object"]["objectconfig"];
 
+      if (fullobjectInfo["objectconfig"] && MObject["object"])
+        MObject["object"]["objectconfig"] = fullobjectInfo["objectconfig"];
+
+			var Config = MObject["object"]["objectconfig"];
+      if (Config==undefined) {  console.log("Must call objetgetpreconfig"); return -1; }
 			Editor.PreconfigSelected = Config["currentpreconfig"];
 
 			if (Editor.PreconfigSelected==-1) {
@@ -1384,7 +1479,23 @@ var ConsoleInterface = {
 			} else Editor.States[MOB_label] = MObject["object"]["objectstate"];
 
 			Editor.Parameters[MOB_label] = Config["parameters"];
-			Editor.Preconfigs[MOB_label] = Config["preconfigs"];
+
+			if (fullobjectInfo["preconfig"] && fullobjectInfo["position"]>=0 && Config["preconfigs"]) {
+        Config["preconfigs"][fullobjectInfo["position"]] = fullobjectInfo["preconfig"];
+			}
+
+      if (Config["preconfigs"] &&
+          (
+            Config["preconfigs"].length==0
+            ||
+            ( Config["preconfigs"].length && Config["preconfigs"][Config["preconfigs"].length-1]["vidx"])
+          )
+          ) {
+        Editor.Preconfigs[MOB_label] = Config["preconfigs"];
+      } else {
+        console.log("must call getpreconfig for each preconfig");
+        return -1;
+      }
 
 			// Parameters:
 			// console.log("target: "+ target+ " parameters:" + JSON.stringify( Editor.Parameters[target], "", "\t") );
@@ -1446,9 +1557,9 @@ var ConsoleInterface = {
 			var Param = Editor.Parameters[MOB_label];
 
 			var paramName = fullparaminfo["name"];
-			ParamDef = Param[ paramName ]["paramdefinition"];
+			ParamDef = Param[ paramName ]["pdef"];
 			ParamDef = fullparaminfo;
-			var ParamProperty = ParamDef["property"];
+			var ParamProperty = ParamDef["pr"];
 
 			//buscar todos los parametros: (usando el id)
 			var parameter_name_base = "parameter_group_"+MOB_label+"_"+paramName;
@@ -1502,35 +1613,43 @@ var ConsoleInterface = {
 
 				var CurrentPreconfig = Preconfs[preconfig_index];
 				var win_Preconfigs = document.getElementById("object_preconfigs");
-				var btn_Preconfig = document.getElementById("buttonED_"+(Editor.PreconfigSelected+1) );
+				var btn_Preconfig = document.getElementById("buttonED_"+(Number(Editor.PreconfigSelected)+1)+"_" );
 
 				if (!win_Preconfigs) return console.error("Element object_preconfigs doesnt exists");
 
-				var win_parameters_Preconfig = document.getElementById( parameters_side_winID+preconfig_index );
-				if (!win_parameters_Preconfig) return console.error("selectEditorPreconfig > no " + parameters_side_winID+preconfig_index);
+				var win_parameters_Preconfig = document.getElementById( parameters_side_winID+preconfig_index+"_" );
+				if (!win_parameters_Preconfig) return console.error("selectEditorPreconfig > no " + parameters_side_winID+preconfig_index+"_");
 
 				//reset classes DEACTIVATE
 				for( var p=1;p<=Options["MAX_N_PRECONFIGS"];p++) {
 
 					//DEACTIVATE PRECONFIG SELECTOR
-					if (win_Preconfigs) deactivateClass( win_Preconfigs, "object_preconfigs_" + p );
+					if (win_Preconfigs) deactivateClass( win_Preconfigs, "object_preconfigs_" + p + "_" );
 
 					//DEACTIVATE PRECONFIG SELECTOR BUTTONS
-					btn_Preconfigx = document.getElementById("buttonED_"+p );
+					btn_Preconfigx = document.getElementById("buttonED_"+p+"_" );
 					if (btn_Preconfigx) deactivateClass( btn_Preconfigx, "circle_selected" );
 
 					//DEACTIVATE PARAMETERS SIDE
-					win_parameters_Preconfigx = document.getElementById( parameters_side_winID + (p-1) );
+					win_parameters_Preconfigx = document.getElementById( parameters_side_winID + (p-1) +"_" );
 					if (win_parameters_Preconfigx) {
 						deactivateClass( win_parameters_Preconfigx, "parameters_selected" );
 					} else {
 						if (config.log.full) console.log("selectEditorPreconfig > win_parameters_Preconfigx:",win_parameters_Preconfigx," null in ",Editor.ObjectSelected);
 					}
 				}
+				var diA = document.getElementById("buttonED_ALL" );
+        if (preconfig_index>=3) {
+          $("#buttonED_ALL").html((Number(preconfig_index)+1));
+          activateClass( diA, "circle_selected" );
+        } else {
+          $("#buttonED_ALL").html("N");
+          deactivateClass( diA, "circle_selected" );
+        }
 
 				//ACTIVATE ACTUAL PRECONFIG WINDOWS,BUTTONS AND PARAMETERS SIDE
 				//activate class for window
-				if (win_Preconfigs) activateClass( win_Preconfigs, "object_preconfigs_" + (Editor.PreconfigSelected+1) );
+				if (win_Preconfigs) activateClass( win_Preconfigs, "object_preconfigs_" + (Editor.PreconfigSelected+1)+"_" );
 				//activate class for circle button
 				if (btn_Preconfig) activateClass( btn_Preconfig, "circle_selected" );
 				//activate class for parameters side
@@ -1567,7 +1686,27 @@ var ConsoleInterface = {
 			}
 		},
 
-		/**
+		"showAllEditorPreconfigs": function() {
+
+      $("#object_preconfigs_all").html("");
+      for(var i=4; i<=moCI.Options["MAX_N_PRECONFIGS"]; i++) {
+        //htmla+= '<button id="buttonED_'+i+'" title="Edit Preconfig '+i+'"  key="'+i+'" class="buttonED_'+i+' circle_button"></button>';
+        var button = document.createElement("BUTTON");
+        button.setAttribute("id","buttonED_"+i+"_");
+        button.setAttribute("key",i);
+        button.setAttribute("title","Edit Preconfig "+i);
+        button.setAttribute("class","buttonED_"+i+" circle_button");
+        button.addEventListener("click",function(event) {
+          Editor.selectEditorPreconfig( event.target.getAttribute("key")-1 );
+        });
+        $("#object_preconfigs_all").append(button);
+        button.innerHTML = i;
+      }
+      $("#object_preconfigs_all").toggle();
+
+		},
+
+		/**event)
 		*	CreateParametersSideWindow
 		*
 		*	Create Parameters Side Window for this Moldeo Object ( identified by his label name: MOB_label )
@@ -1699,12 +1838,12 @@ var ConsoleInterface = {
 			for( var preconfigi=0; preconfigi<Options["MAX_N_PRECONFIGS"]; preconfigi++ ) {
 
 				var psideWinPre = document.createElement("DIV");
-				psideWinPre.setAttribute("id","parameters_side_"+MOB_label+"_" + preconfigi );
+				psideWinPre.setAttribute("id","parameters_side_"+MOB_label+"_" + preconfigi+"_" );
 				psideWinPre.setAttribute("class", "parameters_side_MOB_preconf");
 
 				if (psideWinPre) psideWinPreScrolloverview.appendChild( psideWinPre );
 
-				if (config.log.full) console.log("CreateParametersPreconfigWindows > CREATED parameters side for preconfig ",preconfigi," with id: ", "parameters_side_",MOB_label,"_",preconfigi);
+				if (config.log.full) console.log("CreateParametersPreconfigWindows > CREATED parameters side for preconfig ",preconfigi," with id: ", "parameters_side_",MOB_label,"_",preconfigi+"_");
 
 				/**Create DIVs for every published/grouped parameters*/
 				var pgroup_object_base = "parameter_group_"+MOB_label;
@@ -1717,9 +1856,9 @@ var ConsoleInterface = {
 				for( var param_name in Editor.Parameters[MOB_label] ) {
 
 					var Param = Editor.Parameters[MOB_label][param_name];
-					var ParamType = Param.paramdefinition["type"];
-					var ParamProperty = Param.paramdefinition["property"];
-					var ParamValues = Param.paramvalues;
+					var ParamType = Param.pdef["t"];
+					var ParamProperty = Param.pdef["pr"];
+					var ParamValues = Param["pvals"];
 
 					if (config.log.full) console.log("CreateParametersPreconfigWindows > PARAM: ",param_name," PRE:",preconfigi," INFO:",Param);
 
@@ -1869,11 +2008,11 @@ var ConsoleInterface = {
                 if (moCI.Project.config==undefined) return;
                 if (moCI.Project.config.parameters==undefined) return;
 
-				var preeffect = moCI.Project.config.parameters["preeffect"].paramvalues;
-				var effect = moCI.Project.config.parameters["effect"].paramvalues;
-				var posteffect = moCI.Project.config.parameters["posteffect"].paramvalues;
-				var mastereffect = moCI.Project.config.parameters["mastereffect"].paramvalues;
-				var resources = moCI.Project.config.parameters["resources"].paramvalues;
+				var preeffect = moCI.Project.config.parameters["preeffect"].pvals;
+				var effect = moCI.Project.config.parameters["effect"].pvals;
+				var posteffect = moCI.Project.config.parameters["posteffect"].pvals;
+				var mastereffect = moCI.Project.config.parameters["mastereffect"].pvals;
+				var resources = moCI.Project.config.parameters["resources"].pvals;
 				//var devices = moCI.Project.config.parameters["devices"].paramvalues;
 				/* TODO: do it right, searching full objects, with moldeo ids*/
 
@@ -1882,7 +2021,7 @@ var ConsoleInterface = {
 				for( var group_i in console_tree.children  ) {
 
 					var node = console_tree.children[group_i];
-					var moldeo_objects_values = moCI.Project.config.parameters[ node.name ].paramvalues;
+					var moldeo_objects_values = moCI.Project.config.parameters[ node.name ]["pvals"];
 
 					for( var index in moldeo_objects_values  ) {
 
@@ -2470,7 +2609,7 @@ var ConsoleInterface = {
 		if (moCI.Project.MapObjects==undefined) return;
 
 		for(var label in moCI.Project.MapObjects) {
-			keyname = moCI.Project.MapObjects[label].keyname;
+			keyname = moCI.Project.MapObjects[label]['key'];
 			name = moCI.Project.MapObjects[label].name;
 
 			if (moCI.mapSelectionsObjectsByLabel)
@@ -2496,6 +2635,9 @@ var ConsoleInterface = {
 		*/
 		for(var label in moCI.Project.MapObjects) {
 			var MOB = moCI.Project.MapObjects[ label ];
+			if (MOB.cfg) MOB.configname = MOB['cfg'];
+			if (MOB.key) MOB.keyname = MOB['key'];
+			if (MOB.cla) MOB.classname = MOB['cla'];
 
 			if (	MOB.classname.indexOf("Effect")>0 ) {
 				OscMoldeoSend( { 'msg': '/moldeo','val0': 'effectgetstate', 'val1': label } );
@@ -2703,7 +2845,7 @@ var ConsoleInterface = {
 
 		var Param = Params[ paramName ];
 		if (Param==undefined) return;
-		var paramValue = Param.paramvalues[preconfig];
+		var paramValue = Param["pvals"][preconfig];
 		if (paramValue && paramValue.length) {
 			for(var sub=0; sub<paramValue.length; sub++) {
 				var valuedef = paramValue[sub]["d"];
@@ -2726,9 +2868,9 @@ var ConsoleInterface = {
 
 		var Param = Params[ paramName ];
 		if ( Param == undefined) return false;
-		if ( Param.paramvalues==undefined ) return false;
+		if ( Param["pvals"]==undefined ) return false;
 
-		var pvals = Param.paramvalues[preconfig];
+		var pvals = Param["pvals"][preconfig];
 		if ( pvals )
 			return pvals
 

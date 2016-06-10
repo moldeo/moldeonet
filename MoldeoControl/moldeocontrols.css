@@ -24,28 +24,52 @@ body {
 
 
 
-
-.titlebar {	
+/*
+.titlebar {
 	position: fixed;
 	top: 0px;
-	left: 0px;
-	width: 100%;
+	left: 38%;
+	width: 62%;
 	height: 17px;
-	/*background-color: black;*/
 	background-image: url(images/fondo_title_bar.png);
 	background-size: 100% 100%;
-/*
-    
-	-webkit-user-select: none;
-*/
 	text-align: center;
 	padding: 0px;
 	font-size: 10px;
 	color: #FFF;
 	z-index: 50000;
 	font-family: moldeofont;
-    
-    /*-webkit-app-region: drag;*/	
+
+}
+*/
+    /*-webkit-app-region: drag;*/
+/*
+
+	-webkit-user-select: none;
+*/
+	/*background-color: black;*/
+
+
+.titlebar {
+  position: fixed;
+  top: 0px;
+  left: 3%;
+  width: 91%;
+  height: 22px;
+  background-color: transparent;
+  background-size: 100% 100%;
+  /* background-image: url(images/fondo_title_bar2.png); */
+  /* -webkit-user-select: none; */
+  text-align: left;
+  padding: 0px;
+  padding-left: 40%;
+  padding-top: 4px;
+  font-size: 10px;
+  color: #FFF;
+  z-index: 50000;
+  font-family: moldeofont;
+  /* -webkit-app-region: drag; */
+  background-position-x: -50px;
 }
 
 #container {
@@ -102,8 +126,9 @@ button.control_button,
 	/*-webkit-app-region: drag;*/
 }
 
-.titlebar .x_drag {	
+.titlebar .x_drag {
 	-webkit-app-region: drag !important;
+    cursor: move;
 }
 .titlebar button {
 	padding: 1px 3px;
@@ -111,6 +136,104 @@ button.control_button,
 .titlebar .x_debug {
 	padding: 0px !important;
 }
+
+
+.skin {
+  display: block;
+  position: fixed;
+  z-index: 0 !important;
+  width: 100%;
+  height: 100%;
+}
+
+.skin > div {
+  display: block;
+  position: fixed;
+  width: 40px;
+  height: 40px;
+  background-position: 0px 0px;
+  background-size: 40px 40px;
+}
+
+.skin_left_top {
+  left: 0px;
+  top: 0px;
+  z-index: 2;
+  background-image: url('art/moldeocontrol_back_left_top.png');
+}
+
+.skin_middle_top {
+  left: 40px;
+  top: 0px;
+  /* width: 93% !important; */
+  z-index: 1;
+  background-image: url('art/moldeocontrol_back_middle_top.png');
+  background-repeat: repeat-x;
+}
+
+.skin_right_top {
+  right: 0px;
+  top: 0px;
+  width: 160px !important;
+  z-index: 2;
+  background-size: 160px 40px !important;
+  background-image: url('art/moldeocontrol_back_right_top.png');
+}
+
+.skin_left_middle {
+  left: 0px;
+  top: 40px;
+  /* height: 67% !important; */
+  z-index: 1;
+  background-image: url('art/moldeocontrol_back_left_middle.png');
+  background-repeat: repeat-y;
+}
+
+.skin_middle_middle {
+  left: 40px;
+  top: 40px;
+  /* width: 93% !important; */
+  /* height: 67% !important; */
+  z-index: 0;
+  background-image: url('art/moldeocontrol_back_middle_middle.png');
+  background-repeat: repeat;
+}
+
+.skin_right_middle {
+  right: 0px;
+  top: 40px;
+  /* height: 67% !important; */
+  z-index: 1;
+  background-image: url('art/moldeocontrol_back_right_middle.png');
+  background-repeat: repeat-y;
+}
+
+.skin_left_bottom {
+  left: 0px;
+  bottom: 0px;
+  z-index: 2;
+  background-image: url('art/moldeocontrol_back_left_bottom.png');
+}
+
+.skin_middle_bottom {
+  left: 40px;
+  bottom: 0px;
+  /* width: 93% !important; */
+  z-index: 0;
+  background-image: url('art/moldeocontrol_back_middle_bottom.png');
+  background-repeat: repeat-x;
+
+}
+
+.skin_right_bottom {
+  right: 0px;
+  bottom: 0px;
+  z-index: 2;
+  background-image: url('art/moldeocontrol_back_right_bottom.png');
+}
+
+
+
 
 button.object_enabled {
 	/*
@@ -149,15 +272,69 @@ button.fxselected:hover:after {
 	transition: all 1s;
 }
 */
+.keyED_button {
+	width: 10%;/*44px*/
+	height: 33%;/*34px*/
+}
 
-.key_button {
+.present {
+  color: #0FF !important;
+}
+
+.key_button,
+.key_button.object_disabled {
 	width: 34%;/*44px*/
 	height: 34%;/*34px*/
+	background-image: url(buttons/button_FX_off.svg);
+}
+
+.key_button,
+.circle_button {
+  font-family: moldeofont;
+	color: #BBB;
+	font-size: 18px;
+	text-align: right;
+	padding-right: 2px !important;
+	padding-top: 10px !important;
+}
+
+.key_button.object_enabled {
+  background-image: url(buttons/button_FX_on.svg);
+  color: #0FF;
+}
+
+.key_button.object_enabled.fxselected {
+  background-image: url(buttons/button_FX_selec_on.svg);
+}
+
+.key_button.fxselected {
+  background-image: url(buttons/button_FX_selec.svg);
+}
+
+.third_effects .key_button,
+.third_editor_effects .key_button {
+	font-size: 15px;
+	padding-top: 0px !important;
 }
 
 .circle_button {
 	width: 30%;/*18px*/
 	height: 42%;/*32px*/
+	background-image: url( buttons/circle_button.svg );
+	text-align: center !important;
+	padding-top:  0px !important;
+}
+
+.object_preconfigs>.circle_button {
+  font-size: 15px !important;
+}
+
+.circle_button.circle_selected {
+	background-image: url( buttons/circle_button_on.svg );
+}
+
+.present {
+	color: #CCF;
 }
 
 .special_button {
@@ -201,7 +378,7 @@ button.fxselected:hover:after {
 	background-color: #333;
 	overflow-y: scroll;
     overflow-x: hidden;
-	
+
 }
 
 .no-browser #browser_panel {
@@ -225,9 +402,9 @@ button.fxselected:hover:after {
 		height: auto;
 		border: solid 0px #FFF;
 	}
-	
 
-	
+
+
 		.browser_project_category>label {
 			display: block;
 			position: absolute;
@@ -239,7 +416,7 @@ button.fxselected:hover:after {
 			font-size: 18px;
 			letter-spacing: 2px;
 			color: #00f6ff;
-			
+
 			font-family: moldeofont;
 			background-color: transparent;
 			border-bottom: solid 2px #00f6ff;
@@ -250,8 +427,8 @@ button.fxselected:hover:after {
 			background-repeat: no-repeat;
 			background-position: 9px 3px;
 			background-size: 16px 16px;
-			transition: opacity 1s;			
-			
+			transition: opacity 1s;
+
 		}
 		.browser_project_category.closed {
 			width: 100% !important;
@@ -261,10 +438,10 @@ button.fxselected:hover:after {
 		.browser_project_category.closed>label:active {
 			opacity: 1.0;
 		}
-		
+
 		.browser_project_category.closed>label {
 			background-image: url('buttons/expand.svg');
-			opacity: 0.7;			
+			opacity: 0.7;
 		}
 
 	.browser_project {
@@ -290,7 +467,7 @@ button.fxselected:hover:after {
 			bottom: 12px;
 			left: 0px;
 			padding-left: 8%;
-			
+
 			font-size: 14px;
 			letter-spacing: 2px;
 			color: #FFF;
@@ -301,7 +478,7 @@ button.fxselected:hover:after {
 			cursor: pointer;
 			cursor: hand;
 			opacity: 0.7;
-			
+
 			transition: opacity 1s;
 		}
 		.browser_project>label:hover {
@@ -322,8 +499,8 @@ button.fxselected:hover:after {
 			cursor: pointer;
 			cursor: hand;
 		}
-		
-		.browser_project_preview.active, 
+
+		.browser_project_preview.active,
 		.browser_project_preview:hover {
 			display: block;
 			position: absolute;
@@ -336,7 +513,7 @@ button.fxselected:hover:after {
 			background-size: 100% 100%;
 
 		}
-		
+
 	.browser_project_category_container {
 			display: block;
 			position: relative;
@@ -353,7 +530,7 @@ button.fxselected:hover:after {
 		height: 0px !important;
 		overflow: hidden;
 	}
-	
+
 /*CHANNEL CONTROLS*/
 
 #control_panel {
@@ -363,7 +540,7 @@ button.fxselected:hover:after {
 	left: 0px;
 	width: 100%;
 	height: 100%;
-	background-image: url('art/moldeocontrol_back.png');
+	/*background-image: url('art/moldeocontrol_back2.png');*/
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
 }
@@ -423,19 +600,19 @@ PRECONFIG SELECTOR  PANEL
 */
 
 .preconfigs_selector_panel {
-		width: 16%;
-		height: 25%;
-		left: 25%;
-		top: 12%;
+  width: 19%;
+  height: 25%;
+  left: 23%;
+  top: 18%;
 }
 
 .preconfigs_selector_panel button {
 	height: 100%;
-	width: 25%;
+	width: 20%;
 }
 
 .button_ObjectSelected {
-	
+
 }
 
 
@@ -446,23 +623,71 @@ PRECONFIG SELECTOR  PANEL
 }
 
 .button_1 {
-	background-image: url( buttons/button_1_off.svg );
-	left: 25%;
+	/*background-image: url( buttons/button_1_off.svg );*/
+	left: 21%;
 	bottom: 0%;
 }
 
 .button_2 {
-	background-image: url( buttons/button_2_off.svg );
-	left: 50%;
+	/*background-image: url( buttons/button_2_off.svg );*/
+	left: 42%;
 	bottom: 0%;
 }
 
 .button_3 {
-	background-image: url( buttons/button_3_off.svg );
-	left: 75%;
+	/*background-image: url( buttons/button_3_off.svg );*/
+	left: 63%;
 	bottom: 0%;
 }
 
+.button_ALL {
+	background-image: url( buttons/button_ALL_off.svg );
+	left: 84%;
+	bottom: 0%;
+}
+
+#object_preconfigs_all,
+#presets_all,
+#preconfigs_all {
+  display: none;
+  position: fixed;
+  z-index: 30000;
+  width: 100% !important;
+  height: 40%;
+  bottom: 0px !important;
+  left: 0% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  top: 38%;
+  background-color: rgba(0,0,0,0.55);
+}
+
+#object_preconfigs_all>button,
+#presets_all>button,
+#preconfigs_all>button {
+  width: 32px !important;
+  height: 32px !important;
+  padding: 0px !important;
+  margin: 0px !important;
+  float: left;
+  clear: none;
+  /*background-color: #F00;*/
+  left: auto;
+  top: auto;
+  right: auto;
+  bottom: auto;
+  position: relative;
+  background-image: url( buttons/indicat_VOID.svg);
+}
+
+#object_preconfigs_all>button.circle_selected,
+#presets_all>button.circle_selected,
+#preconfigs_all>button.circle_selected {
+  background-image: url( buttons/indicat_VOID_on.svg);
+  color: #00FFCC;
+}
+
+/*
 .button_1.circle_selected,
 .button_1:active {
 	background-image: url( buttons/button_1_on.svg );
@@ -479,10 +704,17 @@ PRECONFIG SELECTOR  PANEL
 	background-image: url( buttons/button_3_on.svg );
 }
 
+
+.button_ALL.circle_selected,
+.button_ALL:active {
+	background-image: url( buttons/button_ALL_on.svg );
+}
+*/
+
 /*W,A,S,D*/
-	
+
 .first_effects {
-	top: 26%;
+	top: 34%;
 	left: 8%;
 	width: 16%;
 	height: 60%;
@@ -497,51 +729,55 @@ PRECONFIG SELECTOR  PANEL
 }
 
 
-	
+
 .button_W {
-	background-image: url( buttons/button_W_off.svg );
-	left: 33%;
+	/*background-image: url( buttons/button_W_off.svg );*/
+	left: 31%;
 	top: 0%;
 }
+/*
 #button_W:active,
 #button_W.object_enabled { background-image: url( buttons/button_W_on.svg ); }
 #button_W.object_enabled.fxselected { background-image: url(buttons/button_W_selec_on.svg ); }
 .button_W.fxselected { background-image: url( buttons/button_W_selec.svg ); }
 .button_W.fxediting { background-image: url( buttons/button_W_selec_on.svg ); }
-
+*/
 .button_A {
-	background-image: url( buttons/button_A_off.svg );
+	/*background-image: url( buttons/button_A_off.svg );*/
 	left: 0%;
-	top: 25%;
+	top: 40%;
 }
+/*
 #button_A:active,
 #button_A.object_enabled { background-image: url( buttons/button_A_on.svg ); }
 #button_A.object_enabled.fxselected { background-image: url( buttons/button_A_selec_on.svg ); }
 .button_A.fxselected { background-image: url( buttons/button_A_selec.svg ); }
 .button_A.fxediting { background-image: url( buttons/button_A_selec_on.svg ); }
-
+*/
 .button_S {
-	background-image: url( buttons/button_S_off.svg );
-	left: 33%;
-	top: 50%;
+	/*background-image: url( buttons/button_S_off.svg );*/
+	left: 35%;
+	top: 40%;
 }
+/*
 #button_S:active,
 #button_S.object_enabled { background-image: url( buttons/button_S_on.svg ); }
 #button_S.object_enabled.fxselected { background-image: url( buttons/button_S_selec_on.svg ); }
 .button_S.fxselected { background-image: url( buttons/button_S_selec.svg ); }
 .button_S.fxediting { background-image: url( buttons/button_S_selec_on.svg ); }
-
+*/
 .button_D {
-	background-image: url( buttons/button_D_off.svg );
-	left: 66%;
-	top: 25%;
+	/*background-image: url( buttons/button_D_off.svg );*/
+	left: 71%;
+	top: 40%;
 }
+/*
 #button_D:active,
 #button_D.object_enabled { background-image: url( buttons/button_D_on.svg ); }
 #button_D.object_enabled.fxselected { background-image: url( buttons/button_D_selec_on.svg ); }
 .button_D.fxselected { background-image: url( buttons/button_D_selec.svg ); }
 .button_D.fxediting { background-image: url( buttons/button_D_selec_on.svg ); }
-
+*/
 
 
 
@@ -563,7 +799,7 @@ PRECONFIG SELECTOR  PANEL
 	width: 20%;
 	left: 59%;
 	height: 23%;
-	top: 43%;
+	top: 46%;
 	z-index: 0;
 }
 .play_panel button {
@@ -651,7 +887,7 @@ PRECONFIG SELECTOR  PANEL
 	background-image: url( buttons/button_SPACE_off.svg );
 	width: 100%;
 	height: 100%;
-	
+
 }
 
 .button_TAB:active {
@@ -693,7 +929,7 @@ PRECONFIG SELECTOR  PANEL
 	font-family: moldeofont;
 	font-weight: normal !important;
 	color: #FFF;
-	
+
 }
 
 #render_video_name {
@@ -712,7 +948,7 @@ PRECONFIG SELECTOR  PANEL
 	border-radius: 5px;
 	padding: 3px;
 	left: 40%;
-	
+
 }
 
 #render_video_info_container,
@@ -732,7 +968,9 @@ PRECONFIG SELECTOR  PANEL
 	height: 28%;
 	top: 40% !important;
 	*/
-	top: 26%;
+
+
+	top: 34%;
 	width: 16%;
 	height: 60%;
 	left: 42%;
@@ -741,13 +979,13 @@ PRECONFIG SELECTOR  PANEL
 
 .second_effects button {
 	/*height: 100%;*/
-}	
+}
 
 .third_effects {
-	top: 40%;
+	top: 52%;
 	width: 16%;
 	height: 60%;
-	left: 25%;
+	left: 25.6%;
 	z-index: 1;
 }
 
@@ -763,7 +1001,7 @@ PRECONFIG SELECTOR  PANEL
 	margin: 1%;
 }
 
-
+/*
 .button_T { background-image: url( buttons/button_T_off.svg );}
 #button_T:active, #button_T.object_enabled { background-image: url( buttons/button_T_on.svg ); }
 #button_T.object_enabled.fxselected { background-image: url( buttons/button_T_selec_on.svg ); }
@@ -812,7 +1050,7 @@ PRECONFIG SELECTOR  PANEL
 #button_N.object_enabled.fxselected { background-image: url( buttons/button_N_selec_on.svg ); }
 .button_N.fxselected { background-image: url( buttons/button_N_selec.svg ); }
 .button_N.fxediting { background-image: url( buttons/button_N_selec_on.svg ); }
-
+*/
 
 /*
 .button_V {
@@ -861,82 +1099,93 @@ PRECONFIG SELECTOR  PANEL
 */
 
 .button_I {
-	background-image: url( buttons/button_I_off.svg );
+	/*background-image: url( buttons/button_I_off.svg );*/
 	left: 33%;
 	top: 0%;
 }
+/*
 #button_I:active,
 #button_I.object_enabled { background-image: url( buttons/button_I_on.svg ); }
 #button_I.object_enabled.fxselected { background-image: url(buttons/button_I_selec_on.svg ); }
 .button_I.fxselected { background-image: url( buttons/button_I_selec.svg ); }
 .button_I.fxediting { background-image: url( buttons/button_I_selec_on.svg ); }
-
+*/
 .button_J {
-	background-image: url( buttons/button_J_off.svg );
+	/*background-image: url( buttons/button_J_off.svg );*/
 	left: 0%;
-	top: 25%;
+	top: 40%;
 }
+/*
 #button_J:active,
 #button_J.object_enabled { background-image: url( buttons/button_J_on.svg ); }
 #button_J.object_enabled.fxselected { background-image: url( buttons/button_J_selec_on.svg ); }
 .button_J.fxselected { background-image: url( buttons/button_J_selec.svg ); }
 .button_J.fxediting { background-image: url( buttons/button_J_selec_on.svg ); }
+*/
 
 .button_K {
-	background-image: url( buttons/button_K_off.svg );
-	left: 33%;
-	top: 50%;
+	/*background-image: url( buttons/button_K_off.svg );*/
+	left: 35%;
+	top: 40%;
 }
+/*
 #button_K:active,
 #button_K.object_enabled { background-image: url( buttons/button_K_on.svg ); }
 #button_K.object_enabled.fxselected { background-image: url( buttons/button_K_selec_on.svg ); }
 .button_K.fxselected { background-image: url( buttons/button_K_selec.svg ); }
 .button_K.fxediting { background-image: url( buttons/button_K_selec_on.svg ); }
-
+*/
 .button_L {
-	background-image: url( buttons/button_L_off.svg );
-	left: 66%;
-	top: 25%;
+	/*background-image: url( buttons/button_L_off.svg );*/
+	left: 71%;
+	top: 40%;
 }
+/*
 #button_L:active,
 #button_L.object_enabled { background-image: url( buttons/button_L_on.svg ); }
 #button_L.object_enabled.fxselected { background-image: url( buttons/button_L_selec_on.svg ); }
 .button_L.fxselected { background-image: url( buttons/button_L_selec.svg ); }
 .button_L.fxediting { background-image: url( buttons/button_L_selec_on.svg ); }
-
+*/
 /*F1,F2,F3*/
 
 .channel_selectors {
-	width: 16%;
+	width: 19%;
 	height: 25%;
-	left: 59%;
-	top: 12%;
+	left: 56%;
+	top: 18%;
 }
 .channel_selectors button {
-	width: 25%;
+	width: 20%;
 	height: 100%;
 }
 
 
 
 .button_F1 {
-	background-image: url( buttons/button_F1_off.svg );
-	left: 25%;
+	/*background-image: url( buttons/button_F1_off.svg );*/
+	left: 0%;
 	top: 0%;
 }
 
 .button_F2 {
-	background-image: url( buttons/button_F2_off.svg );
-	left: 50%;
+	/*background-image: url( buttons/button_F2_off.svg );*/
+	left: 22%;
 	top: 0%;
 }
 
 .button_F3 {
-	background-image: url( buttons/button_F3_off.svg );
-	left: 75%;
+	/*background-image: url( buttons/button_F3_off.svg );*/
+	left: 44%;
 	top: 0%;
 }
 
+.button_FALL {
+	background-image: url( buttons/button_FALL_off.svg );
+	left: 66%;
+	top: 0%;
+}
+/*
 .button_F1:active {
 	background-image: url( buttons/button_F1_on.svg );
 }
@@ -948,15 +1197,19 @@ PRECONFIG SELECTOR  PANEL
 .button_F3:active {
 	background-image: url( buttons/button_F3_on.svg );
 }
-	
+
+.button_FALL:active {
+	background-image: url( buttons/button_FALL_on.svg );
+}
+*/
 /*UP,LEFT,DOWN,RIGHT*/
 
 .cursor_panel {
-	right: 8%;
-	top: 24%;
+	right: 9%;
+	top: 20%;
 	width: 16%;
 	height: 60%;
-}	
+}
 
 
 .button_UP {
@@ -1005,7 +1258,7 @@ PRECONFIG SELECTOR  PANEL
 
 
 
-/* 
+/*
 
 	OBJECT SELECTORS
 
@@ -1028,16 +1281,16 @@ PRECONFIG SELECTOR  PANEL
 
 .button_SHIFT {
 	background-image: url( buttons/button_SHIFT_off.svg );
-	
+
 }
 
 #button_SHIFT.shiftEnabled {
 	background-image: url( buttons/button_SHIFT_on.svg );
 }
- 
+
 .button_CTRL {
 	background-image: url( buttons/button_CTRL_off.svg );
-	
+
 }
 #button_CTRL.ctrlEnabled {
 	background-image: url( buttons/button_CTRL_on.svg );
@@ -1045,25 +1298,25 @@ PRECONFIG SELECTOR  PANEL
 
 .button_SHIFT:active {
 	background-image: url( buttons/button_SHIFT_on.svg );
-	
-}
- 
-.button_CTRL:active {
-	background-image: url( buttons/button_CTRL_on.svg );
-	
+
 }
 
- 
+.button_CTRL:active {
+	background-image: url( buttons/button_CTRL_on.svg );
+
+}
+
+
 .button_ALT {
 	background-image: url( buttons/button_ALT_off.svg );
-	
+
 }
 #button_ALT.altEnabled {
 	background-image: url( buttons/button_ALT_on.svg );
 }
 .button_ALT:active {
 	background-image: url( buttons/button_ALT_on.svg );
-	
+
 }
 
 /*
@@ -1076,7 +1329,7 @@ PRECONFIG SELECTOR  PANEL
 	width: 5%;
 	height: 40%;
 	right: 1.5%;
-	top: 14%;
+	top: 29%;
 }
 
 .channel_navigator button {
@@ -1089,22 +1342,22 @@ PRECONFIG SELECTOR  PANEL
 
 .button_PGUP {
 	background-image: url( buttons/button_PGUP_off.svg );
-	
+
 }
- 
+
 .button_PGDOWN {
 	background-image: url( buttons/button_PGDOWN_off.svg );
-	
+
 }
 
 .button_PGUP:active {
 	background-image: url( buttons/button_PGUP_on.svg );
-	
+
 }
- 
+
 .button_PGDOWN:active {
 	background-image: url( buttons/button_PGDOWN_on.svg );
-	
+
 }
 
 /**
@@ -1114,7 +1367,7 @@ PRECONFIG SELECTOR  PANEL
 .slide_controls {
 	display: block;
 	position: absolute;
-	
+
 }
 
 .slide_H,
@@ -1127,7 +1380,7 @@ PRECONFIG SELECTOR  PANEL
 	bottom: 8%;
 	right: 8%;
 	width: 16%;
-	
+
 	/*border: solid 1px #F00;*/
 }
 
@@ -1194,7 +1447,7 @@ input[type=range]::-webkit-slider-thumb {
 	width: 10px;
 	height: 18px;
 	background-image: url(buttons/slider_thumb_off.svg);
-	background-size: 100% 100%; 
+	background-size: 100% 100%;
 	background-position: 0px 0px;
 	background-repeat: no-repeat;
 }
@@ -1222,17 +1475,17 @@ input[type=range]::-webkit-slider-thumb:active {
 	left: 0px;
 	top: 0px;
 	width: 30px;
-	height: 30px;	
+	height: 30px;
 	background-image: url( images/fondo_connection_indicator_black.png);
 	z-index: 500000;
 }
 
 #editor_button_connection_indicator  .con_indicator {
-	
+
 	width: 100%;
 	height: 100%;
 	background-image: url( images/fondo_connection_indicator.png);
-	background-size: 100% 100%;		
+	background-size: 100% 100%;
 }
 
 #control_project_led.yellow {
@@ -1265,11 +1518,11 @@ input[type=range]::-webkit-slider-thumb:active {
 	top: -21px;
 	right: 0px;
 	left: auto;
-	width: 100%;
+	width: 7%;
 	height: 21px;
-	
-	/*background-image: url( buttons/button_EDITOR_on.svg );*/
-	background-image: url( images/fondo_editor_button.png );
+
+	/* background-image: url( buttons/button_EDITOR_on.svg ); */
+	/* background-image: url( images/fondo_editor_button.png ); */
 	z-index: 120;
 	cursor: pointer;
 	cursor: hand;
@@ -1284,7 +1537,7 @@ input[type=range]::-webkit-slider-thumb:active {
 	left: auto;
 	width: 43px;
 	height: 40px;
-	
+
 	/*background-image: url( buttons/button_EDITOR_on.svg );*/
 	background-image: url( images/fondo_editor_button_go_back_cut.png );
 	z-index: 120;
@@ -1292,10 +1545,10 @@ input[type=range]::-webkit-slider-thumb:active {
 	cursor: hand;
 	z-index: 100000;
 	position: absolute;
-	
+
 	transition: all 1s;
 	transform: rotate(90deg);
-	
+
 }
 
 .editor_opened #editor_button_go_back {
@@ -1306,24 +1559,24 @@ input[type=range]::-webkit-slider-thumb:active {
 #editor_button.editor_button_close {
 	top: -21px !important;
 	/*background-image: url( buttons/button_EDITOR_off.svg ) !important;*/
-	background-image: url( images/fondo_editor_button.png ) !important;
-	
+	/* background-image: url( images/fondo_editor_button.png ) !important; */
+
 }
 
 #buttonED_OpenProject {
-	display: block;
-	position: absolute;
-	left: 2.1%;
-	top: 10%;
-	width: 28px;
-	height: 24px;
+  display: block;
+  position: absolute;
+  left: 2.1%;
+  top: 10%;
+  width: 18px;
+  height: 20px;
 }
 
 .browser_panel .header {
 	display: block;
 	position: relative;
 	float: left;
-	margin-top: 10px;
+	margin-top: 25px;
 }
 .browser_panel .header #buttonED_OpenProject {
 	display: block;
@@ -1337,13 +1590,17 @@ input[type=range]::-webkit-slider-thumb:active {
 	display: block;
 	float: left;
 	font-size: 12px;
-	color: #FFF;	
-	font-family: Arial;	
+	/*color: #FFF;*/
+}
+
+.dropdown-toggle {
+  color: #FFF;
 }
 
 .header label {
 	margin: 5px;
 }
+
 
 .button_OpenProject {
 	background-image: url(buttons/button_OpenProject.svg);
@@ -1354,21 +1611,51 @@ input[type=range]::-webkit-slider-thumb:active {
 	background-image: url(buttons/button_OpenProject_on.svg);
 }
 
+#control_project_led {
+  width: 22px;
+  height: 22px;
+  display: block;
+  position: fixed;
+  left: 15px;
+  top:  0px;
+  z-index: 50000;
+  opacity: 0.5;
+}
+
+#control_project_header > div.buttons {
+  display: block;
+  position: relative;
+  left: 200px;
+  top: 0px;
+  width: 120px;
+  margin:  0px;
+}
+
+/*
+div.buttons .buttons {
+
+}
+*/
+.glyphicon-export,
+.glyphicon-save {
+  color: #777;
+}
 
 #buttonED_SaveProject {
-	display: block;
-	position: absolute;
-	left: 20px;
-	top: 12px;
-	width: 28px;
-	height: 24px;
+  display: block;
+  position: absolute;
+  left: 28px;
+  top: 2px;
+  width: 18px;
+  height: 22px;
 }
 .button_SaveProject {
-	background-image: url(buttons/button_Save.svg);
+	/*background-image: url(buttons/button_Save.svg);*/
 }
 
 #buttonED_SaveProject.saveneeded {
-	background-image: url(buttons/button_Save_on.svg);
+	/*background-image: url(buttons/button_Save_on.svg);*/
+	color: #FFFCCC !important;
 }
 
 .button_SaveProject:active,
@@ -1377,20 +1664,21 @@ input[type=range]::-webkit-slider-thumb:active {
 }
 
 #buttonED_SaveProjectAs {
-	display: block;
-	position: absolute;
-	left: 54px;
-	top: 12px;
-	width: 28px;
-	height: 24px;
+  display: block;
+  position: absolute;
+  left: 50px;
+  top: 2px;
+  width: 18px;
+  height: 20px;
 }
 .button_SaveProjectAs:active,
 .button_SaveProjectAs {
-	background-image: url(buttons/button_SaveAs.svg);
+	/*background-image: url(buttons/button_SaveAs.svg);*/
 }
 
 #buttonED_SaveProjectAs.saveneeded {
-	background-image: url(buttons/button_SaveAs_on.svg);
+	/*background-image: url(buttons/button_SaveAs_on.svg);*/
+	color: #FFFCCC !important;
 }
 
 .button_SaveProjectAs_on {
@@ -1401,13 +1689,12 @@ input[type=range]::-webkit-slider-thumb:active {
 
 
 #buttonED_Presentation {
-
-display: block;
-position: absolute;
-right: 4px;
-top: 31px;
-width: 3%;
-height: 18%;
+  display: block;
+  position: absolute;
+  left: 70px;
+  top: 2px;
+  width: 18px;
+  height: 20px;
 }
 .button_Presentation {
 	background-image: url(buttons/button_Presentation.svg);
@@ -1419,12 +1706,12 @@ height: 18%;
 }
 
 #buttonED_Screenshot {
-	display: block;
-	position: absolute;
-	right: 7%;
-	top: 2%;
-	width: 3%;
-	height: 18%;
+  display: block;
+  position: relative;
+  left: 0px;
+  top: 0px;
+  width: 18px;
+  height: 20px;
 }
 .button_Screenshot {
 	background-image: url(buttons/button_Screenshot.svg);
@@ -1436,12 +1723,12 @@ height: 18%;
 }
 
 #buttonED_PreviewShot {
-	display: block;
-	position: absolute;
-	right: 0.5%;
-	top: 40%;
-	width: 3%;
-	height: 18%;
+  display: block;
+  position: relative;
+  left: 0px;
+  top: 0px;
+  width: 18px;
+  height: 20px;
 }
 .button_PreviewShot {
 	background-image: url(buttons/button_PreviewShot.svg);
@@ -1452,19 +1739,44 @@ height: 18%;
 	background-image: url(buttons/button_PreviewShot_on.svg);
 }
 
-#control_project_header * {
-	display: block;
-	position: fixed;
-	font-size: 16px;
-	letter-spacing: 1px;
-	width: 130px;
-	overflow: hidden;
-	font-family: moldeofont;
-	font-weight: normal;
-	color: #8DF !important;
-	left: 6%;
-	top: 7%;
-	text-transform: uppercase;
+#dropdown_moreactions {
+  display: block;
+  position: absolute;
+  min-width: 30px !important;
+  left: 90px !important;
+  background-color: red;
+}
+
+#buttonED_moreactions {
+  min-width: 30px !important;
+  background-color: black;
+}
+
+#control_project_header {
+  display: block;
+  position: fixed;
+  left: 35px;
+  top: 1px;
+  width: 313px;
+  height: 21px;
+  background-image: url();
+  background-color: #000;
+  z-index: 70000;
+}
+
+#control_project_header>label {
+  display: block;
+  position: absolute;
+  font-size: 14px;
+  letter-spacing: 1px;
+  width: 190px;
+  overflow: hidden;
+  font-family: moldeofont;
+  font-weight: normal;
+  color: #10FF00 !important;
+  left: 28px;
+  top: 0px;
+  background-color: rgb(73, 68, 77);
 }
 
 
@@ -1477,10 +1789,9 @@ height: 18%;
 #editor_panel {
 	transition: all 1s;
 	width: 100%;
-	background-color: #333;
-	height: 92%;
-	bottom: -92%;
+	background-color: rgba(50,50,50,0.95);
 	z-index: 101;
+	border-radius: 8px;
 }
 
 .no-browser #editor_panel {
@@ -1491,11 +1802,11 @@ height: 18%;
 
 .editor_inactive {
 	/*display: none !important;*/
-	
+
 }
 
 #editor_panel.editor_opened {
-	bottom: 0%;
+	bottom: 0% !important;
 }
 
 .no-browser #editor_panel.editor_opened {
@@ -1507,8 +1818,8 @@ height: 18%;
 .first_editor_effects {
 	top: 33%;
 	left: 4%;
-	width: 16%;
-	height: 60%;
+	width: 13%;
+	height: 53%;
 	z-index: 4;
 	position: absolute;
 	display: block;
@@ -1516,9 +1827,9 @@ height: 18%;
 
 .second_editor_effects {
 	top: 33%;
-	right: 4%;
-	width: 16%;
-	height: 60%;
+	left: 21%;
+	width: 13%;
+	height: 53%;
 	z-index: 4;
 	position: absolute;
 	display: block;
@@ -1528,8 +1839,8 @@ height: 18%;
 .third_editor_effects {
 	bottom: 5%;
 	left: 3%;
-	width: 16.8%;
-	height: 60%;
+	width: 33%;
+	height: 65%;
 	z-index: 4;
 	position: absolute;
 	display: none;
@@ -1538,8 +1849,8 @@ height: 18%;
 
 .first_editor_effects button,
 .second_editor_effects button {
-	width: 33%;
-	height: 50%;
+	width: 32%;
+	height: 49%;
 }
 
 #toggle_third_editor_effects {
@@ -1550,6 +1861,9 @@ height: 18%;
 	position: absolute;
 	display: block;
 	background-color: grey;
+	font-size: 10px;
+	background-image: none !important;
+	padding: 0 !important;
 }
 
 #toggle_third_editor_effects .glyphicon-minus {
@@ -1568,16 +1882,25 @@ height: 18%;
 	position: relative;
 	float: left;
 	clear: none;
-	width: 22%;
-	height: 25%;
+	width: 9%;
+	height: 22%;
 	/*background-color: red;*/
-	margin: 1%;
+	margin: 0.5%;
+	background-image: url( buttons/button_off.svg );
+	left: auto;
+	top: auto;
+	bottom: auto;
+	font-family: moldeofont;
+}
+
+.third_editor_effects button. {
+	background-image: url( buttons/button_on.svg );
 }
 
 .effects_side {
-	left: 20%;
+	left: 28%;
 	width: 100%;
-	height: 18%;	
+	height: 18%;
 	top:  5%;
 	border: solid 1px #0FF;
 }
@@ -1586,10 +1909,10 @@ height: 18%;
 .object_side {
 	display: table;
 	position: absolute;
-	width: 75%;
-	height: 94%;
-	top: 5px;
-	left: 14%;
+	width: 85%;
+	height: 97%;
+	top: 3px;
+	left: 13%;
 	/*border: solid 2px #F0F;*/
 }
 
@@ -1600,26 +1923,26 @@ height: 18%;
 	.object_side .object_selected {
 		display: table-row;
 		width: 100%;
-		height: 30px;		
+		height: 34px;
 		padding: 0px;
-		margin: 0px;		
+		margin: 0px;
 	}
-	
+
 	.object_side .object_parameters {
 		display: table-row;
 		width: 100%;
 		padding: 0px;
-		margin: 0px;		
+		margin: 0px;
 	}
 		.button_object_onoff {
 			left: 0%;
 			top: 7px;
 			margin-top: 0%;
 			height: 50%;
-			width: 15%;
+			width: 50px;
 			background-image: url(buttons/button_Object_Disable.svg);
 		}
-		
+
 			.button_object_onoff_on {
 				background-image: url(buttons/button_Object_Enable.svg) !important;
 			}
@@ -1632,34 +1955,34 @@ height: 18%;
 			border-radius: 8px;
 			margin-top: 2px;
 			margin-left: 2px;
-			height: 30px;
-			width: 38%;
-			
-			padding-left: 7%;
+			height: 37px;
+			width: 52%;
+
+			padding-left: 50px;
 			padding-top: 0.3%;
 			/*border: solid 1px #FFF;*/
-			
-			
+
+
 			font-size: 19px;
 			font-weight: normal !important;
 			font-family: moldeofont;
 			text-transform: uppercase;
-			color: #94fbff;				
-				
+			color: #94fbff;
+
 		}
 
 		.object_preconfigs {
 			display: block;
 			position: absolute;
-			right: 1px;
+			left: 54.7%;
 			bottom: 0px;
-			width: 80px;
-			height: 30px;
+			width: 130px;
+			height: 35px;
 			background-image: url(buttons/button_Editor_Preconfigs.svg);
 			/*border: solid 1px #FFF;*/
 		}
 			.object_preconfigs_1 {
-				background-image: url(buttons/button_Editor_Preconfigs_1.svg);			
+				background-image: url(buttons/button_Editor_Preconfigs_1.svg);
 			}
 
 			.object_preconfigs_2 {
@@ -1669,39 +1992,43 @@ height: 18%;
 			.object_preconfigs_3 {
 				background-image: url(buttons/button_Editor_Preconfigs_3.svg);
 			}
-			
+
 			.object_preconfigs button {
 				display: block;
 				position: absolute;
 				top: 8%;
-				width: 29% !important;
+				width: 18% !important;
 				height: 60%;
 			}
-			
-			.object_preconfigs #buttonED_1 {
-				left: 9%;
+
+			.object_preconfigs #buttonED_1_ {
+				left: 21%;
 			}
-			.object_preconfigs #buttonED_2 {
-				left: 36%;
+			.object_preconfigs #buttonED_2_ {
+				left: 40%;
 			}
-			.object_preconfigs #buttonED_3 {
-				left: 62%;
+			.object_preconfigs #buttonED_3_ {
+				left: 60%;
 			}
-			
+
+      .object_preconfigs #buttonED_ALL {
+				left: 80%;
+			}
+
 				.object_preconfigs  > button.circle_button {
 					/*
 					display: block;
 					position: relative !important;
 					float: left;
 					clear: none;
-					
+
 					width: 6%;
 					margin: 1%;
 					height: 18%;
 					*/
 
 				}
-				
+/*
 				.object_preconfigs #buttonED_1.circle_selected {
 					background-image: url( buttons/button_1_on.svg );
 				}
@@ -1711,27 +2038,30 @@ height: 18%;
 				.object_preconfigs #buttonED_3.circle_selected {
 					background-image: url( buttons/button_3_on.svg );
 				}
-				
+				.object_preconfigs #buttonED_ALL.circle_selected {
+					background-image: url( buttons/button_ALL_on.svg );
+				}
+*/
 
 				.object_preconfigs .select_preconfig {
 					position: absolute;
 					right: -50%;
 				}
-		
+
 		.object_edition {
 			display: block;
 			position: relative;
 			float: left;
 			margin-top: 3px;
 			margin-left: 7px;
-			width: 60px;
+			width: 6%;
 			height: 30px;
 			/*background-image: url(buttons/button_Editor_ObjectEdition.svg);*/
 			border: solid 1px #FFF;
 			border-radius: 4px;
 			transition: all 1s;
 		}
-		
+
 		.audio_edition {
 			position: relative;
 			margin-left: 0;
@@ -1739,13 +2069,13 @@ height: 18%;
 			background-color: #333;
 			transition: all 1s;
 		}
-		
+
 
 		.object_edition_collapsed {
-			width: 4% !important;
+			width: 2% !important;
 		}
-		
-		
+
+
 			.object_edition button {
 				display: block;
 				position: absolute;
@@ -1753,7 +2083,7 @@ height: 18%;
 				width: 10px;
 				height: 10px;
 			}
-			
+
 			.object_edition_image {
 				display: block;
 				position: absolute;
@@ -1761,7 +2091,7 @@ height: 18%;
 				width: 65%;
 				height: 100%;
 			}
-			
+
 			.audio_edition_image {
 				display: block;
 				position: absolute;
@@ -1769,7 +2099,7 @@ height: 18%;
 				width: 65%;
 				height: 100%;
 			}
-			
+
 			.video_edition_image {
 				display: block;
 				position: absolute;
@@ -1782,17 +2112,17 @@ height: 18%;
 			#object_edition .object_edit {
 				display: none;
 			}
-				
+
 			.object_edition .object_edit {
 				background-image: url(buttons/button_Editor_ObjectEdition_EDIT.svg);
 				top: 3px;
 			}
-			
+
 			.object_edition .object_edit:hover {
 				background-image: url(buttons/button_Editor_ObjectEdition_EDIT_on.svg);
 				top: 3px;
 			}
-			
+
 			.object_edition .object_import {
 				background-image: url(buttons/button_Editor_ObjectEdition_IMPORT.svg);
 				top: 15px;
@@ -1802,7 +2132,7 @@ height: 18%;
 				background-image: url(buttons/button_Editor_ObjectEdition_IMPORT_on.svg);
 				top: 15px;
 			}
-			
+
 			.object_edition .object_refresh {
 				background-image: url(buttons/button_Editor_ObjectEdition_REFRESH.svg);
 				top: 3px;
@@ -1812,7 +2142,7 @@ height: 18%;
 				background-image: url(buttons/button_Editor_ObjectEdition_REFRESH_on.svg);
 				top: 3px;
 			}
-			
+
 		.object_color {
 			display: block;
 			position: relative;
@@ -1824,11 +2154,11 @@ height: 18%;
 			height: 30px;
 			border: solid 1px #FFF;
 		}
-		
+
 		#COLOR_object_color {
 			display: none;
 		}
-		
+
 		#object_color_palette {
 			display: block;
 			position: absolute;
@@ -1838,28 +2168,28 @@ height: 18%;
 			width: 140px;
 			height: 30px;
 		}
-		
+
 		#object_color_sel {
 			display: block;
 			position: absolute;
 			top: 0px;
 			left: 0px;
-			
+
 			width: 20px;
 			height: 20px;
-			
+
 			border: solid 4px #999;
 			background-color: #FFF;
 		}
-		
+
 .parameters_side {
 	display: block;
 	position: relative;
 	float: left;
 	width: 33%;
 	height: 100%;
-	margin-left: 0%;
-	
+	margin-left: 20%;
+
 	font-size: 13px;
 	font-family: moldeofont;
 	font-weight: normal !important;
@@ -1871,8 +2201,8 @@ height: 18%;
 }
 
 
-	
-	
+
+
 	.parameters_side .parameters_side_MOB {
 
 		display: block;
@@ -1886,7 +2216,7 @@ height: 18%;
 		transition: all 1s;
 
 	}
-	
+
 		.parameters_side_MOB .parameters_side_MOB_actions {
 			display: block;
 			position: absolute;
@@ -1910,7 +2240,7 @@ height: 18%;
 				border: solid 1px #00FFF4;
 				padding: 1px;
 			}
-		
+
 		.parameters_side_MOB .parameters_side_MOB_scroller {
 			display: block;
 			position: absolute;
@@ -1919,23 +2249,23 @@ height: 18%;
 			height: 100%;
 			padding-top: 1%;
 			overflow: visible;
-			
+
 			background-image: url(buttons/parameter_side_background_line.png);
 			background-repeat: repeat-y;
 			background-position: 1.355% -1%;
 			background-size: 1% 100%;
 
 		}
-		
+
 		.scroll-pane
 			{
 
 			}
-		
+
 		.parameters_side_MOB_selected {
 			left: 0% !important;
 		}
-		
+
 		.parameters_side_MOB .parameters_side_MOB_preconf {
 			display: block;
 			position: absolute;
@@ -1964,18 +2294,18 @@ height: 18%;
 			background-repeat: no-repeat;
 			background-size: 100% 100%;
 			background-position: 0px 0px;
-			
+
 			float: left;
 			cursor: pointer;
 			cursor: hand;
-			
+
 		}
-		
+
 		.parameter_group.group_selected {
 			background-image: url(buttons/parameter_group_background_on.svg);
 			background-position: 0px 0px;
 		}
-		
+
 		.parameter_group>label {
 			display: block;
 			position: absolute;
@@ -1996,13 +2326,13 @@ height: 18%;
 			border: solid 1px #00FFF4 !important;
 			color: #00FFF4 !important;
 		}
-		
+
 .parameter_inspector_side {
 	display: table;
 	position: relative;
 	float: left;
-	width: 54%;
-	height: 100%;	
+	width: 47%;
+	height: 100%;
 }
 
 	.parameter_inspector_HEADER {
@@ -2015,9 +2345,9 @@ height: 18%;
 	.parameter_inspector_BODY {
 		display: table-row;
 		position: relative;
-		width: 100%;	
+		width: 100%;
 	}
-	
+
 	.parameter_inspector_CONTAINER {
 		display: block;
 		position: relative;
@@ -2027,28 +2357,28 @@ height: 18%;
 		border: solid 1px #999;
 		border-radius: 7px;
 	}
-	
+
 	.parameter_inspector {
 		display: none;
 	}
-	
+
 	.parameter_is_ {
 		display: none !important;
 	}
-	
+
 	.show_all .parameter_is_ {
 		display: block !important;
 		opacity: 0.5;
 	}
-	
+
 	.show_all .action_param_SHOW_ALL {
 		color: #00FFF4 !important;
 	}
-	
+
 	.show_all .parameter_group input[type="checkbox"] {
 		display: block !important;
 	}
-	
+
 	.parameter_group input[type="checkbox"] {
 		display: none;
 		position: absolute;
@@ -2061,15 +2391,15 @@ height: 18%;
 		width: 10px;
 		height: 10px;
 	}
-	
+
 	.parameter_group input[type="checkbox"]:checked {
 		background-color: #00FFF4;
 	}
-	
+
 	.inspector_show {
 		display: block !important;
 	}
-	
+
 	.parameter_inspector>label {
 		color: #FFF;
 		font-size: 10px;
@@ -2080,7 +2410,7 @@ height: 18%;
 		top: -13px;
 		right: 2px;
 	}
-	
+
 	.parameter_inspector button {
 		display: block;
 		position: relative;
@@ -2090,13 +2420,13 @@ height: 18%;
 		width: 12%;
 		height: 40%;
 	}
-	
+
 	.parameter_inspector .slide_H_back {
 		width: 90% !important;
 		margin-left: 5%;
 		bottom: 2% !important;
 	}
-	
+
 	.parameter_inspector .parameter_slide {
 		display: block;
 		position: relative;
@@ -2109,17 +2439,17 @@ height: 18%;
 		*/
 		margin-top: 0%;
 		margin-left: 0%;
-		width: 100%;		 
+		width: 100%;
 		height: 40%;
 	}
-	
+
 	/* POSITION INSPECTOR */
-	
+
 	 .param_input {
 		display: none;
 		position: absolute;
 		float: left;
-		width: 35px;
+		width: 10%;
 		height: 17px;
 		font-size: 12px;
 		border: solid 1px #999;
@@ -2130,36 +2460,41 @@ height: 18%;
 		transition: all 0.5s;
 		border-radius: 5px;
 	 }
-	 
+
 	 select.param_input {
 		 width: auto !important;
 		 left: 140px;
 	 }
-	 
+
 	 .param_input_selected {
 		display: block !important;
-		
-		
+
+
 	 }
-	 
+
 	 .param_input_selected_2 {
 		display: block !important;
 		margin-left: 120px !important;
-		
+
 	 }
-	 
+
 	 #parameter_inspector_COLOR .param_input {
 		display: block !important;
+		width: 35px !important;
 	 }
-	 
-	 #parameter_inspector_COLOR 
+
+	 #parameter_inspector_SCALE .param_input {
+		  width: 60px;
+		}
+
+	 #parameter_inspector_COLOR
 	 .parameter_selector {
 		 color: #FFF;
 		 position: absolute;
 		 float: left;
 		 bottom: 40px !important;
-	 } 
-	 
+	 }
+
 	.param_input_color_red,
 	.param_input_color,
 	.param_input_0,
@@ -2190,15 +2525,16 @@ height: 18%;
 	}
 
 	 .param_input:focus {
-		width: 300px !important;
+		width: 700px !important;
 		background-color: #111;
 		color: #94fbff;
 		height: 25px;
 		font-size: 20px;
 		z-index: 40000;
-		left: 80px !important;
+		right: 20px !important;
+		left: auto !important;
 	 }
-	 
+
 	 select.param_input:focus {
 		width: auto !important;
 		background-color: #111;
@@ -2208,7 +2544,7 @@ height: 18%;
 		z-index: 40000;
 		left: 140px !important;
 	 }
-	 
+
 	#selector_POSITION_translatex {
 		background-image: url(buttons/button_X_off.svg);
 	}
@@ -2216,7 +2552,7 @@ height: 18%;
 	#selector_POSITION_translatex.selected {
 		background-image: url(buttons/button_X_on.svg);
 	}
-	
+
 	#selector_POSITION_translatey {
 		background-image: url(buttons/button_Y_off.svg );
 	}
@@ -2224,7 +2560,7 @@ height: 18%;
 	#selector_POSITION_translatey.selected {
 		background-image: url(buttons/button_Y_on.svg );
 	}
-	
+
 	#selector_POSITION_translatez {
 		background-image: url(buttons/button_Z_off.svg );
 	}
@@ -2232,7 +2568,7 @@ height: 18%;
 	#selector_POSITION_translatez.selected {
 		background-image: url(buttons/button_Z_on.svg );
 	}
-	
+
 	.parameter_selector_xy,
 	.parameter_selector_zy	{
 		display: block;
@@ -2241,9 +2577,9 @@ height: 18%;
 		margin-left: 3px;
 		margin-top: 3px;
 		width: 100px;
-		height: 30px;		
+		height: 30px;
 	}
-	
+
 	.parameter_selector_xy label,
 	.parameter_selector_zy label	{
 		display: block;
@@ -2255,7 +2591,7 @@ height: 18%;
 		font-weight: normal !important;
 		color: #FFF;
 	}
-	
+
 	#selector_POSITION_translatexy,
 	#selector_POSITION_translatezy	{
 		display: block;
@@ -2267,10 +2603,10 @@ height: 18%;
 		cursor: crosshair;
 		/*cursor: move;*/
 	}
-		
-	
+
+
 	/* SCALE INSPECTOR */
-	
+
 	#selector_SCALE_scaley,
 	#selector_SCALEPARTICLE_scaley_particle	{
 		background-image: url(buttons/button_Vertical_off.svg );
@@ -2281,7 +2617,7 @@ height: 18%;
 	#selector_SCALEPARTICLE_scaley_particle.selected	{
 		background-image: url(buttons/button_Vertical_on.svg );
 	}
-	
+
 	#selector_SCALE_scalex,
 	#selector_SCALEPARTICLE_scalex_particle	{
 		background-image: url(buttons/button_Horizontal_off.svg );
@@ -2292,7 +2628,7 @@ height: 18%;
 	#selector_SCALEPARTICLE_scalex_particle.selected	{
 		background-image: url(buttons/button_Horizontal_on.svg );
 	}
-	
+
 	#selector_SCALE_zoom,
 	#selector_SCALEPARTICLE_zoom	{
 		background-image: url(buttons/button_Zoom_off.svg );
@@ -2303,10 +2639,10 @@ height: 18%;
 	#selector_SCALEPARTICLE_zoom.selected 	{
 		background-image: url(buttons/button_Zoom_on.svg );
 	}
-	
-	
+
+
 	/* MOTION INSPECTOR */
-	
+
 	#selector_MOTION_Vertical {
 		background-image: url(buttons/button_Vertical_off.svg );
 	}
@@ -2314,7 +2650,7 @@ height: 18%;
 	#selector_MOTION_Vertical.selected {
 		background-image: url(buttons/button_Vertical_on.svg );
 	}
-	
+
 	#selector_MOTION_Horizontal {
 		background-image: url(buttons/button_Horizontal_off.svg );
 	}
@@ -2322,7 +2658,7 @@ height: 18%;
 	#selector_MOTION_Horizontal.selected {
 		background-image: url(buttons/button_Horizontal_on.svg );
 	}
-	
+
 	#selector_MOTION_Circular {
 		background-image: url(buttons/button_Circular_off.svg );
 	}
@@ -2341,9 +2677,9 @@ height: 18%;
 		font-size: 11px;
 		margin-left: 2px;
 	}
-	
 
-	
+
+
 	/* ATTRACTOR INSPECTOR */
 	#parameter_inspector_ATTRACTOR .parameter_selector {
 		background-color: #777;
@@ -2354,7 +2690,7 @@ height: 18%;
 		font-size: 11px;
 		margin-left: 2px;
 	}
-	
+
 	/* BEHAVIOUR INSPECTOR */
 	#parameter_inspector_BEHAVIOUR .parameter_selector {
 		background-color: #777;
@@ -2365,7 +2701,7 @@ height: 18%;
 		font-size: 11px;
 		margin-left: 10px;
 	}
-	
+
 
 .button_previous_effect ,
 .button_next_effect {
@@ -2373,10 +2709,10 @@ height: 18%;
 	height: 40%;
 	top: 30%;
 	/*border: solid 1px #00F;*/
-	
+
 	display: block;
 	position: relative;
-	
+
 	clear: none;
 	cursor: pointer;
 }
@@ -2396,7 +2732,7 @@ height: 18%;
 
 .button_next_effect  {
 	background-image: url( buttons/button_next_effect.svg );
-	
+
 }
 
 
@@ -2507,38 +2843,38 @@ height: 18%;
 	}
 
 
-	
+
 #logarea {
 	display: block;
 	width: 100%;
 	height: 100%;
 	color: #0F0;
 	background-color: #000;
-}	
+}
 
 body {
 	font-size: 12px;
 	line-height: 1.2;
-}	
+}
 
 .h4, h4 {
 	font-size: 14px;
-}	
-	
+}
+
 .modal-moldeocontrol .modal-dialog {
 	margin: 15px auto !important;
 }
-	
+
 .modal-moldeocontrol .modal-header {
-	padding: 2px 6px !important;	
+	padding: 2px 6px !important;
 }
-	
+
 .modal-moldeocontrol .modal-body {
-	padding: 2px 6px !important;	
+	padding: 2px 6px !important;
 }
 
 .modal-moldeocontrol .modal-footer {
-	padding: 2px 6px !important;	
+	padding: 2px 6px !important;
 }
 
 .modal-moldeocontrol .modal-footer button {

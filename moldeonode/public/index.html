@@ -100,8 +100,9 @@ function imageOnclick() { // Clicking on the image will pause the stream
 
             <div id="code-form" class="panel panel-default">
               <div class="panel-heading"><h4>Camara
-              <button ng-click="executeAction('facedetection')" title="Detección de rostro" class="btn glyphicon glyphicon glyphicon-user" style="float: right;"></button>
-              <!--<button ng-click="executeAction('bodydetection')" title="Detección de cuerpo" class="btn glyphicon glyphicon glyphicon-user" style="float: right;"></button>-->              
+              <button ng-click="executeAction('facedetection')" title="Detección de rostro" class="btn glyphicon glyphicon glyphicon-camera" style="float: right;"></button>
+              <button ng-click="executeAction('facerecognition')" title="Reconocimiento de rostro" class="btn glyphicon glyphicon glyphicon-user" style="float: right;"></button>
+              <!--<button ng-click="executeAction('bodydetection')" title="Detección de cuerpo" class="btn glyphicon glyphicon glyphicon-user" style="float: right;"></button>-->
 		<button ng-click="refreshpreviewcam();" title="Actualizar" class="btn glyphicon glyphicon-refresh" style="float: right;"></button>
               <button ng-click="executeAction('stopall');" title="Detener cámara" class="btn glyphicon glyphicon-remove-sign" style="float: right;"></button>
               </h4></div>

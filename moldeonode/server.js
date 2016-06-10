@@ -82,6 +82,8 @@
     var RM_STOPFACEDETECTION = 106;
     var RM_BODYDETECTION = 107;
 
+    var RM_FACERECOGNITION = 120;
+
     var RM_LINEFOLLOWER = 108;
     var RM_COLLISIONDETECTION = 109;
     //var moldeonetroot = "../../../../../../";
@@ -112,6 +114,7 @@
       "i2ccheck": RM_I2CCHECK,
       "facedetection": RM_FACEDETECTION,
       "stopfacedetection": RM_STOPFACEDETECTION,
+      "facerecognition": RM_FACERECOGNITION,
       "bodydetection": RM_BODYDETECTION,
       "linefollower": RM_LINEFOLLOWER,
       "collisiondetection": RM_COLLISIONDETECTION,
@@ -486,6 +489,18 @@
                 /// check in the server if the sound process is running
                 console.log( "command was processed as RM_FACEDETECTION." );
                 shell_command = utilsroot + "start_facedetection.sh";
+                execCode( shell_command, function(err,res) {
+                  if (res=="") res = "ok";
+                  resultcallback( err, res );
+                } );
+                Molduino.StopAllScheduled();
+                break;
+
+
+            case RM_FACERECOGNITION:
+                /// check in the server if the sound process is running
+                console.log( "command was processed as RM_FACEDETECTION." );
+                shell_command = utilsroot + "start_facerecognition.sh";
                 execCode( shell_command, function(err,res) {
                   if (res=="") res = "ok";
                   resultcallback( err, res );
