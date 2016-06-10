@@ -461,7 +461,7 @@
 
             case RM_LINEFOLLOWER:
                 /// check in the server if the sound process is running
-                console.log( "command was processed as RM_REBOOT" );
+                console.log( "command was processed as RM_LINEFOLLOWER" );
                 shell_command = task.text.replace( "linefollower", molduinoroot + "linefollower.sh " );
                 execCode( shell_command, function(err,res) {
                   if (res=="") res = "ok";
