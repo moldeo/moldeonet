@@ -136,8 +136,10 @@ function dragWithCustomImage(event) {
 $(function() {
 
 	win = gui.Window.get();
-
 /**
+win.setTransparent(!win.isTransparent);
+
+
 screen {
 // unique id for a screen
   id: int,
