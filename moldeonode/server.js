@@ -87,6 +87,8 @@
     var RM_LINEFOLLOWER = 108;
     var RM_COLLISIONDETECTION = 109;
     //var moldeonetroot = "../../../../../../";
+    var moldeosamplesroot = "/home/pi/moldeoinstaller/moldeosamples/";
+    var moldeosamplesroot_reco = moldeosamplesroot+"basic/12_OpenCVRecognition/save";
     var moldeonetroot = "/home/pi/moldeoinstaller/moldeonet/";
     var utilsroot = moldeonetroot+"utils/";
     var molduinoroot = utilsroot+"molduino/";
@@ -633,7 +635,72 @@
 
 
 //Molduino.options.lastcode
+   var fs = require("fs"), path = require("path");
 
+fs.copy = function(source, target, cb) {
+  var cbCalled = false;
+
+  var rd = fs.createReadStream(source);
+  rd.on("error", function(err) {
+    done(err);
+  });
+  var wr = fs.createWriteStream(target);
+  wr.on("error", function(err) {
+    done(err);
+  });
+  wr.on("close", function(ex) {
+    done();
+  });
+  rd.pipe(wr);
+
+  function done(err) {
+    if (!cbCalled) {
+      cb(err);
+      cbCalled = true;
+    }
+  }
+}
+
+// get all faces
+    app.get('/api/faces', function(req, res) {
+
+        var listimages = "";
+
+        var p = moldeosamplesroot_reco;
+        listimages  = '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
+    '<link rel="shortcut icon" href="/moldeologo.ico"><title>Molduinobot - RobotGroup + Moldeo Interactive</title>'
+    '<link rel="stylesheet" href="/css/bootstrap.min.css"><link rel="stylesheet" href="main.css">'
+    '</head><body>';
+
+        fs.readdir( p, function (err, files) {
+            if (err) {
+                throw err;
+            }
+
+            files.map(function (file) {
+                return path.join(p, file);
+            }).filter(function (file) {
+                return fs.statSync(file).isFile();
+            }).forEach(function (file) {
+                console.log("%s (%s, %s)", file, path.basename(file),  path.extname(file) );
+                fs.copy( file, moldeonetroot+"moldeonode/public/faces/"+path.basename(file), function (err,x) {} );
+                listimages+= '<img src="/faces/'+path.basename(file)+'" />';
+                //cp to faces
+            });
+            listimages+='</body></html>';
+            fs.writeFile(moldeonetroot+"moldeonode/public/faces.html", listimages, function(err) {
+                if(err) {
+                    return console.log(err);
+                }
+
+                console.log("The file was saved!");
+                res.sendFile(moldeonetroot+"moldeonode/public/faces.html");
+            });
+
+
+        });
+
+    });
 
     // get all tasks
     app.get('/api/program', function(req, res) {
