@@ -665,12 +665,9 @@ fs.copy = function(source, target, cb) {
     app.get('/api/faces', function(req, res) {
 
         var listimages = "";
-
+        var coma = "";
         var p = moldeosamplesroot_reco;
-        listimages  = '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
-    '<link rel="shortcut icon" href="/moldeologo.ico"><title>Molduinobot - RobotGroup + Moldeo Interactive</title>'
-    '<link rel="stylesheet" href="/css/bootstrap.min.css"><link rel="stylesheet" href="main.css">'
-    '</head><body>';
+        listimages  = 'var facelist = [';
 
         fs.readdir( p, function (err, files) {
             if (err) {
@@ -684,11 +681,12 @@ fs.copy = function(source, target, cb) {
             }).forEach(function (file) {
                 console.log("%s (%s, %s)", file, path.basename(file),  path.extname(file) );
                 fs.copy( file, moldeonetroot+"moldeonode/public/faces/"+path.basename(file), function (err,x) {} );
-                listimages+= '<img src="/faces/'+path.basename(file)+'" />';
+                listimages+= coma+'"/faces/' + path.basename(file) + '"';
+                coma = ',';
                 //cp to faces
             });
-            listimages+='</body></html>';
-            fs.writeFile(moldeonetroot+"moldeonode/public/faces.html", listimages, function(err) {
+            listimages+='];';
+            fs.writeFile(moldeonetroot+"moldeonode/public/js/faces.js", listimages, function(err) {
                 if(err) {
                     return console.log(err);
                 }

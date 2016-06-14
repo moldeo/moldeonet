@@ -111,7 +111,7 @@ function mainController($scope, $http) {
                 });
 
                 if (command=="facedetection" || command=="facerecognition" || command=="bodydetection") {
-                  setTimeout(function() {refreshpreviewcam();}, 10000 );
+                  setTimeout(function() {$scope.refreshpreviewcam();}, 10000 );
                 }
       }
     };

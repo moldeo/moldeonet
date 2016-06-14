@@ -78,6 +78,7 @@ function imageOnclick() { // Clicking on the image will pause the stream
 }
 
 </script>
+</head>
 <body onload="createImageLayer();" >
 <!-- SET THE CONTROLLER AND GET ALL TODOS -->
     <div class="container" ng-controller="mainController">
@@ -271,7 +272,7 @@ socket.on('FACE_DETECTION',function(oscmsg) {
 
 	//console.log("moldeoosc", oscmsg );
 	code = oscmsg[0];
-
+    createImageLayer();
 	if (code!="0") {
 	   $('#moldeoosc').html(oscmsg);
 	}
