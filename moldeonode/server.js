@@ -1071,10 +1071,12 @@ oscServer.on('message', function(msg, rinfo) {
           if (moldeoapimessage[12]=="FACE_RECOGNITION") {
             MOLDEOAPIMESSAGES["FACE_RECOGNITION"] = {
                 recognized: moldeoapimessage[13].toFixed(4),
-                label: moldeoapimessage[15]
+                label: moldeoapimessage[15],
+                confidence: moldeoapimessage[17].toFixed(4)
             };
             MOLDEOAPIMESSAGES["FACE_DETECTION"]['recognized'] = MOLDEOAPIMESSAGES["FACE_RECOGNITION"].recognized;
             MOLDEOAPIMESSAGES["FACE_DETECTION"]['label'] = MOLDEOAPIMESSAGES["FACE_RECOGNITION"].label;
+            MOLDEOAPIMESSAGES["FACE_DETECTION"]['confidence'] = MOLDEOAPIMESSAGES["FACE_RECOGNITION"].confidence;
             io.emit('FACE_RECOGNITION', JSON.stringify( MOLDEOAPIMESSAGES["FACE_RECOGNITION"] ) );
           }
           io.emit('FACE_DETECTION', JSON.stringify( MOLDEOAPIMESSAGES["FACE_DETECTION"] ) );
