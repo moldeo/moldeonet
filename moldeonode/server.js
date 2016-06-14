@@ -59,6 +59,7 @@
 
     var RM_MOTOR = 21;
 
+    var RM_STOPA = 38;
     var RM_STOP_ALL = 39;
     var RM_STOP = 40;
 
@@ -112,6 +113,7 @@
       "turn-right": RM_TURN_RIGHT,
       "turn-right-speed": RM_TURN_RIGHT_SPEED,
       "stop": RM_STOP,
+      "stopa": RM_STOPA,
       "stopall": RM_STOP_ALL,
       "i2ccheck": RM_I2CCHECK,
       "facedetection": RM_FACEDETECTION,
@@ -229,7 +231,14 @@
       },
       "loop": false,
       "stop": function( apiresultcallback ) {
-        shell_command = molduinoroot+"stop.sh";
+        shell_command = molduinoroot+"stopa.sh";
+        execCode( shell_command, function(err,res) {
+          if (res=="") res = "ok";
+          if (apiresultcallback) apiresultcallback( err, res );
+        } );
+      },
+      "stopa": function( apiresultcallback ) {
+        shell_command = molduinoroot+"stopa.sh";
         execCode( shell_command, function(err,res) {
           if (res=="") res = "ok";
           if (apiresultcallback) apiresultcallback( err, res );
@@ -269,6 +278,38 @@
       "reversespeed": function( reverse_speed, apiresultcallback ) {
           console.log("Molduino::reversespeed", reverse_speed );
           shell_command = molduinoroot + "reverse-speed.sh "+reverse_speed;
+          execCode( shell_command, function(err,res) {
+            if (res=="") res = "ok";
+            if (apiresultcallback) apiresultcallback( err, res );
+          } );
+      },
+      "startcollisiondetection": function(apiresultcallback) {
+          console.log("Molduino::collisiondetection start/toggle" );
+          shell_command = molduinoroot + "collisiondetection.sh";
+          execCode( shell_command, function(err,res) {
+            if (res=="") res = "ok";
+            if (apiresultcallback) apiresultcallback( err, res );
+          } );
+      },
+      "stopcollisiondetection": function(apiresultcallback) {
+          console.log("Molduino::collisiondetection start/toggle" );
+          shell_command = molduinoroot + "collisiondetection.sh";
+          execCode( shell_command, function(err,res) {
+            if (res=="") res = "ok";
+            if (apiresultcallback) apiresultcallback( err, res );
+          } );
+      },
+      "startlinefollower": function(apiresultcallback) {
+          console.log("Molduino::linefollower start/toggle" );
+          shell_command = molduinoroot + "linefollower.sh";
+          execCode( shell_command, function(err,res) {
+            if (res=="") res = "ok";
+            if (apiresultcallback) apiresultcallback( err, res );
+          } );
+      },
+      "stoplinefollower": function(apiresultcallback) {
+          console.log("Molduino::linefollower start/toggle" );
+          shell_command = molduinoroot + "linefollower.sh";
           execCode( shell_command, function(err,res) {
             if (res=="") res = "ok";
             if (apiresultcallback) apiresultcallback( err, res );
@@ -365,6 +406,16 @@
                 /// check in the server if the sound process is running
                 console.log( "command was processed as RM_STOP." );
                 shell_command = molduinoroot+"stop.sh";
+                execCode( shell_command, function(err,res) {
+                  if (res=="") res = "ok";
+                  resultcallback( err, res );
+                } );
+                break;
+
+            case RM_STOPA:
+                /// check in the server if the sound process is running
+                console.log( "command was processed as RM_STOPA." );
+                shell_command = molduinoroot+"stopa.sh";
                 execCode( shell_command, function(err,res) {
                   if (res=="") res = "ok";
                   resultcallback( err, res );
