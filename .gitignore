@@ -1,3 +1,20 @@
+MoldeoControl.nw
+moldeonode/public/faces
+deb/
+mjpgstreamer.id
+moldeo.id
+moldeo
+moldeo.desktop
+moldeonode/node_modules/
+nwjs/
+testpicospeak.wav
+utils/check.txt
+utils/mjpg-treamer-code-182/
+utils/mjpgstreamer.id
+utils/moldeo.id
+moldeonode/moldeo.id
+moldeonode/mjpgstreamer.id
+
 # Compiled Object files
 *.slo
 *.lo

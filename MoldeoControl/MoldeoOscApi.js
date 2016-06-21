@@ -141,7 +141,8 @@ var MoldeoApiReceiver = {
 	/** PARAM */
 	"paramget": function( message ) {
 		if (config.log.full) console.log("paramget: ", message );
-		Editor.UpdateEditorParam( message["target"], message["info"] )
+		//Editor.UpdateEditorParam( message["target"], message["info"] );
+		Editor.Update( message["target"], message["info"] );
 	},
 
 	/** VALUE */
@@ -171,6 +172,9 @@ var MoldeoApiReceiver = {
 		//OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectgetpreconfig', 'val1': '' + Editor.ObjectRequested + '' } );
 		var MOB = Editor.Objects[Editor.ObjectRequested];
 		if (MOB) {
+      for(var paramname in MOB["object"]["objectconfig"]["parameters"] ) {
+        OscMoldeoSend( { 'msg': '/moldeo','val0': 'paramget', 'val1': '' + Editor.ObjectRequested + '', 'val2': paramname } );
+      }
       for(var i = 0; i<MOB["object"]["objectconfig"]["preconfigs"].length; i++ ) {
         OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectgetpreconfig', 'val1': '' + Editor.ObjectRequested + '', 'val2': Number(i) } );
       }

@@ -1446,6 +1446,8 @@ var ConsoleInterface = {
 
 			if (config.log.full) console.log("UpdateEditor > MOB_label: ",MOB_label," fullobjectInfo: ",fullobjectInfo);
 
+      missing = false;
+
       Editor.ObjectRequested = MOB_label;
 
 			if (moCI.Project.datapath==undefined) {
@@ -1479,6 +1481,8 @@ var ConsoleInterface = {
 			} else Editor.States[MOB_label] = MObject["object"]["objectstate"];
 
 			Editor.Parameters[MOB_label] = Config["parameters"];
+			var Params = Editor.Parameters[MOB_label];
+
 
 			if (fullobjectInfo["preconfig"] && fullobjectInfo["position"]>=0 && Config["preconfigs"]) {
         Config["preconfigs"][fullobjectInfo["position"]] = fullobjectInfo["preconfig"];
@@ -1493,9 +1497,24 @@ var ConsoleInterface = {
           ) {
         Editor.Preconfigs[MOB_label] = Config["preconfigs"];
       } else {
-        console.log("must call getpreconfig for each preconfig");
-        return -1;
+        console.error("must call getpreconfig for each preconfig");
+        //return -1;
+        missing = true;
       }
+
+      if (fullobjectInfo["pdef"]) {
+        Params[fullobjectInfo["pdef"]["name"]] = fullobjectInfo;
+      }
+
+      for(var pname in Params ) {
+        if ( Params[pname]["pdef"] ) {
+        } else {
+          console.error("pname: ", pname, Params[pname]["pdef"]);
+          missing = true;
+        }
+      }
+
+      if (missing) return -1;
 
 			// Parameters:
 			// console.log("target: "+ target+ " parameters:" + JSON.stringify( Editor.Parameters[target], "", "\t") );
