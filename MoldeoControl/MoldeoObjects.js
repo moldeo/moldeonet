@@ -1741,6 +1741,28 @@ var ConsoleInterface = {
       }
       $("#object_preconfigs_all").toggle();
 
+=======
+		},
+
+		"showAllEditorPreconfigs": function() {
+
+      $("#object_preconfigs_all").html("");
+      for(var i=4; i<=moCI.Options["MAX_N_PRECONFIGS"]; i++) {
+        //htmla+= '<button id="buttonED_'+i+'" title="Edit Preconfig '+i+'"  key="'+i+'" class="buttonED_'+i+' circle_button"></button>';
+        var button = document.createElement("BUTTON");
+        button.setAttribute("id","buttonED_"+i+"_");
+        button.setAttribute("key",i);
+        button.setAttribute("title","Edit Preconfig "+i);
+        button.setAttribute("class","buttonED_"+i+" circle_button");
+        button.addEventListener("click",function(event) {
+          Editor.selectEditorPreconfig( event.target.getAttribute("key")-1 );
+        });
+        $("#object_preconfigs_all").append(button);
+        button.innerHTML = i;
+      }
+      $("#object_preconfigs_all").toggle();
+
+>>>>>>> 4ba8ab39e00f0c4a5e95261a0411babd9a0bed0e
 		},
 
 		/**event)
@@ -2804,6 +2826,9 @@ var ConsoleInterface = {
 
 		//Render Options
 		var rOptions = {
+            "GSTBIN": config.gstreamer.GSTBIN,
+            "GSTLAUNCH": config.gstreamer.GSTLAUNCH,
+            "COLORFILTER": config.gstreamer.COLORFILTER,
 			"frame_path": frame_path,
 			"videoname": videoname,
 			"videocontainer": videocontainer,
@@ -2828,6 +2853,9 @@ var ConsoleInterface = {
 		rOptions["videoname"] = rOptions["frame_path"]+"/"+rOptions["videoname"];
 		rOptions["fullvideoname"] = rOptions["videoname"]+"."+rOptions["videocontainer"]
 
+        rOptions["full_call"] = rOptions["full_call"].replace("{GSTBIN}", rOptions["GSTBIN"] );
+        rOptions["full_call"] = rOptions["full_call"].replace("{GSTLAUNCH}", rOptions["GSTLAUNCH"] );
+        rOptions["full_call"] = rOptions["full_call"].replace("{COLORFILTER}", rOptions["COLORFILTER"] );
 		rOptions["full_call"] = rOptions["full_call"].replace("{VIDEONAME}", rOptions["videoname"] );
 		rOptions["full_call"] = rOptions["full_call"].replace("{FRAMEPATH}", rOptions["frame_path"] );
 

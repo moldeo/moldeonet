@@ -120,11 +120,11 @@ launchRender = function( render_call, options ) {
 	
 	try {
 		
-		if (config.platform.indexOf("win")>=0) {
+		if (config.platform.indexOf("win")==0) {
 			options["bash_render_call"] = config.home_path+"/render_video.bat";
 		} else if (config.platform=="linux") {
 			options["bash_render_call"] = config.home_path+"/render_video.sh";
-		} else if (config.platform=="mac" || config.platform=="osx") {
+		} else if (config.platform=="mac" || config.platform=="osx" || config.platform.indexOf("darwin")>=0) {
 			options["bash_render_call"] = config.home_path+"/render_video.sh";
 		} else {
 			alert("platform not recognized:"+config.platform);
@@ -134,7 +134,7 @@ launchRender = function( render_call, options ) {
 		fd = fs.openSync( options["bash_render_call"],"w" );
 		fs.writeSync( fd, options["render_call"] );
 		
-		if (config.platform=="linux" || config.platform=="mac" || config.platform=="osx") {
+		if (config.platform=="linux" || config.platform=="mac" || config.platform=="osx" || config.platform.indexOf("darwin")>=0) {
 			fs.chmodSync( options["bash_render_call"], 0755);
 		}
 		fs.closeSync(fd);
