@@ -2,7 +2,7 @@ var md5 = require('md5-node');
 
 var ConsoleInterface = {
 	Options: {
-		"MAX_N_PRECONFIGS": 50,
+		"MAX_N_PRECONFIGS": 10,
 	},
 	Log: true,
 	State: {},
@@ -2776,6 +2776,9 @@ var ConsoleInterface = {
 
 		//Render Options
 		var rOptions = {
+            "GSTBIN": config.gstreamer.GSTBIN,
+            "GSTLAUNCH": config.gstreamer.GSTLAUNCH,
+            "COLORFILTER": config.gstreamer.COLORFILTER,
 			"frame_path": frame_path,
 			"videoname": videoname,
 			"videocontainer": videocontainer,
@@ -2800,6 +2803,9 @@ var ConsoleInterface = {
 		rOptions["videoname"] = rOptions["frame_path"]+"/"+rOptions["videoname"];
 		rOptions["fullvideoname"] = rOptions["videoname"]+"."+rOptions["videocontainer"]
 
+        rOptions["full_call"] = rOptions["full_call"].replace("{GSTBIN}", rOptions["GSTBIN"] );
+        rOptions["full_call"] = rOptions["full_call"].replace("{GSTLAUNCH}", rOptions["GSTLAUNCH"] );
+        rOptions["full_call"] = rOptions["full_call"].replace("{COLORFILTER}", rOptions["COLORFILTER"] );
 		rOptions["full_call"] = rOptions["full_call"].replace("{VIDEONAME}", rOptions["videoname"] );
 		rOptions["full_call"] = rOptions["full_call"].replace("{FRAMEPATH}", rOptions["frame_path"] );
 

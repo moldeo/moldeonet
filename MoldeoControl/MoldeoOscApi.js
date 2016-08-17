@@ -251,7 +251,7 @@ var ReceiverFunction = function(msg, rinfo) {
 		var moldeo_message = {};
 
 		// how many fields ??
-		if (moldeoapimessage[0]=="moldeo") {
+		if (moldeoapimessage[0]=="moldeo" || moldeoapimessage[0]=="/moldeo") {
       		moldeo_message["int"] = moldeoapimessage.length-1;
 		} else moldeo_message["int"] = moldeoapimessage[0];
 		// which command code ??

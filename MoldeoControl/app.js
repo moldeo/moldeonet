@@ -197,14 +197,15 @@ screen {
   /** CREATE MENU SO WE HAVE COPY/PASTE in MAC!!! */
   if (config.IsOsx()) {
     // Create sub-menu
-    var menuItems = new gui.Menu();
+  var menu = new gui.Menu({'type': 'menubar'});
+  var menuItems = new gui.Menu();
 
     menuItems.append(new gui.MenuItem({ label: 'Custom Menu Item 1' }));
     menuItems.append(new gui.MenuItem({ label: 'Custom Menu Item 2' }));
 
     // create MacBuiltin
     menu.createMacBuiltin('Sample App',{
-        hideEdit: true,
+        hideEdit: false,
         hideWindow: true
     });
 
