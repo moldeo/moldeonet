@@ -141,8 +141,8 @@ var MoldeoApiReceiver = {
 	/** PARAM */
 	"paramget": function( message ) {
 		if (config.log.full) console.log("paramget: ", message );
-		//Editor.UpdateEditorParam( message["target"], message["info"] );
 		Editor.Update( message["target"], message["info"] );
+		Editor.UpdateEditorParam( message["target"], message["info"] );
 	},
 
 	/** VALUE */

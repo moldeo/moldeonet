@@ -2,7 +2,17 @@ var md5 = require('md5-node');
 
 var ConsoleInterface = {
 	Options: {
-		"MAX_N_PRECONFIGS": 50,
+		"MAX_N_PRECONFIGS": 10,
+		"GetMaxPreconfigs": function( MOB_label ) {
+
+      ///cuenta la cantidad de preconfigs en este MOB_label
+      if ( moCI.Editor.Preconfigs[MOB_label] ) {
+        var nP = moCI.Editor.Preconfigs[MOB_label].length;
+        //np = Math.max( np, moCI.Options[MAX_N_PRECONFIGS] );
+        if (np>0) return np;
+      }
+      return moCI.Options["MAX_N_PRECONFIGS"];
+		}
 	},
 	Log: true,
 	State: {},
@@ -489,7 +499,9 @@ var ConsoleInterface = {
 			"showAllPreconfigs": function() {
         $("#preconfigs_all").html("");
 
-        for(var i=4; i<=moCI.Options["MAX_N_PRECONFIGS"]; i++) {
+        var nPreconfigs = moCI.Options.GetMaxPreconfigs();
+
+        for(var i=4; i<=nPreconfigs; i++) {
           var button = document.createElement("BUTTON");
           //var label = document.createElement("BUTTON");
           //var ll = Control.Objects[Control.ObjectSelected];
@@ -509,7 +521,9 @@ var ConsoleInterface = {
       "showAllPresets": function() {
         $("#presets_all").html("");
 
-        for(var i=4; i<=moCI.Options["MAX_N_PRECONFIGS"]; i++) {
+        var nPreconfigs = moCI.Options.GetMaxPreconfigs();
+
+        for(var i=4; i<=nPreconfigs; i++) {
           var button = document.createElement("BUTTON");
           button.setAttribute("id","button_F"+i+"_");
           button.setAttribute("title","Activate all preconfigs #"+i);
@@ -1575,15 +1589,17 @@ var ConsoleInterface = {
 			if (config.log.full) console.log("UpdateEditorParam > MOB_label: ", MOB_label, " fullparaminfo:",fullparaminfo);
 			var Param = Editor.Parameters[MOB_label];
 
-			var paramName = fullparaminfo["name"];
+			var paramName = fullparaminfo["pdef"]["name"];
+			Param[ paramName ] = fullparaminfo;
 			ParamDef = Param[ paramName ]["pdef"];
-			ParamDef = fullparaminfo;
 			var ParamProperty = ParamDef["pr"];
 
 			//buscar todos los parametros: (usando el id)
 			var parameter_name_base = "parameter_group_"+MOB_label+"_"+paramName;
-			for(var preconfigi=0; preconfigi<Options["MAX_N_PRECONFIGS"]; preconfigi++) {
-				var paramid = parameter_name_base+"_"+preconfigi;
+			var nPreconfigs = Options.GetMaxPreconfigs();
+
+			for(var preconfigi=0; preconfigi<nPreconfigs; preconfigi++) {
+				var paramid = parameter_name_base+"_"+preconfigi+"_";
 				var elem = document.getElementById(paramid);
 				if (elem) {
 					elem.setAttribute("class", "parameter_group parameter_is_"+ParamProperty);
@@ -1640,7 +1656,8 @@ var ConsoleInterface = {
 				if (!win_parameters_Preconfig) return console.error("selectEditorPreconfig > no " + parameters_side_winID+preconfig_index+"_");
 
 				//reset classes DEACTIVATE
-				for( var p=1;p<=Options["MAX_N_PRECONFIGS"];p++) {
+				var nPreconfigs = Options.GetMaxPreconfigs();
+				for( var p=1;p<=nPreconfigs;p++) {
 
 					//DEACTIVATE PRECONFIG SELECTOR
 					if (win_Preconfigs) deactivateClass( win_Preconfigs, "object_preconfigs_" + p + "_" );
@@ -1708,7 +1725,8 @@ var ConsoleInterface = {
 		"showAllEditorPreconfigs": function() {
 
       $("#object_preconfigs_all").html("");
-      for(var i=4; i<=moCI.Options["MAX_N_PRECONFIGS"]; i++) {
+      var nPreconfigs = moCI.Options.GetMaxPreconfigs();
+      for(var i=4; i<=nPreconfigs; i++) {
         //htmla+= '<button id="buttonED_'+i+'" title="Edit Preconfig '+i+'"  key="'+i+'" class="buttonED_'+i+' circle_button"></button>';
         var button = document.createElement("BUTTON");
         button.setAttribute("id","buttonED_"+i+"_");
@@ -1854,7 +1872,8 @@ var ConsoleInterface = {
 			FOR THREE FIRST PRECONFIGS create DIVS !!! class="parameters_side_MOB_preconf"
 			Create DIV "parameter_side_MOB_LABEL_0/1/2" PRECONFIGS GROUPS (could be more!!!!)
 			*/
-			for( var preconfigi=0; preconfigi<Options["MAX_N_PRECONFIGS"]; preconfigi++ ) {
+			var nPreconfigs = moCI.Options.GetMaxPreconfigs();
+			for( var preconfigi=0; preconfigi<nPreconfigs; preconfigi++ ) {
 
 				var psideWinPre = document.createElement("DIV");
 				psideWinPre.setAttribute("id","parameters_side_"+MOB_label+"_" + preconfigi+"_" );
@@ -2257,23 +2276,32 @@ var ConsoleInterface = {
 			if (bProjects[base_folder]==undefined)
 				bProjects[base_folder] = {};
 			try {
-				moCI.fs.walk( base_folder, function( filepath, stat ) {
-					//console.log("walk call:", filepath);
-					if (stat.isFile()) {
-						//check if it's a .mol project
-						var extension = path.extname(filepath);
-						if (extension==".mol") {
-							if (config.log.full) console.log("walk call MOL found: base_folder:",base_folder," path:", filepath);
-							bProjects[base_folder][filepath] = false;
-						}
-					} else if(stat.isDirectory()) {
-						//iterate or wait
-						if ( filepath.indexOf("temp_render")>=0 )
-							return false;
-						return true;
-					}
-					return false;
-				});
+
+        moCI.fs.mkdir( base_folder, function (err) {
+
+          //if (err) console.error( "making dir: " + base_folder, err );
+
+          moCI.fs.walk( base_folder, 0x0777, function( filepath, stat ) {
+              //console.log("walk call:", filepath);
+              if (stat.isFile()) {
+                //check if it's a .mol project
+                var extension = path.extname(filepath);
+                if (extension==".mol") {
+                  if (config.log.full) console.log("walk call MOL found: base_folder:",base_folder," path:", filepath);
+                  bProjects[base_folder][filepath] = false;
+                }
+              } else if(stat.isDirectory()) {
+                //iterate or wait
+                if ( filepath.indexOf("temp_render")>=0 )
+                  return false;
+                return true;
+              }
+              return false;
+          });
+
+
+        } );
+
 			} catch(err) {
 				console.error("loadBrowserFolder: ",err);
 				//alert(err);

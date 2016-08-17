@@ -1497,7 +1497,7 @@ function CreateGroupedParameter( MOB_label, Group, preconfig, psideWinPre ) {
 
 		if (ObjectInspector) {
 			var ParamGroup = document.createElement("DIV");
-			ParamGroup.setAttribute( "id", "parameter_group_"+MOB_label + "_"+ Group+"_"+preconfig);
+			ParamGroup.setAttribute( "id", "parameter_group_"+MOB_label + "_"+ Group+"_"+preconfig+"_");
 			ParamGroup.setAttribute( "moblabel", MOB_label );
 			ParamGroup.setAttribute( "preconfig", preconfig );
 			ParamGroup.setAttribute( "inspector", "parameter_inspector_"+Group );
@@ -1589,7 +1589,7 @@ function CreateStandardParameter( MOB_label, param_name, preconfig, psideWinPre 
 
 		var ParamDiv = document.createElement("DIV");
 		if (ParamDiv) {
-			ParamDiv.setAttribute( "id", pgroup_object_base + "_"+ param_name+"_"+preconfig);
+			ParamDiv.setAttribute( "id", pgroup_object_base + "_"+ param_name+"_"+preconfig+"_");
 			ParamDiv.setAttribute( "moblabel", MOB_label );
 			ParamDiv.setAttribute( "preconfig", preconfig );
 			ParamDiv.setAttribute( "param", param_name );
@@ -2298,10 +2298,10 @@ function GetInspector( target ) {
 }
 
 function GetTabInspector( moblabel, group, param, preconfig ) {
-	var tabid = "parameter_group_"+moblabel+"_"+group+"_"+preconfig;
+	var tabid = "parameter_group_"+moblabel+"_"+group+"_"+preconfig+"_";
 	var TabInspector = document.getElementById(tabid);
 	if (!TabInspector) {
-		tabid = "parameter_group_"+moblabel+"_"+param+"_"+preconfig;
+		tabid = "parameter_group_"+moblabel+"_"+param+"_"+preconfig+"_";
 		TabInspector = document.getElementById(tabid);
 	}
 	return TabInspector;
@@ -3255,7 +3255,7 @@ function UpdateInspector( TabInspector, inspEle, moblabel, preconfig ) {
 function ActivatePreconfigsParameters( preconf_index ) {
 
 	//Populate parameters with preconfigs
-	var btn_escala = document.getElementById("parameter_group_ESCALA_label_"+preconf_index);
+	var btn_escala = document.getElementById("parameter_group_ESCALA_label_"+preconf_index+"_");
 
 	btn_escala.addEventListener( "click", function(event) {
 		ParametersUnselectAll(event.target.getAttribute("preconfig"));
@@ -3263,7 +3263,7 @@ function ActivatePreconfigsParameters( preconf_index ) {
 		if (config.log.full) console.log( event.target.getAttribute("id") );
 	});
 
-	var btn_position = document.getElementById("parameter_group_POSICION_label_"+preconf_index);
+	var btn_position = document.getElementById("parameter_group_POSICION_label_"+preconf_index+"_");
 
 	btn_position.addEventListener( "click", function(event) {
 		ParametersUnselectAll(event.target.getAttribute("preconfig"));
@@ -3271,7 +3271,7 @@ function ActivatePreconfigsParameters( preconf_index ) {
 		if (config.log.full) console.log( event.target.getAttribute("id") );
 	});
 
-	var btn_movimiento = document.getElementById("parameter_group_MOVIMIENTO_label_"+preconf_index);
+	var btn_movimiento = document.getElementById("parameter_group_MOVIMIENTO_label_"+preconf_index+"_");
 
 	btn_movimiento.addEventListener( "click", function(event) {
 		ParametersUnselectAll(event.target.getAttribute("preconfig"));
@@ -3279,7 +3279,7 @@ function ActivatePreconfigsParameters( preconf_index ) {
 		if (config.log.full) console.log( event.target.getAttribute("id") );
 	});
 
-	var btn_scene_objects = document.getElementById("parameter_group_SCENE_OBJECTS_label_"+preconf_index);
+	var btn_scene_objects = document.getElementById("parameter_group_SCENE_OBJECTS_label_"+preconf_index+"_");
 
 	btn_scene_objects.addEventListener( "click", function(event) {
 		ParametersUnselectAll(event.target.getAttribute("preconfig"));
@@ -3287,7 +3287,7 @@ function ActivatePreconfigsParameters( preconf_index ) {
 		if (config.log.full) console.log( event.target.getAttribute("id") );
 	});
 
-	var btn_scene_states = document.getElementById("parameter_group_SCENE_STATES_label_"+preconf_index);
+	var btn_scene_states = document.getElementById("parameter_group_SCENE_STATES_label_"+preconf_index+"_");
 
 	btn_scene_states.addEventListener( "click", function(event) {
 		ParametersUnselectAll(event.target.getAttribute("preconfig"));

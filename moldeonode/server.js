@@ -56,6 +56,7 @@
     var RM_I2CCHECK = 8;
 
     var RM_SPEAK = 11;
+    var RM_SPEAKGIRONDO = 12;
 
     var RM_MOTOR = 21;
 
@@ -97,6 +98,7 @@
     var MolduinoSyntax = {
       "sound": RM_SOUND,
       "speak": RM_SPEAK,
+      "speakgirondo": RM_SPEAKGIRONDO,
       "hello": RM_HELLO,
       "reboot": RM_REBOOT,
       "shutdown": RM_SHUTDOWN,
@@ -224,6 +226,14 @@
       "speak": function( text_to_speech, apiresultcallback ) {
           console.log("Molduino::speak",text_to_speech);
           shell_command = "pico2wave -l es-ES -w testpicospeak.wav \""+ text_to_speech +"\" && aplay testpicospeak.wav";
+          execCode( shell_command, function(err,res) {
+            if (res=="") res = "ok";
+            if (apiresultcallback) apiresultcallback( err, res );
+          } );
+      },
+    "speakgirondo": function( text_to_speech, apiresultcallback ) {
+          console.log("Molduino::speakgirondo", advance_speed );
+          shell_command = molduinoroot + "speakgirondo.sh "+text_to_speech;
           execCode( shell_command, function(err,res) {
             if (res=="") res = "ok";
             if (apiresultcallback) apiresultcallback( err, res );
@@ -378,6 +388,17 @@
                 shell_command = task.text.replace("speak","pico2wave -l es-ES -w testpicospeak.wav ") + " && aplay testpicospeak.wav";
                 execCode( shell_command, function(err,res) {
                   if (res=="") res = "ok";
+                  resultcallback( err, res );
+                } );
+                break;
+
+            case RM_SPEAKGIRONDO:
+                /// speak some text  with espeak
+                console.log( "command was processed as RM_SPEAKGIRONDO." );
+                shell_command = task.text.replace("speakgirondo","speakgirondo.sh");
+                execCode( shell_command, function(err,res) {
+                  if (res=="") res = "ok";
+                  //MANDAR MENSAJE POR OSC PARA QUE MOLDEO CORRA EL .WAV
                   resultcallback( err, res );
                 } );
                 break;
