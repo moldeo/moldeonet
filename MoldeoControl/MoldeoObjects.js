@@ -2,7 +2,7 @@ var md5 = require('md5-node');
 
 var ConsoleInterface = {
 	Options: {
-		"MAX_N_PRECONFIGS": 10,
+		"MAX_N_PRECONFIGS": 21,
 		"GetMaxPreconfigs": function( MOB_label ) {
 
       ///cuenta la cantidad de preconfigs en este MOB_label
@@ -1741,28 +1741,27 @@ var ConsoleInterface = {
       }
       $("#object_preconfigs_all").toggle();
 
-=======
+
 		},
 
 		"showAllEditorPreconfigs": function() {
 
-      $("#object_preconfigs_all").html("");
-      for(var i=4; i<=moCI.Options["MAX_N_PRECONFIGS"]; i++) {
-        //htmla+= '<button id="buttonED_'+i+'" title="Edit Preconfig '+i+'"  key="'+i+'" class="buttonED_'+i+' circle_button"></button>';
-        var button = document.createElement("BUTTON");
-        button.setAttribute("id","buttonED_"+i+"_");
-        button.setAttribute("key",i);
-        button.setAttribute("title","Edit Preconfig "+i);
-        button.setAttribute("class","buttonED_"+i+" circle_button");
-        button.addEventListener("click",function(event) {
-          Editor.selectEditorPreconfig( event.target.getAttribute("key")-1 );
-        });
-        $("#object_preconfigs_all").append(button);
-        button.innerHTML = i;
-      }
-      $("#object_preconfigs_all").toggle();
+        $("#object_preconfigs_all").html("");
+        for(var i=4; i<=moCI.Options["MAX_N_PRECONFIGS"]; i++) {
+            //htmla+= '<button id="buttonED_'+i+'" title="Edit Preconfig '+i+'"  key="'+i+'" class="buttonED_'+i+' circle_button"></button>';
+            var button = document.createElement("BUTTON");
+            button.setAttribute("id","buttonED_"+i+"_");
+            button.setAttribute("key",i);
+            button.setAttribute("title","Edit Preconfig "+i);
+            button.setAttribute("class","buttonED_"+i+" circle_button");
+            button.addEventListener("click",function(event) {
+              Editor.selectEditorPreconfig( event.target.getAttribute("key")-1 );
+            });
+            $("#object_preconfigs_all").append(button);
+            button.innerHTML = i;
+        }
+        $("#object_preconfigs_all").toggle();
 
->>>>>>> 4ba8ab39e00f0c4a5e95261a0411babd9a0bed0e
 		},
 
 		/**event)

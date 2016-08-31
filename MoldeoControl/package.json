@@ -10,7 +10,7 @@
     "show": true,
     "transparent":true,
     "frame": false,
-    "toolbar": true,
+    "toolbar": false,
     "position": "null",
     "width": 834,
     "height": 164,
