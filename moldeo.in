@@ -18,4 +18,4 @@ echo "copying config.init.js to moldeocontrol"
 #if [[ $platform == 'linux' ]]; then
 #elif [[ $platform == 'freebsd' ]]; then
 #fi
-@nwjsexe@ @moldeocontrolapp@
+@nwjsexe@ @moldeocontrolapp@ --enable-transparent-visuals --disable-gpu
