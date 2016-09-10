@@ -225,14 +225,14 @@ fs.walk = function (currentDirPath, permissions, callback) {
             var stat = moCI.fs.statSync(filePath);
             console.log( "currentDirPath:",currentDirPath, "name:",name );
             if (stat.isFile() && callback) {
-                console.log( "filePath:",filePath,"stat:",stat," is a FILE! callback:",callback );
+                console.log( "filePath:",filePath,"stat:",stat," is a FILE! callback:",(callback!=undefined) );
                 callback(filePath, stat);
             } else if (stat.isDirectory()) {
-                console.log( "filePath:",filePath,"stat:",stat," is a DIRECTORY! callback:",callback );
+                console.log( "filePath:",filePath,"stat:",stat," is a DIRECTORY! callback:",(callback!=undefined) );
 
           if (callback) {
             if ( callback(filePath, stat) && moCI.fs.walk ) {
-              moCI.fs.walk(filePath, permissions, callback);
+              moCI.fs.walk(filePath, permissions, callback );
             }
           }
             }

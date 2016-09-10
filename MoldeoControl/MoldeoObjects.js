@@ -2301,8 +2301,9 @@ var ConsoleInterface = {
         moCI.fs.mkdir( base_folder, function (err) {
 
           //if (err) console.error( "making dir: " + base_folder, err );
-
-          moCI.fs.walk( base_folder, 0x0777, function( filepath, stat ) {
+try {
+//          moCI.fs.walk( base_folder, 0x0777, function( filepath, stat ) {
+	        moCI.fs.walk( base_folder, 0x0777, function( filepath, stat ) {
               //console.log("walk call:", filepath);
               if (stat.isFile()) {
                 //check if it's a .mol project
@@ -2319,6 +2320,9 @@ var ConsoleInterface = {
               }
               return false;
           });
+} catch(err) {
+				console.error("fswalk: ",err);
+}
 
 
         } );
