@@ -431,8 +431,10 @@ var ConsoleInterface = {
 								OscMoldeoSend( { 'msg': '/moldeo','val0': 'effectenable', 'val1': moCI.mapSelectionsObjects[mkey] } );
 							} else OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectenable', 'val1': moCI.mapSelectionsObjects[mkey] } );
 						} else {
+							if (moCI.Project.MapObjects[label].classname) {
 							if ( moCI.Project.MapObjects[label].classname.indexOf("Effect")>0) {
 								OscMoldeoSend( { 'msg': '/moldeo','val0': 'effectdisable', 'val1': moCI.mapSelectionsObjects[mkey] } );
+							} else OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectdisable', 'val1': moCI.mapSelectionsObjects[mkey] } );
 							} else OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectdisable', 'val1': moCI.mapSelectionsObjects[mkey] } );
 						}
 					}
