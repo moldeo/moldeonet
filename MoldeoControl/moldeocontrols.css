@@ -2479,13 +2479,18 @@ div.buttons .buttons {
 	 }
 
 	 #parameter_inspector_COLOR .param_input {
-		display: block !important;
-		width: 35px !important;
+		display: block;
+		width: 35px;
 	 }
 
 	 #parameter_inspector_SCALE .param_input {
 		  width: 60px;
 		}
+		
+	#parameter_inspector_COLOR .param_input:focus {
+		width: 700px !important;
+	}
+		
 
 	 #parameter_inspector_COLOR
 	 .parameter_selector {
@@ -2494,6 +2499,8 @@ div.buttons .buttons {
 		 float: left;
 		 bottom: 40px !important;
 	 }
+	 
+	 
 
 	.param_input_color_red,
 	.param_input_color,
@@ -2524,7 +2531,7 @@ div.buttons .buttons {
 		left: 260px;
 	}
 
-	 .param_input:focus {
+	.param_input:focus {
 		width: 700px !important;
 		background-color: #111;
 		color: #94fbff;
@@ -2545,6 +2552,7 @@ div.buttons .buttons {
 		left: 140px !important;
 	 }
 
+	 
 	#selector_POSITION_translatex {
 		background-image: url(buttons/button_X_off.svg);
 	}
