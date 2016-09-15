@@ -2257,7 +2257,7 @@ var ConsoleInterface = {
 							moCI.Browser.initialized = false;
 							this.close(true);
 						});
-						//setTimeout( moCI.Browser.initBrowser, 1000 );
+						///*setTimeout( moCI.Browser.initBrowser, 1000 );*/
 
                         setTimeout( function() { if (moCI.Browser.winBrowser) moCI.Browser.winBrowser.focus(); }, 1000 );
 					} else {
