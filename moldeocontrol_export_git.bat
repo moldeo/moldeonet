@@ -1,6 +1,4 @@
-cd MoldeoControl
-npm install
-cd ..
+rem start /wait npminstall.bat
 git archive --format zip --output MoldeoControl.zip HEAD:MoldeoControl/
 mkdir z
 7z.exe x -y MoldeoControl.zip -o./z/MoldeoControl
