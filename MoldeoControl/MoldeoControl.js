@@ -371,8 +371,10 @@ function RegisterKeyboardControl() {
 				document.getElementById("button_"+keyU ).click();
 			}
 			if (!isNaN(Number(key))) {
-        if (Number(key)>=2) Control.Functions.showAllPreconfigs();
-				document.getElementById("button_"+keyU+"_" ).click();
+				//show all preconfigs window selector
+				if (Number(key)>=2) Control.Functions.showAllPreconfigs();
+				if (document.getElementById("button_"+keyU+"_" ))
+					document.getElementById("button_"+keyU+"_" ).click();
 			}
 
 			if (evt.altKey && keyU == "E" ) {
