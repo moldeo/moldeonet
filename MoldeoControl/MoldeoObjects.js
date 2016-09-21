@@ -2863,7 +2863,16 @@ try {
         rOptions["full_call"] = rOptions["full_call"].replace("{COLORFILTER}", rOptions["COLORFILTER"] );
 		rOptions["full_call"] = rOptions["full_call"].replace("{VIDEONAME}", rOptions["videoname"] );
 		rOptions["full_call"] = rOptions["full_call"].replace("{FRAMEPATH}", rOptions["frame_path"] );
-
+		if (rOptions["H264ENCODE"]) {
+			if (rOptions["H264ENCODE"][config.platform]) {
+				if (rOptions["H264ENCODE"][config.platform]["normal"])
+					rOptions["full_call"] = rOptions["full_call"].replace("{H264ENCODE}", rOptions["H264ENCODE"][config.platform]["normal"] );
+				if (rOptions["H264ENCODE"][config.platform]["low"])
+					rOptions["full_call"] = rOptions["full_call"].replace("{H264ENCODE_LOW}", rOptions["H264ENCODE"][config.platform]["low"] );
+				if (rOptions["H264ENCODE"][config.platform]["high"])
+					rOptions["full_call"] = rOptions["full_call"].replace("{H264ENCODE_HIGH}", rOptions["H264ENCODE"][config.platform]["high"] );
+			}
+		}
 		//fs.write("render_video.bat");
 		console.log("full_call:",rOptions["full_call"]);
 
