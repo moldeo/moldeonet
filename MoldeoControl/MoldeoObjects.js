@@ -2,7 +2,7 @@ var md5 = require('md5-node');
 
 var ConsoleInterface = {
 	Options: {
-		"MAX_N_PRECONFIGS": 21,
+		"MAX_N_PRECONFIGS": 10,
 		"GetMaxPreconfigs": function( MOB_label ) {
 
       ///cuenta la cantidad de preconfigs en este MOB_label
