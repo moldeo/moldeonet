@@ -79,7 +79,7 @@ var config = {
 				"normal": "x264enc qp-min=18 byte-stream=1 bitrate=50000 threads=0 pass=5",
 				"high": "x264enc qp-min=18 byte-stream=1 bitrate=100000 threads=0 pass=5"
 			},
-			"win": {
+			"win32": {
 				"low": "x264enc qp-min=18 byte-stream=1 bitrate=10000 threads=0 pass=5",
 				"normal": "x264enc qp-min=18 byte-stream=1 bitrate=50000 threads=0 pass=5",
 				"high": "x264enc qp-min=18 byte-stream=1 bitrate=100000 threads=0 pass=5"
