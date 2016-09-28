@@ -11,16 +11,16 @@ var config_fps = "25";
 var config = {
     "platform": OS.platform(),
     "release_mode": "develop" /*"production"*/,
-	
+
 	"log": {
 		"full": false,
 		"save": false,
 		"logfile": "",
 	},
-	
+
     "player_file_path": "",
 	"home_path": "",
-	
+
 	"bin_path": "",
 	"moldeo_path": "",
 	"moldeo_version": "",
@@ -32,7 +32,7 @@ var config = {
 	"desktop_path": "",
 	"browser_window_options": {
 		icon: "moldeocontrol.png",
-		focus: false,						
+		focus: false,
 		toolbar: false,
 		frame: false,
 		width: win.width,
@@ -51,7 +51,7 @@ var config = {
 		"frame_quality": "JPGGOOD",
 		"frame_qualities": {
 			"Bad (jpg 10%)": "JPGBAD",
-			"Average (jpg 25%)": "JPGAVERAGE",			
+			"Average (jpg 25%)": "JPGAVERAGE",
 			"Normal (jpg 50%)": "JPG",
 			"Good (jpg 75%)": "JPGGOOD",
 			"Superb (jpg 100%)": "JPGSUPERB",
@@ -74,7 +74,7 @@ var config = {
         "GSTLAUNCH": "gst-launch-1.0",
         "COLORFILTER": "videoconvert",
 		"H264ENCODE": {
-			"linux": { 
+			"linux": {
 				"low": "x264enc qp-min=18 byte-stream=1 bitrate=10000 threads=0 pass=5",
 				"normal": "x264enc qp-min=18 byte-stream=1 bitrate=50000 threads=0 pass=5",
 				"high": "x264enc qp-min=18 byte-stream=1 bitrate=100000 threads=0 pass=5"
@@ -93,95 +93,95 @@ var config = {
 				ogg: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! theoraenc ! oggmux ! filesink location="{VIDEONAME}.ogg"',
 			},
 			"mp4": {
-				h264low: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)'+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=10000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.avi"',
-				
-				h264: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)'+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=50000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.avi"',
-				
-				h264high: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)'+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=100000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.avi"',
-				
+				h264low: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=10000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.avi"',
+
+				h264: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=50000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.avi"',
+
+				h264high: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=100000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.avi"',
+
 				msmp4: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! ffenc_msmpeg4 ! avimux ! filesink location="{VIDEONAME}.mp4"',
 			},
 			"avi": {
-				mjpeg: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)'+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! jpegenc ! avimux ! filesink location="{VIDEONAME}.avi"',
-				
-				h264low: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)'+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=10000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.avi"',
-				
-				h264: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)'+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=50000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.avi"',
-				
-				h264high: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)'+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=100000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.avi"',
-				
-				wmv: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)'+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! ffenc_wmv2 ! avimux ! filesink location="{VIDEONAME}.avi"',
+				mjpeg: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! jpegenc ! avimux ! filesink location="{VIDEONAME}.avi"',
+
+				h264low: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=10000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.avi"',
+
+				h264: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=50000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.avi"',
+
+				h264high: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=100000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.avi"',
+
+				wmv: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! ffenc_wmv2 ! avimux ! filesink location="{VIDEONAME}.avi"',
 			},
 			"mov": {
 				mjpeg: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! jpegenc ! ffmux_mov ! filesink location="{VIDEONAME}.mov"',
-				
+
 				h264low: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=10000 threads=0 pass=5 ! ffmux_mov ! filesink location="{VIDEONAME}.mov"',
-				
+
 				h264: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=50000 threads=0 pass=5 ! ffmux_mov ! filesink location="{VIDEONAME}.mov"',
-				
+
 				h264high: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=100000 threads=0 pass=5 ! ffmux_mov ! filesink location="{VIDEONAME}.mov"',
 			},
 		},
 		"win32": {
 			"ogg": {
-				ogg: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)'+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! theoraenc ! oggmux ! filesink location="{VIDEONAME}.ogg"',
+				ogg: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! theoraenc ! oggmux ! filesink location="{VIDEONAME}.ogg"',
 			},
 			"mp4": {
-				mp4: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)'+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! {H264ENCODE_HIGH} ! avimux ! filesink location="{VIDEONAME}.mp4"',
+				mp4: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! {H264ENCODE_HIGH} ! avimux ! filesink location="{VIDEONAME}.mp4"',
 			},
 			"avi": {
-				mjpeg: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)'+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! jpegenc ! avimux ! filesink location="{VIDEONAME}.avi"',
-				
-				h264low: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)'+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! {H264ENCODE_LOW} ! avimux ! filesink location="{VIDEONAME}.avi"',
-				
-				h264: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)'+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! {H264ENCODE} ! avimux ! filesink location="{VIDEONAME}.avi"',
-				
-				h264high: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)'+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! {H264ENCODE_HIGH} ! avimux ! filesink location="{VIDEONAME}.avi"',
-				
-				wmv: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)'+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! ffenc_wmv2 ! avimux ! filesink location="{VIDEONAME}.avi"',
+				mjpeg: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! jpegenc ! avimux ! filesink location="{VIDEONAME}.avi"',
+
+				h264low: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! {H264ENCODE_LOW} ! avimux ! filesink location="{VIDEONAME}.avi"',
+
+				h264: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! {H264ENCODE} ! avimux ! filesink location="{VIDEONAME}.avi"',
+
+				h264high: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! {H264ENCODE_HIGH} ! avimux ! filesink location="{VIDEONAME}.avi"',
+
+				wmv: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! ffenc_wmv2 ! avimux ! filesink location="{VIDEONAME}.avi"',
 			},
 			"mov": {
-				mjpeg: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)'+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! jpegenc ! ffmux_mov ! filesink location="{VIDEONAME}.mov"',
-				
-				h264low: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)'+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! {H264ENCODE_LOW} ! ffmux_mov ! filesink location="{VIDEONAME}.mov"',
-				
-				h264: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)'+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! {H264ENCODE} ! ffmux_mov ! filesink location="{VIDEONAME}.mov"',
-				
-				h264high: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)'+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! {H264ENCODE_HIGH} ! ffmux_mov ! filesink location="{VIDEONAME}.mov"',
+				mjpeg: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! jpegenc ! ffmux_mov ! filesink location="{VIDEONAME}.mov"',
+
+				h264low: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! {H264ENCODE_LOW} ! ffmux_mov ! filesink location="{VIDEONAME}.mov"',
+
+				h264: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! {H264ENCODE} ! ffmux_mov ! filesink location="{VIDEONAME}.mov"',
+
+				h264high: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! {H264ENCODE_HIGH} ! ffmux_mov ! filesink location="{VIDEONAME}.mov"',
 			},
 		},
-		"win64": {			
-		},		
+		"win64": {
+		},
 		"darwin": {
             "ogg": {
             ogg: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! theoraenc ! oggmux ! filesink location="{VIDEONAME}.ogg"',
 			},
 			"mp4": {
-            h264low: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)'+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=10000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.mp4"',
-				
-            h264: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)'+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=50000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.mp4"',
-				
-            h264high: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)'+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=100000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.mp4"',
-				
+            h264low: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=10000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.mp4"',
+
+            h264: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=50000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.mp4"',
+
+            h264high: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=100000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.mp4"',
+
 			},
 			"avi": {
-            mjpeg: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)'+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! jpegenc ! avimux ! filesink location="{VIDEONAME}.avi"',
-				
-            h264low: '{GSTBIN}{GSTLAUNCH} -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)'+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=10000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.avi"',
-				
-            h264: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)'+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=50000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.avi"',
-				
-            h264high: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate=\(fraction\)'+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=100000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.avi"',
-				
+            mjpeg: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! jpegenc ! avimux ! filesink location="{VIDEONAME}.avi"',
+
+            h264low: '{GSTBIN}{GSTLAUNCH} -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=10000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.avi"',
+
+            h264: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=50000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.avi"',
+
+            h264high: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=100000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.avi"',
+
 
 			},
 			"mov": {
             mjpeg: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! jpegenc ! qtmux ! filesink location="{VIDEONAME}.mov"',
-				
+
             h264low: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=10000 threads=0 pass=5 ! qtmux ! filesink location="{VIDEONAME}.mov"',
-				
+
             h264: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=50000 threads=0 pass=5 ! qtmux ! filesink location="{VIDEONAME}.mov"',
-				
+
             h264high: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=100000 threads=0 pass=5 ! qtmux ! filesink location="{VIDEONAME}.mov"',
 			},
 		},
@@ -203,10 +203,10 @@ var config = {
 
 		if (options) {
 			for( var option in options ) {
-				this[option] = options[option]; 
+				this[option] = options[option];
 			}
 		}
-	
+
 
 		if ( config.IsWindows() ) {
 
@@ -216,15 +216,15 @@ var config = {
 			config.director_exe = "moldeodirector.exe";
 
 			if (config.player_file_path=="") {
-				ppath = process.execPath;		
-				config.player_file_path = ppath.replace( /nw\.exe/g , '');		
-				console.log(" player_file_path:" + config.player_file_path );				
+				ppath = process.execPath;
+				config.player_file_path = ppath.replace( /nw\.exe/g , '');
+				console.log(" player_file_path:" + config.player_file_path );
 			}
 
 			config.player_full_path = config.player_file_path + config.player_sdl2_exe;
 
 			config.bin_path = config.player_file_path;
-			config.moldeo_path = config.bin_path.replace(/\\bin\\win\\/gi,'');			
+			config.moldeo_path = config.bin_path.replace(/\\bin\\win\\/gi,'');
 			config.data_path = config.moldeo_path + "\\data";
             		config.basic_path = config.data_path + "\\basic";
 					config.sample_path = config.data_path + "\\samples";
@@ -233,8 +233,8 @@ var config = {
 			config.moldeouser_path = config.home_path+"\\Documents\\Moldeo";
 			config.desktop_path = config.home_path+"\\Desktop";
 			config.moldeo_version = config.bin_path+"/moldeoversion.txt";
-					
-			console.log("fullArgv:"+gui.App.fullArgv+" dataPath:"+gui.App.dataPath+" process.execPath:"+process.execPath);		
+
+			console.log("fullArgv:"+gui.App.fullArgv+" dataPath:"+gui.App.dataPath+" process.execPath:"+process.execPath);
 		}
 
 		if( config.IsLinux() ) {
@@ -253,7 +253,7 @@ var config = {
 
 		if( config.IsOsx() ) {
             config.bin_path = process.cwd().replace("Resources/app.nw","MacOS/");
-            
+
 			config.player_file_path = config.bin_path;
 			config.player_full_path = config.player_file_path + config.player_sdl2_exe;
             //config.moldeo_path = "/opt/local/share/moldeo";
@@ -263,9 +263,9 @@ var config = {
 			config.moldeouser_path = config.home_path+"/Moldeo";
 			config.desktop_path = config.home_path+"/Desktop";
 			config.moldeo_version = config.moldeo_path+"/moldeoversion.txt";
-            
+
             config.gstreamer.GSTBIN = "/Library/Frameworks/GStreamer.framework/Versions/1.0/bin/";
-            
+
             console.log("fullArgv:",gui.App.fullArgv," dataPath:",gui.App.dataPath," process.execPath:",process.execPath,"process.cwd():",process.cwd());
             console.log("config",config);
 		}
