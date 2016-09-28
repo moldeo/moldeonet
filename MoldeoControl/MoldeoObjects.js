@@ -2485,7 +2485,7 @@ try {
 				}
 				if (config.log.full) console.log("updateBrowser in: ", browser_div);
 
-				var check_for = [ config.desktop_path, config.sample_path, config.moldeouser_path ];
+				var check_for = [ config.desktop_path, config.basic_path, config.sample_path, config.moldeouser_path ];
 
 				/* SCAN FOLDERS */
 				for( var i in check_for ) {
