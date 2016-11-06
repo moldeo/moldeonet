@@ -1,2 +1,2 @@
 #!/bin/bash
-sh node-webkit_install_32.sh
+sh node-webkit_install_64.sh
