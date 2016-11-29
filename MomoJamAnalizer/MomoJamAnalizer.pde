@@ -57,7 +57,7 @@ void setup()
    * send messages back to this sketch.
    */
   myRemoteLocation = new NetAddress("127.0.0.1", 7401 );
-  myRemoteLocation2 = new NetAddress("192.168.0.100", 7401 );
+  myRemoteLocation2 = new NetAddress("192.168.43.102", 7401 );
   frameRate(60);
   
   minim = new Minim(this);
