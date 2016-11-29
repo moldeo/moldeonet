@@ -2418,12 +2418,17 @@ try {
 				folderEle.setAttribute("base_id",base_id);
 				folderEle.setAttribute("class","browser_project_category closed");
 
+                var numprojects = 0;
+                if (bProjectsInFolder) {
+                    numprojects = Object.keys(bProjectsInFolder).length;
+                }
+
 				//label
 				var folderLabel = broDOM.createElement("LABEL");
 				folderLabel.setAttribute( "base_id", base_id );
 				folderLabel.setAttribute( "title", base_folder_path );
 				folderLabel.setAttribute( "class", "category_folder_label" );
-				folderLabel.innerHTML = path.basename(base_folder_path );
+				folderLabel.innerHTML = path.basename(base_folder_path )+"   ("+numprojects+")";
 
 				folderLabel.addEventListener( "click", function(event) {
 
