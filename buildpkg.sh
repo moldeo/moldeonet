@@ -67,8 +67,8 @@ echo "extracting..."
 }
 
 cd deb/moldeonet-*
-dh_make -m -e info@moldeointeractive.com.ar -p moldeonet
-gedit ../../control.amd64.11.10 debian/control ../../moldeonet.dirs debian/moldeonet.dirs ../../moldeonet.install debian/moldeonet.install ../../moldeonet-dev.dirs debian/moldeonet-dev.dirs ../../moldeonet-dev.install debian/moldeonet-dev.install debian/changelog
+dh_make -i -e info@moldeo.org -p moldeonet -c gpl3
+gedit ../../control debian/control ../../moldeonet.dirs debian/moldeonet.dirs ../../moldeonet.install debian/moldeonet.install ../../moldeonet-dev.dirs debian/moldeonet-dev.dirs ../../moldeonet-dev.install debian/moldeonet-dev.install debian/changelog
 
 echo " 
 Now execute: 

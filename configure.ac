@@ -87,7 +87,7 @@ nwjsexe=${nwjsdir}/nw
 nwjslocalesdir=${nwjsdir}/locales
 nwjsfileszip=
 nwjsfilesunzip=
-nwjspermissions="chmod +rx ${DESTDIR}${nwjsexe}"
+nwjspermissions=
 # && cd ${DESTDIR}${moldeocontroldir} && npm install"
 
 AC_ARG_ENABLE(host,

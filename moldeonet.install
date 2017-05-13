@@ -1,5 +1,5 @@
-/usr/bin/*
-/usr/bin/nwjs/*
-/usr/bin/nwjs/locales/*
-/usr/share/applications/*
-/usr/share/moldeonet/*
+usr/bin/*
+usr/bin/nwjs/*
+usr/bin/nwjs/locales/*
+usr/share/applications/*
+usr/share/moldeonet/*

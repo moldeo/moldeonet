@@ -20,4 +20,4 @@ dist_nwjs_DATA = ${nwjsfiles}
 dist_nwjslocales_DATA = ${nwjslocalesfiles}
 
 install-data-hook:
-	$(nwjsfilesunzip)$(nwjspermissions)
+	chmod +rx ${DESTDIR}${nwjsexe}
