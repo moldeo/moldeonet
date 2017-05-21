@@ -1311,7 +1311,7 @@ function InspectorHideAll() {
 }
 
 function ParametersUnselectAll() {
-	var psideWinPre = document.getElementById("parameters_side_"+Editor.ObjectSelected+"_" + Editor.PreconfigSelected );
+	var psideWinPre = document.getElementById("parameters_side_"+Editor.ObjectSelected+"_" + Editor.PreconfigSelected+"_" );
 	if (psideWinPre) {
 		var params = psideWinPre.getElementsByClassName("parameter_group");
 		for( var i=0; i<params.length; i++ ) {
@@ -1869,8 +1869,11 @@ function SetScaleMode( group, parammode, moblabel ) {
 		var aver =  ( Number(inputElx.value) + Number(inputEly.value) ) / 2.0;
 		if (config.log.full) console.log("SetScaleMode > aver:",aver," inputElx.value:",inputElx.value," inputEly.value:",inputEly.value);
 		activateClass( inputElx, "param_input_selected");
+		activateClass( inputElx, "param_input_selected_1");
+		//activateClass( inputElx, "param_input_selected_zoom_1");
 		activateClass( inputEly, "param_input_selected");
 		activateClass( inputEly, "param_input_selected_2");
+		//activateClass( inputEly, "param_input_selected_zoom_2");
 
 		sliderEl.setAttribute("min", "-2.0" );
 		sliderEl.setAttribute("max", "2.0" );
@@ -2150,6 +2153,7 @@ function SetInspectorMode( group, parammode, moblabel ) {
 	for(var i=0; i<inputs.length; i++) {
 		var inp = inputs[i];
 		if (inp) deactivateClass( inp,"param_input_selected");
+		if (inp) deactivateClass( inp,"param_input_selected_1");
 		if (inp) deactivateClass( inp,"param_input_selected_2");
 		if (inp) deactivateClass( inp,"param_input_selected_3");
 	}
@@ -3308,4 +3312,3 @@ function hasParam( moblabel, param_name ) {
 
 	return res;
 }
-

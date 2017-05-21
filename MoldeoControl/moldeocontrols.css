@@ -1427,12 +1427,12 @@ input[type=range].slide_V {
 .parameter_slide_back>label {
 	display: block;
 	position: absolute;
-	top: -14px;
+	top: -20px;
 	left: 0px;
-	width: 60px;
+	width: auto;
 	height: auto;
 	overflow: hidden;
-	font-size: 10px;
+	font-size: 14px;
 	font-family: moldeofont;
 	font-weight: normal !important;
 	color: #FFF;
@@ -2446,10 +2446,10 @@ div.buttons .buttons {
 		display: block;
 		position: relative;
 		float: left;
-		margin-top: 0.1%;
-		margin-left: 0.1%;
-		width: 12%;
-		height: 40%;
+		margin-top: 5px;
+		margin-left: 5px;
+		min-width: 32px;
+		min-height: 32px;
 	}
 
 	.parameter_inspector .slide_H_back {
@@ -2480,14 +2480,14 @@ div.buttons .buttons {
 		display: none;
 		position: absolute;
 		float: left;
-		width: 10%;
+		width: 15%;
 		height: 17px;
 		font-size: 12px;
 		border: solid 1px #999;
 		background-color: #000;
 		color: #FFF;
-		bottom: 20px;
-		left: 80px;
+		bottom: 25px;
+		right: 20px;
 		transition: all 0.5s;
 		border-radius: 5px;
 	 }
@@ -2505,22 +2505,43 @@ div.buttons .buttons {
 
 	 .param_input_selected_2 {
 		display: block !important;
-		margin-left: 120px !important;
-
 	 }
+
+   .param_input_selected_1 {
+     margin-right: 120px !important;
+   }
+
 
 	 #parameter_inspector_COLOR .param_input {
 		display: block;
-		width: 35px;
+		width: 55px;
 	 }
+
+   #selector_COLOR_color_cuad {
+     display: block;
+     position: absolute;
+     left: 5px;
+     top: 5px;
+     background-color: rgba(1,0,0,1.0);
+     width: 32px;
+     height: 32px;
+   }
 
 	 #parameter_inspector_SCALE .param_input {
 		  width: 60px;
 		}
 
+    #parameter_inspector_SCALE .param_input_selected_1:focus {
+  		margin-right: 20px !important;
+  	}
+
 	#parameter_inspector_COLOR .param_input:focus {
 		width: 700px !important;
 	}
+
+  #parameter_inspector_TEXTURE .param_input {
+    width: 290px;
+  }
 
 
 	 #parameter_inspector_COLOR
@@ -2531,6 +2552,9 @@ div.buttons .buttons {
 		 bottom: 40px !important;
 	 }
 
+  #COLOR_slide_back {
+    display: none;
+  }
 
 
 	.param_input_color_red,
@@ -2610,7 +2634,7 @@ div.buttons .buttons {
 
 	.parameter_selector_xy,
 	.parameter_selector_zy	{
-		display: block;
+		display: none;
 		position: relative;
 		float: left;
 		margin-left: 3px;
