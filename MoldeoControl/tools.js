@@ -100,7 +100,7 @@ launchPlayer = function( project_file ) {
 	}
 	moCI.console.log("launchPlayer > player_full_path:",config.player_full_path," project_file:",project_file );
 
-	return callProgram( '""'+config.player_full_path+'"', project_file, function(error,stdout,stderr) {
+	return callProgram( '"'+config.player_full_path+'"', project_file, function(error,stdout,stderr) {
 		console.log("::launchPlayer > Calling callback for: project_file: ",project_file);
 		if (error) {
 			moCI.console.error(launchPlayer, error);
