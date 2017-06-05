@@ -1432,6 +1432,7 @@ var ConsoleInterface = {
 						selObject.setAttribute( "title", "" );
 						selObject.setAttribute( "data-original-title", MOBlabel );
 						activateClass( selObject, "present");
+						activateClass( selObject, MOBlabel );
 						$(selObject).tooltip();
 					}
 
@@ -1449,6 +1450,7 @@ var ConsoleInterface = {
             ebut.setAttribute( "title", "" );
             ebut.setAttribute( "data-original-title", MOBlabel );
             activateClass( ebut, "present");
+						activateClass( ebut, MOBlabel );
             $(ebut).tooltip();
           }
         }
@@ -2221,6 +2223,9 @@ var ConsoleInterface = {
 			"Samples": {},
 			*/
 		},
+		"ProjectsSymlinks": {
+
+		},
 		"Textures": {
 		},
 		"Movies": {
@@ -2336,14 +2341,11 @@ var ConsoleInterface = {
 			moCI.Browser.initialized = false;
 			moCI.Browser.winBrowser.show( moCI.Browser.winVisible );
 		},
-		"scanProjectsFolder": function(base_folder) {
+		"scanProjectsFolder": function(base_folder, callback ) {
 			//* check: https://nodejs.org/api/path.html*/
 
 			if (config.log.full) console.log("loadBrowserFolder(",base_folder,") check https://nodejs.org/api/path.html");
-			var bProjects = moCI.Browser.Projects;
-
-			if (bProjects[base_folder]==undefined)
-				bProjects[base_folder] = {};
+			moCI.Browser.Projects[base_folder] = {}
 			try {
 
         moCI.fs.mkdir( base_folder, function (err) {
@@ -2357,8 +2359,19 @@ try {
                 //check if it's a .mol project
                 var extension = path.extname(filepath);
                 if (extension==".mol") {
+
+									//if (moCI.fs.lstat(err,stat).isSymbolicLink()) {
+										var realpath = moCI.fs.realpathSync( filepath );
+										if (filepath!=realpath) {
+											//bProjectsSymlinks[base_folder][filepath] = realpath;
+											moCI.Browser.ProjectsSymlinks[realpath] = filepath;
+											filepath = realpath;
+										}
+									//}
+
                   if (config.log.full) console.log("walk call MOL found: base_folder:",base_folder," path:", filepath);
-                  bProjects[base_folder][filepath] = false;
+                  moCI.Browser.Projects[base_folder][filepath] = false;
+									if (callback) callback(base_folder,filepath);
                 }
               } else if(stat.isDirectory()) {
                 //iterate or wait
@@ -2380,11 +2393,26 @@ try {
 				//alert(err);
 			}
 		},
-		"createProjectItem": function( base_mol_file ) {
+		"createProjectItem": function( base_mol_file, remove_sign ) {
 			if (config.log.full) console.log("createProjectItem > ",base_mol_file);
 			var CIB = moCI.Browser;
 			var broDOM = CIB.document;
 			var molEle = broDOM.createElement("DIV");
+			if (remove_sign==true) {
+				var molRem = broDOM.createElement("SPAN");
+				molRem.setAttribute("class","glyphicon glyphicon-remove-sign");
+				molRem.setAttribute("title","Remove/Forget this project");
+				molRem.addEventListener( "click", function(event) {
+					event.stopPropagation();
+					console.log("Remove project reference TO: ", base_mol_file," FROM:", moCI.Browser.ProjectsSymlinks[base_mol_file] );
+					moCI.unlinkProject( moCI.Browser.ProjectsSymlinks[base_mol_file], function(error,stdout,stderr) {
+						moCI.Browser.Projects[config.moldeorecents_path] = {};
+						CIB.cleanProjectFolderView( config.moldeorecents_path );
+						CIB.scanProjectsFolder( config.moldeorecents_path, CIB.updateProjectFolderView );
+					} );
+				});
+				molEle.appendChild( molRem );
+			}
 
 			var preview_shot_url = false;
 			var project_data_path = path.dirname( base_mol_file );
@@ -2445,9 +2473,49 @@ try {
 
 			return molEle;
 		},
+		"cleanProjectFolderView": function( base_folder_path ) {
+			var CIB = moCI.Browser;
+			var broDOM = CIB.document;
+			var bProjects = CIB.Projects;
+			var base_id = md5(base_folder_path);
+			var samplesContainer = broDOM.getElementById( "base_folder_"+base_id+"_container");
+			samplesContainer.innerHTML = "";
+		},
+		"updateProjectFolderView": function( base_folder_path, filepath ) {
+			var CIB = moCI.Browser;
+			var broDOM = CIB.document;
+			var bProjects = CIB.Projects;
+
+			var base_id = md5(base_folder_path);
+			var div_id = "base_folder_" + base_id;
+
+			var folderEle = broDOM.getElementById(div_id);
+			var folderLabel = broDOM.getElementById( "base_folder_label_"+base_id);
+			var samplesContainer = broDOM.getElementById( "base_folder_"+base_id+"_container");
+			var bProjectsInFolder = bProjects[ base_folder_path ];
+
+			var numprojects = 0;
+			if (bProjectsInFolder) {
+					numprojects = Object.keys(bProjectsInFolder).length;
+			}
+
+			//now feed with projects .mol
+			folderLabel.innerHTML = path.basename(base_folder_path )+" ("+numprojects+")";
+			var molEleProject;
+			molEleProject = CIB.createProjectItem( filepath, (base_folder_path==config.moldeorecents_path) );
+			if (molEleProject)
+				samplesContainer.appendChild( molEleProject );
+			return molEleProject;
+		},
 		"createProjectFolderView": function( base_folder_path ) {
 			var folderEle = undefined;
 
+			var CIB = moCI.Browser;
+			var broDOM = CIB.document;
+			var bProjects = CIB.Projects;
+
+			if (bProjects[base_folder_path]==undefined)
+				bProjects[base_folder_path] = {};
 			try {
 				//base
 				var CIB = moCI.Browser;
@@ -2457,24 +2525,18 @@ try {
 				var base_id = md5(base_folder_path);
 				if (config.log.full) console.log("createBrowserFolderView > ", base_folder_path );
 				var bProjects = CIB.Projects;
-				var bProjectsInFolder = bProjects[ base_folder_path ];
-
 
 				folderEle.setAttribute("id","base_folder_" + base_id );
 				folderEle.setAttribute("base_id",base_id);
 				folderEle.setAttribute("class","browser_project_category closed");
 
-                var numprojects = 0;
-                if (bProjectsInFolder) {
-                    numprojects = Object.keys(bProjectsInFolder).length;
-                }
-
 				//label
 				var folderLabel = broDOM.createElement("LABEL");
+				folderLabel.setAttribute( "id", "base_folder_label_"+base_id );
 				folderLabel.setAttribute( "base_id", base_id );
 				folderLabel.setAttribute( "title", base_folder_path );
 				folderLabel.setAttribute( "class", "category_folder_label" );
-				folderLabel.innerHTML = path.basename(base_folder_path )+"   ("+numprojects+")";
+				folderLabel.innerHTML = path.basename(base_folder_path );//+" loading...";
 
 				folderLabel.addEventListener( "click", function(event) {
 
@@ -2500,21 +2562,7 @@ try {
 				samplesContainer.setAttribute( "class", "browser_project_category_container" );
 				folderEle.appendChild( samplesContainer );
 
-				//now feed with projects .mol
-				if (base_folder_path=="Recents") {
-					//its an array of ( [index] = molfile )
-					for( var	base_mol_index=bProjectsInFolder.length-1,base_mol_file=bProjectsInFolder[base_mol_index];
-								base_mol_index>=0 && base_mol_file;
-								base_mol_index--,base_mol_file=bProjectsInFolder[base_mol_index] ) {
-						var molEleProject = CIB.createProjectItem( base_mol_file );
-						samplesContainer.appendChild( molEleProject );
-					}
-				} else {
-					for( var base_mol_file in bProjectsInFolder ) {
-						var molEleProject = CIB.createProjectItem( base_mol_file );
-						samplesContainer.appendChild( molEleProject );
-					}
-				}
+
 			} catch(err) {
 				console.error("createProjectFolderView > ",err);
 			}
@@ -2536,22 +2584,14 @@ try {
 				}
 				if (config.log.full) console.log("updateBrowser in: ", browser_div);
 
-				var check_for = [ config.desktop_path, config.basic_path, config.sample_path, config.moldeouser_path ];
+				var check_for = [ config.moldeorecents_path, config.desktop_path, config.basic_path, config.sample_path, config.moldeouser_path ];
 
 				/* SCAN FOLDERS */
 				for( var i in check_for ) {
 					var base_folder = check_for[i];
-					//iterate over
-					CIB.scanProjectsFolder( base_folder );
-				}
-
-				/* CREATE PROJECTS LAUNCHERS */
-				var base_id = 0;
-				for( var base_folder_name in CIB.Projects ) {
-
-					var folderEle = CIB.createProjectFolderView( base_folder_name );
-					base_id+= 1;
+					var folderEle = CIB.createProjectFolderView( base_folder );
 					browser_div.appendChild( folderEle );
+					CIB.scanProjectsFolder( base_folder, CIB.updateProjectFolderView );
 				}
 
 				/* LEAVE OPEN THE "RECENT" FOLDER */
@@ -2563,11 +2603,22 @@ try {
 			}
 		},
 		"SaveRecents": function( filename ) {
+
+			var CIB = moCI.Browser;
+			var broDOM = CIB.document;
+			var bProjects = CIB.Projects;
+			bProjects[config.moldeorecents_path][filename] = false;
+			moCI.linkProject( filename, config.moldeorecents_path+"/" );
+			CIB.scanProjectsFolder( config.moldeorecents_path, CIB.updateProjectFolderView );
+			console.log( "OpenProject:" , moCI.filename);
+
+/**
 			if (filename && moCI.Browser.Projects.Recents) moCI.Browser.Projects.Recents.push( filename );
 			for( var mol_index in Browser.Projects.Recents ) {
 				var recent_mol_file = Browser.Projects.Recents[mol_index];
 
 			}
+*/
 		},
 		"Functions": {
 
@@ -2783,14 +2834,10 @@ try {
 
 	},
 	"OpenProject": function( filename ) {
-		moCI.filename = ' -mol "'+filename+'" ';
 		//filename = filename.replace( /\'/g , '"');
 		//filename = filename.replace( /\\/g , '\\\\');
 
-		console.log( "OpenProject:" , moCI.filename);
-
-		moCI.launchPlayer( moCI.filename );
-
+		moCI.launchPlayer( ' -mol "'+filename+'" ' );
 		moCI.Browser.SaveRecents( filename );
 		moCI.ReloadInterface();
 	},
@@ -3096,6 +3143,8 @@ try {
 		//setTimeout( function() { win.reloadDev(); }, 2000 );
 	},
 	"launchPlayer": launchPlayer,
+	"linkProject": linkProject,
+	"unlinkProject": unlinkProject,
 	"fs": fs,
 	"console": console,
 };

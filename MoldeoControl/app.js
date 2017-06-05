@@ -178,7 +178,12 @@ screen {
 	$(".x_minimize").on("click", function(event) { win.minimize(); /*gui.App.quit();*/ });
 	$(".x_maximize").on("click", function(event) { win.maximize(); /*gui.App.quit();*/ });
 	$(".x_debug").on("click", function(event) { win.showDevTools(); /*gui.App.quit();*/ });
-	$(".x_close").on("click", function(event) { win.close(); /*gui.App.quit();*/ });
+	$(".x_close").on("click", function(event) {
+    win.close();
+  /*gui.App.quit();*/
+
+
+});
 
 
     var drage = document.getElementById("titlebar");
@@ -226,7 +231,8 @@ screen {
 		try {
 			if (moCI.Browser.winBrowser)
 				moCI.Browser.winBrowser.close(true);
-			this.close(true);
+			//this.close(true);
+      this.close(true);
 		} catch(err) {
 			alert(err);
 			this.close(true);

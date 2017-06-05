@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "Moldeo 1.0 Controller for Moldeo Player",
   "main": "MoldeoControl.html",
-  "single-instance": true,
-  "always-on-top": true,
+  "single-instance": false,
+  "always-on-top": false,
   "window": {
     "icon": "moldeocontrol.png",
     "show": true,

@@ -23,6 +23,19 @@ body {
 }
 
 
+.glyphicon-remove-sign:before {
+    color: white;
+    float: right;
+    font-size: 14px;
+    margin: 3px;
+}
+
+.glyphicon-remove-sign {
+  color: white;
+  float: right;
+  font-size: 14px;
+  margin: 3px;
+}
 
 /*
 .titlebar {
@@ -281,6 +294,11 @@ button.fxselected:hover:after {
   color: #0FF !important;
 }
 
+.enabled {
+  border-width: 1px !important;;
+  border-color: #0FF !important;
+}
+
 .key_button,
 .key_button.object_disabled {
 	width: 34%;/*44px*/
@@ -331,10 +349,6 @@ button.fxselected:hover:after {
 
 .circle_button.circle_selected {
 	background-image: url( buttons/circle_button_on.svg );
-}
-
-.present {
-	color: #CCF;
 }
 
 .special_button {
@@ -2739,6 +2753,8 @@ div.buttons .buttons {
 		color: #FFF;
 		font-size: 11px;
 		margin-left: 2px;
+    border-radius: 8px 0px 8px 0px;
+    min-height: 12px !important;
 	}
 
 
@@ -2752,6 +2768,8 @@ div.buttons .buttons {
 		color: #FFF;
 		font-size: 11px;
 		margin-left: 2px;
+    border-radius: 8px 0px 8px 0px;
+    min-height: 12px !important;
 	}
 
 	/* BEHAVIOUR INSPECTOR */
@@ -2763,6 +2781,8 @@ div.buttons .buttons {
 		color: #FFF;
 		font-size: 11px;
 		margin-left: 10px;
+    border-radius: 8px 0px 8px 0px;
+    min-height: 12px !important;
 	}
 
 

@@ -100,13 +100,35 @@ launchPlayer = function( project_file ) {
 	}
 	moCI.console.log("launchPlayer > player_full_path:",config.player_full_path," project_file:",project_file );
 
-	return callProgram( '"'+config.player_full_path+'"', project_file, function(error,stdout,stderr) {
-		//console.log("Calling callback for: project_file: " + project_file);
+	return callProgram( '""'+config.player_full_path+'"', project_file, function(error,stdout,stderr) {
+		console.log("::launchPlayer > Calling callback for: project_file: ",project_file);
 		if (error) {
-			moCI.console.error(error);
+			moCI.console.error(launchPlayer, error);
 		}
 	} );
 
+}
+
+linkProject = function( target_project_path, symbolic_link_path, callback ) {
+
+  return callProgram( 'ln', " -s "+target_project_path+" "+symbolic_link_path, function(error,stdout,stderr) {
+		//console.log("Calling callback for: project_file: " + project_file);
+		if (error) {
+			moCI.console.error("linkProject: ", error, stderr);
+		}
+    if (callback) callback(error,stdout,stderr);
+	} );
+}
+
+unlinkProject = function( symbolic_link_path, callback ) {
+
+  return callProgram( 'rm', symbolic_link_path, function(error,stdout,stderr) {
+		//console.log("Calling callback for: project_file: " + project_file);
+		if (error) {
+			moCI.console.error("unlinkProject: ", error, stderr);
+		}
+    if (callback) callback(error,stdout,stderr);
+	} );
 }
 
 launchRender = function( render_call, options ) {
