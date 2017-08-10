@@ -145,12 +145,12 @@ void draw()
    float maxlowi = 0;
    
    float minLowFrequency = 50.0;
-   float maxLowFrequency = 400.0;
+   float maxLowFrequency = 200.0;
 
    float minMedFrequency = 400.0;
-   float maxMedFrequency = 2000.0;
+   float maxMedFrequency = 1500.0;
 
-   float minHighFrequency = 2000.0;
+   float minHighFrequency = 1800.0;
    float maxHighFrequency = 100000.0;
     
   textSize(12);
