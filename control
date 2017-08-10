@@ -1,0 +1,15 @@
+
+Source: moldeonet
+Section: graphics
+Priority: optional
+Maintainer: Moldeo Software <info@moldeo.org>
+Build-Depends: debhelper (>=9),autotools-dev
+Standards-Version: 3.9.6
+Homepage: http://www.moldeo.org
+
+Package: moldeonet
+Architecture: amd64
+Depends: ${misc:Depends}, moldeoplayer
+Description: Moldeonet
+ Moldeo Net is a set of interface controls, bash scripts and other tools for Moldeo Software.
+ MoldeoControl, MoldeoNode, Utils, MoldeoScene, Molduino
