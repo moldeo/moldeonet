@@ -1,5 +1,5 @@
 #!/bin/bash
-
+ARG1=$1
 platform='unknown'
 processor='unknown'
 unamestr=`uname`
@@ -18,4 +18,4 @@ echo "copying config.init.js to moldeocontrol"
 #if [[ $platform == 'linux' ]]; then
 #elif [[ $platform == 'freebsd' ]]; then
 #fi
-@nwjsexe@ @moldeocontrolapp@ --enable-transparent-visuals --disable-gpu
+@nwjsexe@ @moldeocontrolapp@ $1 --enable-transparent-visuals --disable-gpu
