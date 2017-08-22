@@ -552,7 +552,7 @@ var ConsoleInterface = {
 		},
 		"Register": function() {
 			if (config.log.full) console.log("RegisterPlayerButtons");
-			
+
 
 			$(".objects_selector_panel>button").each( function(index,element) {
 				element.setAttribute( "title", "");
@@ -2579,14 +2579,21 @@ var ConsoleInterface = {
 				}
 				if (config.log.full) console.log("updateBrowser in: ", browser_div);
 
-				var check_for = [ config.moldeorecents_path, config.desktop_path, config.basic_path, config.sample_path, config.moldeouser_path ];
+				var check_for = [ config.custom_path,
+					config.moldeorecents_path,
+					config.desktop_path,
+					config.basic_path,
+					config.sample_path,
+					config.moldeouser_path ];
 
 				/* SCAN FOLDERS */
 				for( var i in check_for ) {
 					var base_folder = check_for[i];
-					var folderEle = CIB.createProjectFolderView( base_folder );
-					browser_div.appendChild( folderEle );
-					CIB.scanProjectsFolder( base_folder, CIB.updateProjectFolderView );
+					if (base_folder!="") {
+						var folderEle = CIB.createProjectFolderView( base_folder );
+						browser_div.appendChild( folderEle );
+						CIB.scanProjectsFolder( base_folder, CIB.updateProjectFolderView );
+					}
 				}
 
 				/* LEAVE OPEN THE "RECENT" FOLDER */

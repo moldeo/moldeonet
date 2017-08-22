@@ -244,13 +244,31 @@ screen {
     RegisterAllButtonActions();
     if (gui.App.argv.length>=1) {
       filePath = gui.App.argv[0];
+      var stat;
       try {
-        var stat = moCI.fs.statSync(filePath);
+        stat = moCI.fs.statSync(filePath);
+        console.log(stat);
         if (stat.isFile()) {
+          console.log("Try to open project: ", filePath);
           moCI.OpenProject( filePath );
+        } else {
+          if (stat.isDirectory()) {
+            config.custom_path = filePath;
+            moCI.Browser.Open();
+          } else {
+            moCI.Browser.Open();
+          }
+
         }
       } catch(err) {
-        moCI.Browser.Open();  
+        if (err) {
+          console.log("Err:",err.message);
+          if (err.code=="ENOENT") {
+            moCI.Browser.Open();
+          }
+        }
+      } finally {
+
       }
     } else {
       moCI.Browser.Open();

@@ -201,6 +201,7 @@ var config = {
 		//config.bin_path = osenv.path();
 		config.user = osenv.user();
 		config.home_path = osenv.home();
+    config.custom_path = "";
 
 		if (options) {
 			for( var option in options ) {
