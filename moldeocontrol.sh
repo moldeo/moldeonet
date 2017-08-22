@@ -1,5 +1,5 @@
 #!/bin/bash
-
+ARG1=$1
 platform='unknown'
 processor='unknown'
 unamestr=`uname`
@@ -18,4 +18,4 @@ cp config.init.js MoldeoControl/config.init.js
 #if [[ $platform == 'linux' ]]; then
 #elif [[ $platform == 'freebsd' ]]; then
 #fi
-nwjs/nw MoldeoControl --enable-transparent-visuals --disable-gpu
+nwjs/nw MoldeoControl $1 --enable-transparent-visuals --disable-gpu

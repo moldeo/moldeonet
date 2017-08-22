@@ -122,7 +122,8 @@ function selectEffect( selkey ) {
 		OscMoldeoSend( { 'msg': '/moldeo','val0': 'effectgetstate', 'val1': MOB_label } );
 	} else OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectgetstate', 'val1': MOB_label } );
 
-	if (dSEL) activateClass( dSEL, "fxselected" );
+	//TODO: CHECK
+	//if (dSEL) activateClass( dSEL, "fxselected" );
 }
 
 function selectEditorEffect( selkey ) {
@@ -372,7 +373,7 @@ function RegisterKeyboardControl() {
 			}
 			if (!isNaN(Number(key))) {
 				//show all preconfigs window selector
-				if (Number(key)>=2) Control.Functions.showAllPreconfigs();
+				//if (Number(key)>=2) Control.Functions.showAllPreconfigs();
 				if (document.getElementById("button_"+keyU+"_" ))
 					document.getElementById("button_"+keyU+"_" ).click();
 			}
@@ -699,11 +700,12 @@ function UpdateSceneStateInfo( MOB_label, NewIndex ) {
 	var dText = document.getElementById("sequence_state_indicator_input");
 	var dNextText = document.getElementById("sequence_state_indicator_input_next");
 
-// scene_state_number
-	if (NewIndex!=undefined)
+	// scene_state_number
+	if (NewIndex!=undefined) {
 		Editor.PreconfigsSelected[ MOB_label ] = NewIndex;
-	else
+	} else {
 		NewIndex = Editor.PreconfigsSelected[ MOB_label ];
+	}
 
 	NextIndex = NewIndex + 1;
 	//TODO: esto debe actualizarse por un feedback del moldeoplayer (effectgetstate)
@@ -1034,7 +1036,8 @@ function selectEditorSound( moblabel, param_name, preconfig ) {
 	} catch(err) {
 		alert(err);
 	}
-/*
+
+	/*
 	var audio_edition = document.getElementById("audio_edition");
 	if (audio_edition==undefined) return;
 
@@ -2733,7 +2736,7 @@ function CreateSliderInspector( inspectorElement, moblabel, paramName, paramType
 	var Param = Params[paramName];
 	var paramValue = Param["pvals"][preconfig];
 	var paramDefinition = Param.pdef;
-/*
+	/*
 	var datav = paramValue[sub]["value"];
 	var datavDef = paramValue[sub]["value"];
 
@@ -2741,7 +2744,7 @@ function CreateSliderInspector( inspectorElement, moblabel, paramName, paramType
 	if (sub>0) subs="_"+sub;
 	var selectortype = paramType+subs;
 	var selector = paramName+subs;
-*/
+	*/
 	var inputInspector;
 	var inputInspectorName;
 

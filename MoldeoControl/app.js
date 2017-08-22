@@ -186,13 +186,13 @@ screen {
 });
 
 
-    var drage = document.getElementById("titlebar");
+  var drage = document.getElementById("titlebar");
 	if (drage && config.platform=="linux") {
-		drage.addEventListener('dragstart', handleDragStart, true);
-		drage.addEventListener('dragenter', handleDragEnter, true);
-		drage.addEventListener('dragover', handleDragOver, true);
-		drage.addEventListener('dragleave', handleDragLeave, true);
-		drage.addEventListener('dragend', handleDragEnd, true);
+  	drage.addEventListener('dragstart', handleDragStart, true);
+  	drage.addEventListener('dragenter', handleDragEnter, true);
+  	drage.addEventListener('dragover', handleDragOver, true);
+  	drage.addEventListener('dragleave', handleDragLeave, true);
+  	drage.addEventListener('dragend', handleDragEnd, true);
 	}
 	gui.Window.get().show();
 	$(document.getElementsByTagName("body")[0]).toggleClass(config.platform);
@@ -202,8 +202,8 @@ screen {
   /** CREATE MENU SO WE HAVE COPY/PASTE in MAC!!! */
   if (config.IsOsx()) {
     // Create sub-menu
-  var menu = new gui.Menu({'type': 'menubar'});
-  var menuItems = new gui.Menu();
+    var menu = new gui.Menu({'type': 'menubar'});
+    var menuItems = new gui.Menu();
 
     menuItems.append(new gui.MenuItem({ label: 'Custom Menu Item 1' }));
     menuItems.append(new gui.MenuItem({ label: 'Custom Menu Item 2' }));
@@ -240,11 +240,19 @@ screen {
 
 	});
 
-	if (moCI) {
-		RegisterAllButtonActions();
-        moCI.Browser.Open();
-		setTimeout( moCI.Updater.Functions.checkMoldeoLastVersion, 1000 );
-	}
+  if (moCI) {
+    RegisterAllButtonActions();
+    if (gui.App.argv.length>1) {
+      filePath = gui.App.argv[0];
+      var stat = moCI.fs.statSync(filePath);
+      if (stat.isFile()) {
+        moCI.OpenProject( filePath );
+      }
+    } else {
+      moCI.Browser.Open();
+    }
+    setTimeout( moCI.Updater.Functions.checkMoldeoLastVersion, 1000 );
+  }
 
 	OscMoldeoSend( { 'msg': '/moldeo','val0': 'consoleget'} );
 

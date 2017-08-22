@@ -1,6 +1,7 @@
 var md5 = require('md5-node');
 
 var ConsoleInterface = {
+
 	Options: {
 		"MAX_N_PRECONFIGS": 10,
 		"GetMaxPreconfigs": function( MOB_label ) {
@@ -551,6 +552,7 @@ var ConsoleInterface = {
 		},
 		"Register": function() {
 			if (config.log.full) console.log("RegisterPlayerButtons");
+			
 
 			$(".objects_selector_panel>button").each( function(index,element) {
 				element.setAttribute( "title", "");
@@ -1456,9 +1458,8 @@ var ConsoleInterface = {
         }
 			}
 
-/*
+			/*
 			$(".objects_editor_panel button").each( function(index,element) {
-
 			});	*/
 
 			for( var button in Editor.Buttons ) {
@@ -2343,17 +2344,14 @@ var ConsoleInterface = {
 		},
 		"scanProjectsFolder": function(base_folder, callback ) {
 			//* check: https://nodejs.org/api/path.html*/
-
 			if (config.log.full) console.log("loadBrowserFolder(",base_folder,") check https://nodejs.org/api/path.html");
 			moCI.Browser.Projects[base_folder] = {}
 			try {
-
-        moCI.fs.mkdir( base_folder, function (err) {
-
-          //if (err) console.error( "making dir: " + base_folder, err );
-try {
-//          moCI.fs.walk( base_folder, 0x0777, function( filepath, stat ) {
-	        moCI.fs.walk( base_folder, 0x0777, function( filepath, stat ) {
+				moCI.fs.mkdir( base_folder, function (err) {
+					//if (err) console.error( "making dir: " + base_folder, err );
+					try {
+						//          moCI.fs.walk( base_folder, 0x0777, function( filepath, stat ) {
+	        	moCI.fs.walk( base_folder, 0x0777, function( filepath, stat ) {
               //console.log("walk call:", filepath);
               if (stat.isFile()) {
                 //check if it's a .mol project
@@ -2381,13 +2379,10 @@ try {
               }
               return false;
           });
-} catch(err) {
-				console.error("fswalk: ",err);
-}
-
-
-        } );
-
+					} catch(err) {
+						console.error("fswalk: ",err);
+					}
+ 				});
 			} catch(err) {
 				console.error("loadBrowserFolder: ",err);
 				//alert(err);
@@ -2603,7 +2598,6 @@ try {
 			}
 		},
 		"SaveRecents": function( filename ) {
-
 			var CIB = moCI.Browser;
 			var broDOM = CIB.document;
 			var bProjects = CIB.Projects;
@@ -2611,18 +2605,14 @@ try {
 			moCI.linkProject( filename, config.moldeorecents_path+"/" );
 			CIB.scanProjectsFolder( config.moldeorecents_path, CIB.updateProjectFolderView );
 			console.log( "OpenProject:" , moCI.filename);
-
-/**
-			if (filename && moCI.Browser.Projects.Recents) moCI.Browser.Projects.Recents.push( filename );
-			for( var mol_index in Browser.Projects.Recents ) {
-				var recent_mol_file = Browser.Projects.Recents[mol_index];
-
-			}
-*/
+						/**
+						if (filename && moCI.Browser.Projects.Recents) moCI.Browser.Projects.Recents.push( filename );
+						for( var mol_index in Browser.Projects.Recents ) {
+							var recent_mol_file = Browser.Projects.Recents[mol_index];
+						}
+						*/
 		},
-		"Functions": {
-
-		}
+		"Functions": {}
 	},
 
 	/**
@@ -2769,7 +2759,7 @@ try {
 		moCI.Project = info;
 		moCI.mapSelectionsObjectsByLabel = {};
 		moCI.mapSelectionsObjects = {};
-/*
+		/*
 		if (moCI.Project.MapEffects==undefined) return;
 
 		for(var label in moCI.Project.MapEffects) {
@@ -2781,7 +2771,7 @@ try {
 			if (keyname!="" && moCI.mapSelectionsObjects)
 				moCI.mapSelectionsObjects[ keyname ] = label;
 		}
-*/
+		*/
 		if (moCI.Project.MapObjects==undefined) return;
 
 		for(var label in moCI.Project.MapObjects) {
