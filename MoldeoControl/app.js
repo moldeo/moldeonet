@@ -242,11 +242,15 @@ screen {
 
   if (moCI) {
     RegisterAllButtonActions();
-    if (gui.App.argv.length>1) {
+    if (gui.App.argv.length>=1) {
       filePath = gui.App.argv[0];
-      var stat = moCI.fs.statSync(filePath);
-      if (stat.isFile()) {
-        moCI.OpenProject( filePath );
+      try {
+        var stat = moCI.fs.statSync(filePath);
+        if (stat.isFile()) {
+          moCI.OpenProject( filePath );
+        }
+      } catch(err) {
+        moCI.Browser.Open();  
       }
     } else {
       moCI.Browser.Open();
