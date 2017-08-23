@@ -231,8 +231,8 @@ screen {
 		try {
 			if (moCI.Browser.winBrowser)
 				moCI.Browser.winBrowser.close(true);
-			//this.close(true);
-      this.close(true);
+      //this.close(true);
+      gui.App.quit();
 		} catch(err) {
 			alert(err);
 			this.close(true);
@@ -245,20 +245,33 @@ screen {
     if (gui.App.argv.length>=1) {
       filePath = gui.App.argv[0];
       var stat;
+      var mol_defined = (filePath.indexOf(".mol")==(filePath.length-4) );
+      if (mol_defined) {
+        try {
+          stat = moCI.fs.statSync(filePath);
+        } catch(err) {
+          if (err) {
+            console.log("(.mol) Err:",err.message);
+            if (err.code=="ENOENT") {
+              pwdDir = gui.App.argv[1];
+              filePath = pwdDir+"/"+filePath;
+            }
+          }
+        }
+      }
+
       try {
         stat = moCI.fs.statSync(filePath);
-        console.log(stat);
-        if (stat.isFile()) {
-          console.log("Try to open project: ", filePath);
-          moCI.OpenProject( filePath );
+        console.log("Stat:",filePath,stat);
+        if (stat.isDirectory()) {
+          config.custom_path = filePath;
+          moCI.Browser.Open();
         } else {
-          if (stat.isDirectory()) {
-            config.custom_path = filePath;
-            moCI.Browser.Open();
-          } else {
-            moCI.Browser.Open();
+          //check if it is a .mol
+          if (stat.isFile()) {
+            console.log("Try to open project ["+filePath+"]");
+            moCI.OpenProject( filePath );
           }
-
         }
       } catch(err) {
         if (err) {

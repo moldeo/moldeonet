@@ -252,6 +252,8 @@ var config = {
       config.moldeorecents_path = config.moldeouser_path+"/.recents";
 			config.desktop_path = config.home_path+"/Desktop";
 			config.moldeo_version = config.moldeo_path+"/moldeoversion.txt";
+      console.log("fullArgv:",gui.App.fullArgv," dataPath:",gui.App.dataPath," process.execPath:",process.execPath,"process.cwd():",process.cwd());
+      console.log("config",config);
 		}
 
 
