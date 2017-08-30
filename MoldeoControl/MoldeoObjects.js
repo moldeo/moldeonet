@@ -1148,6 +1148,12 @@ var ConsoleInterface = {
 			"buttonED_PreviewShot": {
 				"click": function(event) { moCI.PreviewShot(); },
 			},
+			"buttonED_Synchronizer": {
+				"click": function(event) {
+					if (config.log.full) console.log("buttonED_Synchronizer > ");
+					moCI.Synchronizer.Open();
+				},
+			},
 			"toggle_third_editor_effects": {
 				"click": function(event) {
 					$("#third_editor_effects").toggle();
@@ -2715,12 +2721,30 @@ var ConsoleInterface = {
 		},
 	},
 
+	/**
+	*   SINCHRONIZER (server for synchronizer objects)
+	*
+	*   All members and functions related to the project browser.
+	*
+	*   TODO:
+	*/
+	Synchronizer: {
+		winBrowser: null,
+		"Open": function() {
+			if (moCI.Synchronizer.winBrowser==null) {
+				moCI.Synchronizer.winBrowser = gui.Window.open('MoldeoSynchronizer.html', config.browser_window_options );
+			}
+		},
+	},
+
 	mapSelectionsObjects: {
 	},
 
 	mapSelectionsObjectsByLabel: {
 
 	},
+
+
 
 	/**GENERAL CONSOLE FUNCTIONS*/
 	"UpdateState": function( info ) {
@@ -3157,6 +3181,7 @@ var Options = moCI.Options;
 var Control = moCI.Control;
 var Editor = moCI.Editor;
 var Scenes = moCI.Scenes;
+var Synchronizer = moCI.Synchronizer;
 
 var sliderMessages = {
 	'channel_alpha': {

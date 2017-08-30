@@ -1753,6 +1753,33 @@ div.buttons .buttons {
 	background-image: url(buttons/button_PreviewShot_on.svg);
 }
 
+#buttonED_Synchronizer {
+  display: block;
+  position: relative;
+  left: 0px;
+  top: 0px;
+  width: 18px;
+  height: 20px;
+}
+.button_Synchronizer {
+	background-image: url(buttons/button_Synchronizer.svg);
+}
+
+.button_Synchronizer:active,
+.button_Synchronizer_on {
+	background-image: url(buttons/button_Synchronizer.svg);
+}
+
+body.synchronizer {
+  background-color: white !important;
+}
+.if_synchronizer {
+  position: fixed;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+}
+
 #dropdown_moreactions {
   display: block;
   position: absolute;
