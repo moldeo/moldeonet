@@ -13,7 +13,7 @@ var storage =   multer.diskStorage({
 var upload = multer({ storage : storage}).single('file');
 
 app.get('/',function(req,res){
-  res.sendFile(__dirname + "/MoldeoSynchronizer.html");
+  res.sendFile( "./MoldeoSynchronizer.html");
 });
 
 app.post('/api/file',function(req,res){
@@ -27,8 +27,8 @@ app.post('/api/file',function(req,res){
   });
 });
 
-app.listen(3000,function(){
-  console.log("Working on port 3000");
+app.listen(8001,function(){
+  console.log("Working on port 8001");
 });
 
 /*var connect = require('connect');
