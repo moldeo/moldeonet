@@ -20,10 +20,29 @@ var port_sync = 8001;
 
 
 var moCI = {}
-var projectdir = '/media/DATAY/LatirMoldeo/';
-var projectlauncher = projectdir+'launch.sh';
-var projectlauncherrecord = projectdir+'launchrecord.sh';
+var isosx = "";
+var projectbase = '/media/DATAY/';
+var projectdir = projectbase + 'LatirMoldeo/';
+var projectlauncher = projectdir+'launch'+isosx+'.sh';
+var projectlauncherrecord = projectdir+'launchrecord'+isosx+'.sh';
 var uploadfolder = projectdir+'latidos';
+
+function resetpath() {
+  if (moCI.config && moCI.config.platform) {
+    if (moCI.config.platform=="mac" || moCI.config.platform=="osx" || moCI.config.platform.indexOf("darwin")>=0) {
+      isosx = "osx";
+      projectbase = '/Applications/';
+    } else {
+      isosx = "";
+      projectbase = '/media/DATAY/';
+    }
+  }
+
+  projectdir = projectbase + 'LatirMoldeo/';
+  projectlauncher = projectdir+'launch'+isosx+'.sh';
+  projectlauncherrecord = projectdir+'launchrecord'+isosx+'.sh';
+  uploadfolder = projectdir+'latidos';
+}
 
 var storage =   multer.diskStorage({
   destination: function (req, file, callback) {
@@ -68,6 +87,7 @@ BODY+="<hr><br>";
   //console.log("win:", JSON.stringify(windowMap["win"]));
   //console.log("moCI:", JSON.stringify(windowMap["moCI"].config));
   moCI = windowMap["moCI"];
+  resetpath();
 
   moCI.fs.walk( uploadfolder, 0x0777, function( filepath, stat ) {
     console.log("walk call:", filepath);
@@ -98,7 +118,7 @@ app.get('/api/launch',function(req,res){
   var launcherrecord = projectlauncherrecord;
   var filepath = query.filepath;
   var filename = query.filename;
-  res.send( '<html><body style="background-color:white;">' +launcher +' ' + filepath+'</body></html>' );
+  res.send( '<html><body style="background-color:white;">' +launcher +' ' + filepath+' <span onclick="javascript:window.close();">[CERRAR]</span></body></html>' );
 
   moCI.callProgram( '"'+launcher+'"', filepath, function(error,stdout,stderr) {
     console.log("::launch.sh > Calling callback for: filepath: ",filepath);
@@ -106,13 +126,14 @@ app.get('/api/launch',function(req,res){
       moCI.console.error(launcher, JSON.stringify(error));
     }
   } );
-
+/*
   moCI.callProgram( '"'+launcherrecord+'"', filename, function(error,stdout,stderr) {
     console.log("::launchrecord.sh > Calling callback for: filename: ",filename);
     if (error) {
       moCI.console.error(launcherrecord, JSON.stringify(error));
     }
-  } );
+  } );*/
+  moCI.launchRenderAudio('"'+launcherrecord+'" '+filename);
 
 });
 

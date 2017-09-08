@@ -1150,7 +1150,8 @@ var ConsoleInterface = {
 			},
 			"buttonED_Synchronizer": {
 				"click": function(event) {
-					if (config.log.full) console.log("buttonED_Synchronizer > ");
+					//if (config.log.full)
+					console.log("buttonED_Synchronizer > ");
 					moCI.Synchronizer.Open();
 				},
 			},
@@ -2733,6 +2734,8 @@ var ConsoleInterface = {
 		"Open": function() {
 			if (moCI.Synchronizer.winBrowser==null) {
 				moCI.Synchronizer.winBrowser = gui.Window.open('MoldeoSynchronizer.html', config.browser_window_options );
+			} else {
+				moCI.Synchronizer.winBrowser = gui.Window.open('MoldeoSynchronizer.html', config.browser_window_options );
 			}
 		},
 	},
@@ -3170,6 +3173,7 @@ var ConsoleInterface = {
 	"console": console,
 	"config": config,
 	"callProgram": callProgram,
+	"launchRenderAudio": launchRenderAudio,
 };
 
 var MCI = ConsoleInterface;

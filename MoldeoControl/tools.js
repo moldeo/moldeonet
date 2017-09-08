@@ -230,6 +230,105 @@ launchRender = function( render_call, options ) {
 	}
 }
 
+launchRenderAudio = function( render_call, options ) {
+
+	console.log("launchRenderAudio: ", render_call);
+
+	if (options=="" || options==undefined) options = {};
+
+	options["render_call"] = render_call;
+	options["bash_render_call"] = "";
+
+	try {
+
+		if (config.platform.indexOf("win")==0) {
+			options["bash_render_call"] = config.home_path+"/render_audio.bat";
+		} else if (config.platform=="linux") {
+			options["bash_render_call"] = config.home_path+"/render_audio.sh";
+		} else if (config.platform=="mac" || config.platform=="osx" || config.platform.indexOf("darwin")>=0) {
+			options["bash_render_call"] = config.home_path+"/render_audio.sh";
+		} else {
+			alert("platform not recognized:"+config.platform);
+			return false;
+		}
+
+		fd = fs.openSync( options["bash_render_call"],"w" );
+		fs.writeSync( fd, options["render_call"] );
+
+		if (config.platform=="linux" || config.platform=="mac" || config.platform=="osx" || config.platform.indexOf("darwin")>=0) {
+			fs.chmodSync( options["bash_render_call"], 0755);
+		}
+		fs.closeSync(fd);
+
+		var renderprocess = spawn( options["bash_render_call"], []);
+
+		console.log( "stream stdout:",renderprocess.stdout );
+
+		renderprocess.stdout.setEncoding('ascii');
+		renderprocess.stdout.pause();
+		renderprocess.stdout.on('data', function(data) {
+			if (data) {
+				moCI.console.log( data, moCI.Render  );
+				if (moCI.Render.document==null) {
+					if (moCI.Render.winRender.window) {
+						moCI.Render.document = moCI.Render.winRender.window.document;
+					}
+				}
+				if (moCI.Render.document && moCI.Render.initialized) {
+					var logarea = moCI.Render.document.getElementById("logarea");
+					if (logarea) {
+						logarea.innerHTML+= data;
+						logarea.scrollTop = logarea.scrollHeight
+					}
+				}
+			}
+		});
+
+		// add an 'end' event listener to close the writeable stream
+		renderprocess.stdout.on('end', function(data) {
+			if (data) {
+				moCI.console.log( data );
+			}
+			moCI.console.log("renderprocess end stream!");
+			var logarea = moCI.Render.document.getElementById("logarea");
+			var error = 0;
+			if (logarea) {
+				if (logarea.innerHTML.indexOf("ERROR")>=0) {
+					error = true;
+				}
+			}
+			moCI.Render.ShowVideo(error);
+		});
+		// when the spawn child process exits, check if there were any errors and close the writeable stream
+		renderprocess.on('exit', function(code) {
+			if (code != 0) {
+				moCI.console.log('renderprocess Failed: ' + code);
+			}
+
+			moCI.console.log('renderprocess exited with code: ',code);
+		});
+
+		options["stdout_stream"] = renderprocess.stdout;
+
+		moCI.Render.Open( options );
+		/*
+		return moCI.fs.callProgram( new_render_call, options, function(error,stdout,stderr) {
+			//console.log("fs.launchRender > Calling callback for: project_file");
+			if (error) {
+				alert("No se pudo ejecutar el script de rendereo.");
+				moCI.console.error(error);
+			}
+			if (stdout) {
+				moCI.console.log(stdout);
+			}
+		} );
+		*/
+	} catch(err) {
+		alert(err);
+		console.error("launchRender > ",render_call,err);
+	}
+}
+
 function OpenExternalPage( URL ) {
 	try {
 		gui.Shell.openExternal(URL);
