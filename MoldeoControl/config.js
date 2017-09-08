@@ -88,6 +88,13 @@ var config = {
 			"darwin": ""
 		},
     },
+  "audio_video_pipes": {
+    "linux": {
+      "ogg": {
+        ogg: '"{GSTBIN}{GSTLAUNCH}" -v pulsesrc device=alsa_output.pci-0000_00_1b.0.analog-stereo.monitor ! audioconvert ! vorbisenc ! oggmux ! filesink location="{SOUNDNAME}.ogg"'
+      }
+    }
+  },
 	"render_video_pipes": {
 		"linux": {
 			"ogg": {

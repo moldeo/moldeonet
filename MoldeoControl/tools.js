@@ -241,10 +241,12 @@ function OpenExternalPage( URL ) {
 fs.walk = function (currentDirPath, permissions, callback) {
 //return;
     moCI.fs.readdirSync(currentDirPath).forEach(function(name) {
+      var filePath = "";
+      var stat  = {};
       try {
             if (name.indexOf(".")==0) return;
-            var filePath = path.join(currentDirPath, name);
-            var stat = moCI.fs.statSync(filePath);
+            filePath = path.join(currentDirPath, name);
+            stat = moCI.fs.statSync(filePath);
             //console.log( "currentDirPath:",currentDirPath, "name:",name );
             if (stat.isFile() && callback) {
                 //console.log( "filePath:",filePath,"stat:",stat," is a FILE! callback:",(callback!=undefined) );
@@ -260,7 +262,7 @@ fs.walk = function (currentDirPath, permissions, callback) {
             }
       } catch(err) {
         //alert("fs.walk:", err);
-        console.log("fs.walk: ", err);
+        console.log(" fs.walk Error: ", JSON.stringify(err), " currentDirPath:", currentDirPath, " name:",name, "filepath:",filePath );
       }
     });
 }

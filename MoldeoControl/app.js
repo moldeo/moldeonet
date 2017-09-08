@@ -290,6 +290,8 @@ screen {
   }
 
 	OscMoldeoSend( { 'msg': '/moldeo','val0': 'consoleget'} );
+  process.mainModule.exports.saveWindow('win', win);
+  process.mainModule.exports.saveWindow('moCI', moCI);
 
 	//$('[data-toggle="tooltip"]').tooltip();
 });

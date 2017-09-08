@@ -3168,6 +3168,8 @@ var ConsoleInterface = {
 	"unlinkProject": unlinkProject,
 	"fs": fs,
 	"console": console,
+	"config": config,
+	"callProgram": callProgram,
 };
 
 var MCI = ConsoleInterface;
