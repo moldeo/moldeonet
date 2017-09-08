@@ -118,7 +118,7 @@ app.get('/api/launch',function(req,res){
   var launcherrecord = projectlauncherrecord;
   var filepath = query.filepath;
   var filename = query.filename;
-  res.send( '<html><body style="background-color:white;">' +launcher +' ' + filepath+' <span onclick="javascript:window.close();">[CERRAR]</span></body></html>' );
+  res.send( '<html><body style="background-color:white;">' +launcher +' ' + filepath+' <a href="/api/close" onclick="javascript:window.close();">[CERRAR]</a></body></html>' );
 
   moCI.callProgram( '"'+launcher+'"', filepath, function(error,stdout,stderr) {
     console.log("::launch.sh > Calling callback for: filepath: ",filepath);
@@ -134,6 +134,10 @@ app.get('/api/launch',function(req,res){
     }
   } );*/
   moCI.launchRenderAudio('"'+launcherrecord+'" '+filename);
+
+});
+
+app.get('/api/close',function(req,res){
 
 });
 

@@ -263,7 +263,7 @@ launchRenderAudio = function( render_call, options ) {
 		var renderprocess = spawn( options["bash_render_call"], []);
 
 		console.log( "stream stdout:",renderprocess.stdout );
-
+    options["renderprocess"] = renderprocess;
 		renderprocess.stdout.setEncoding('ascii');
 		renderprocess.stdout.pause();
 		renderprocess.stdout.on('data', function(data) {

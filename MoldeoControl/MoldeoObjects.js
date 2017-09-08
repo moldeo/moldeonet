@@ -2672,6 +2672,8 @@ var ConsoleInterface = {
 						console.log("Render closing!");
 						moCI.Render.winRender = null;
 						moCI.Render.initialized = false;
+						if (moCI.Render.renderOptions["renderprocess"])
+							moCI.Render.renderOptions["renderprocess"].kill();
 						this.close(true);
 					});
 				}
