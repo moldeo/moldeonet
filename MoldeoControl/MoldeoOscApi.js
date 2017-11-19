@@ -22,6 +22,8 @@ var configOsc = {
 	}
 };
 
+
+
 var MoldeoApiReceiver = {
 
 	/** CONSOLE */
@@ -143,6 +145,10 @@ var MoldeoApiReceiver = {
 		if (config.log.full) console.log("paramget: ", message );
 		Editor.Update( message["target"], message["info"] );
 		Editor.UpdateEditorParam( message["target"], message["info"] );
+		var MOB = Editor.Objects[message["target"]];
+		if (MOB.fullgetparams) {
+			MoldeoApiReceiver.getparams( message["target"] );
+		}
 	},
 
 	/** VALUE */
@@ -166,23 +172,56 @@ var MoldeoApiReceiver = {
 		Editor.Update( message["target"], message["info"] );
 		OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectgetconfig', 'val1': '' + Editor.ObjectRequested + '' } );
 	},
+	"getparams": function( moblabel, full ) {
+		var MOB = Editor.Objects[moblabel];
+		if (full) MOB.fullgetparams = full;
+		var params = MOB["object"]["objectconfig"]["parameters"];
+		var preconfigs = MOB["object"]["objectconfig"]["preconfigs"];
+		for( var paramname in params ) {
+			if (params[paramname].pvals==undefined) {
+				OscMoldeoSend( { 'msg': '/moldeo','val0': 'paramget', 'val1': '' + moblabel + '', 'val2': paramname } );
+				return;
+			}
+		}
+		MOB.fullgetparams = false;
+		MoldeoApiReceiver.getpreconfigs( moblabel, true );
 
+	},
+	"getpreconfigs": function( moblabel, full ) {
+		var MOB = Editor.Objects[moblabel];
+		if (full) MOB.fullgetpreconfigs = full;
+		var preconfigs = MOB["object"]["objectconfig"]["preconfigs"];
+		for( var i = 0; i<preconfigs.length; i++ ) {
+			var prec = preconfigs[i];
+			if (prec.vidx==undefined) {
+				OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectgetpreconfig', 'val1': '' + moblabel + '', 'val2': Number(i) } );
+				return;
+			}
+		}
+		MOB.fullgetpreconfigs = false;
+	},
 	"objectgetconfig": function( message ) {
 		Editor.Update( message["target"], message["info"] );
 		//OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectgetpreconfig', 'val1': '' + Editor.ObjectRequested + '' } );
 		var MOB = Editor.Objects[Editor.ObjectRequested];
 		if (MOB) {
-      for(var paramname in MOB["object"]["objectconfig"]["parameters"] ) {
-        OscMoldeoSend( { 'msg': '/moldeo','val0': 'paramget', 'val1': '' + Editor.ObjectRequested + '', 'val2': paramname } );
-      }
-      for(var i = 0; i<MOB["object"]["objectconfig"]["preconfigs"].length; i++ ) {
-        OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectgetpreconfig', 'val1': '' + Editor.ObjectRequested + '', 'val2': Number(i) } );
-      }
+			MOB.fullgetparams = true;
+			MoldeoApiReceiver.getparams( Editor.ObjectRequested, true );
+      //for( var paramname in MOB["object"]["objectconfig"]["parameters"] ) {
+        //OscMoldeoSend( { 'msg': '/moldeo','val0': 'paramget', 'val1': '' + Editor.ObjectRequested + '', 'val2': paramname } );
+      //}
+      //for( var i = 0; i<MOB["object"]["objectconfig"]["preconfigs"].length; i++ ) {
+        //OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectgetpreconfig', 'val1': '' + Editor.ObjectRequested + '', 'val2': Number(i) } );
+      //}
 		}
 	},
 
 	"objectgetpreconfig": function( message ) {
 		Editor.Update( message["target"], message["info"] );
+		var MOB = Editor.Objects[message["target"]];
+		if (MOB.fullgetpreconfigs) {
+			MoldeoApiReceiver.getpreconfigs( message["target"] );
+		}
 	},
 
 	"objectgetstate": function( message ) {
@@ -339,5 +378,3 @@ var nhis = 0;
 oscServer = new osc.Server( configOsc.server.port, configOsc.server.host);
 oscClient = new osc.Client( configOsc.client.host, configOsc.client.port);
 oscServer.on('message', ReceiverFunction );
-
-

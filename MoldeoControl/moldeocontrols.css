@@ -2135,6 +2135,11 @@ body.synchronizer {
 			transition: all 1s;
 		}
 
+    #TEXTURE_object_edition {
+      width: 200px !important;
+      height: 100px !important;
+    }
+
 		.audio_edition {
 			position: relative;
 			margin-left: 0;
@@ -2165,6 +2170,11 @@ body.synchronizer {
 				height: 100%;
 			}
 
+      #TEXTURE_object_edition_image {
+        width: 160px !important;
+        height: 100px !important;
+      }
+
 			.audio_edition_image {
 				display: block;
 				position: absolute;
@@ -2182,7 +2192,8 @@ body.synchronizer {
 			}
 
 
-			#object_edition .object_edit {
+			#object_edition .object_edit,
+      #TEXTURE_object_edition .object_edit {
 				display: none;
 			}
 

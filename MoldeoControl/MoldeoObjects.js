@@ -3,7 +3,7 @@ var md5 = require('md5-node');
 var ConsoleInterface = {
 
 	Options: {
-		"MAX_N_PRECONFIGS": 10,
+		"MAX_N_PRECONFIGS": 11,
 		"GetMaxPreconfigs": function( MOB_label ) {
 
       ///cuenta la cantidad de preconfigs en este MOB_label
@@ -1201,6 +1201,29 @@ var ConsoleInterface = {
 
 				},
 			},
+			"TEXTURE_object_import": {
+				"click": function(event) {
+
+					if (config.log.full) console.log("TEXTURE_object_import > IMPORT IMAGE/OBJECT");
+
+					if (Editor.ObjectSelected=="" || Editor.ObjectSelected==undefined) {
+						alert("Debe seleccionar un efecto antes de importar una imagen.");
+						return;
+					}
+
+					var cfile = document.getElementById("importfile");
+
+					if (cfile) {
+						//cfile.setAttribute();
+						cfile.setAttribute("accept",".jpg,.png");
+						cfile.setAttribute("importobject","object_edition");
+						cfile.importobject = event.target.parentNode;
+						cfile.value = "";//so the value will change
+						cfile.click();
+					}
+
+				},
+			},
 			"object_refresh": {
 				"click": function(event) {
 
@@ -1564,7 +1587,7 @@ var ConsoleInterface = {
           ) {
         Editor.Preconfigs[MOB_label] = Config["preconfigs"];
       } else {
-        console.error("must call getpreconfig for each preconfig");
+        //console.error("must call getpreconfig for each preconfig");
         //return -1;
         missing = true;
       }
@@ -1576,7 +1599,7 @@ var ConsoleInterface = {
       for(var pname in Params ) {
         if ( Params[pname]["pdef"] ) {
         } else {
-          console.error("pname: ", pname, Params[pname]["pdef"]);
+          //console.error("pname: ", pname, Params[pname]["pdef"]);
           missing = true;
         }
       }
@@ -1987,17 +2010,22 @@ var ConsoleInterface = {
 							*/
 						} else if (param_name!=undefined && param_name!=false && param_name!="false") {
 
-							if ( ParamType=="TEXTURE" &&
-								( param_name=="texture" || param_name=="images") ) {
+							if ( ParamType=="TEXTURE") {
 
-								CreateTextureParameter( MOB_label, param_name, preconfigi );
-								CreateStandardParameter(MOB_label, param_name, preconfigi, psideWinPre );
+									if ( param_name=="texture" || param_name=="images") {
 
-							} else if ( ParamType=="TEXTURE" &&
-								( param_name=="movies") ) {
+										CreateTextureParameter( MOB_label, param_name, preconfigi );
+										CreateStandardParameter(MOB_label, param_name, preconfigi, psideWinPre );
 
-								CreateMovieParameter( MOB_label, param_name, preconfigi, psideWinPre );
-								CreateStandardParameter(MOB_label, param_name, preconfigi, psideWinPre );
+									} else if ( param_name=="movies") {
+
+										CreateMovieParameter( MOB_label, param_name, preconfigi, psideWinPre );
+										CreateStandardParameter(MOB_label, param_name, preconfigi, psideWinPre );
+									} else {
+
+										CreateImageTextureParameter( MOB_label, param_name, preconfigi );
+										CreateStandardParameter(MOB_label, param_name, preconfigi, psideWinPre );
+									}
 
 							} else if (param_name=="sound" && ParamType=="SOUND") {
 
@@ -2005,6 +2033,7 @@ var ConsoleInterface = {
 								CreateStandardParameter(MOB_label, param_name, preconfigi, psideWinPre );
 
 							} else if (ParamType=="TEXT"
+								|| ParamType=="SCRIPT"
 								|| ParamType=="TEXTURE"
 								|| ParamType=="SOUND"
 								|| ParamType=="OBJECT"
@@ -2672,8 +2701,9 @@ var ConsoleInterface = {
 						console.log("Render closing!");
 						moCI.Render.winRender = null;
 						moCI.Render.initialized = false;
-						if (moCI.Render.renderOptions["renderprocess"])
-							moCI.Render.renderOptions["renderprocess"].kill();
+						if (moCI.Render.renderOptions["renderprocess"]) {
+							//moCI.Render.renderOptions["renderprocess"].kill();
+						}
 						this.close(true);
 					});
 				}

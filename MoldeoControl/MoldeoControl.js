@@ -671,6 +671,14 @@ function UpdateValue( moblabel, param, preconf, value ) {
 	//Memorize Value!!!
 	valueMemorize( moblabel, param, preconf, value );
 
+	pdef = Editor.Parameters[moblabel][param]['pdef'];
+	if (pdef) {
+		if (pdef.t == "TEXTURE") {
+			if (value[0] && value[0]["v"])
+				UpdateImageTexture( moblabel, param, preconf, value[0]["v"] );
+		}
+	}
+
 	//REACTIVATE ACTIVE INSPECTOR SO VALUES ARE UPDATED
 	if (param=="texture") {
 		if (value[0] && value[0]["v"])
@@ -1091,6 +1099,31 @@ function drawParamImage( moblabel, param_name, preconfig ) {
 	}
 }
 
+function drawParamImageTexture( moblabel, param_name, preconfig ) {
+	try {
+		var EI = Editor.Images[ moblabel ];
+		var IMGOBJECTS = EI[param_name];
+		var IMGOBJECT = IMGOBJECTS["preconf_"+preconfig];
+
+		var object_edition = document.getElementById("TEXTURE_object_edition");
+		var object_edition_image = document.getElementById("TEXTURE_object_edition_image");
+
+		var canvas_image_context = object_edition_image.getContext("2d");
+		canvas_image_context.clearRect( 0,0, object_edition_image.width, object_edition_image.height);
+
+		if (IMGOBJECT && IMGOBJECT.img) {
+			object_edition.setAttribute("title", IMGOBJECT.img.filesrc );
+			if (IMGOBJECT.img.width>0 && IMGOBJECT.img.height>0) {
+				canvas_image_context.drawImage( IMGOBJECT.img, 0,0, object_edition_image.width, object_edition_image.height );
+			}
+		} else {
+			if (config.log.full) console.log("selectEditorImageTexture > no images in [",moblabel,"]");
+		}
+	}catch(err) {
+		console.error("drawParamImageTexture > ",err );
+	}
+}
+
 
 function fetchValue( moblabel, param_name, preconfig ) {
 	try {
@@ -1124,7 +1157,15 @@ function ValueToSrc( value ) {
 
 function fetchImageRemote( moblabel, param_name, preconfig ) {
 	var ParamValue = fetchValue( moblabel, param_name, preconfig );
-	if (ParamValue==false)  { console.error("fetchImage > no values for "+preconfig ); return false; }
+	if (ParamValue==false)  { console.error("fetchImageRemote > no values for "+preconfig ); return false; }
+	//send moldeo signal: for fetching image/thumbnail !!!
+	//same if we want to save remote image: we must transfer it... using mime???
+	return false;
+}
+
+function fetchImageTextureRemote( moblabel, param_name, preconfig ) {
+	var ParamValue = fetchValue( moblabel, param_name, preconfig );
+	if (ParamValue==false)  { console.error("fetchImageTextureRemote > no values for "+preconfig ); return false; }
 	//send moldeo signal: for fetching image/thumbnail !!!
 	//same if we want to save remote image: we must transfer it... using mime???
 	return false;
@@ -1138,6 +1179,13 @@ function onloadImage(event) {
 		selectEditorImage( m, p, i );
 };
 
+function onloadImageTexture(event) {
+	var m = event.target.moblabel;
+	var p = event.target.param_name;
+	var i = event.target.preconfig;
+	if (i==Editor.PreconfigSelected)
+		selectEditorImageTexture( m, p, i );
+};
 
 var global_refresh = false;
 
@@ -1185,6 +1233,7 @@ function fetchImage( moblabel, param_name, preconfig, remote ) {
 	}
 	return false;
 }
+
 
 /**
 *
@@ -1248,6 +1297,115 @@ function selectEditorImage( moblabel, param_name, preconfig ) {
 	*/
 }
 
+
+
+function fetchImageTexture( moblabel, param_name, preconfig, remote ) {
+	try {
+		if (remote) return fetchImageTextureRemote( moblabel, param_name, preconfig );
+
+		var ParamValue = fetchValue( moblabel, param_name, preconfig );
+		if (ParamValue==false)  {
+			console.error("fetchImageTexture > no values for "+preconfig );
+			return false;
+		}
+
+		var EI = Editor.Images; if (EI[ moblabel ]==undefined) EI[ moblabel ] = {};
+		var OEI = EI[ moblabel ]; if (OEI[ param_name ]==undefined) OEI[ param_name ] = {};
+		var OEIP = OEI[ param_name ];
+		var preconfidx = "preconf_"+preconfig;
+		var IMGOBJECT = OEIP[preconfidx];
+		if (IMGOBJECT==undefined) { OEIP[preconfidx] = {}; IMGOBJECT = OEIP[ preconfidx ]; }
+
+		if (IMGOBJECT) {
+			IMGOBJECT["src"] = ParamValue[0]["v"];
+			if (IMGOBJECT["img"]==undefined) {
+				IMGOBJECT["img"] = new Image();
+			}
+			IMGOBJECT["img"].moblabel = moblabel;
+			IMGOBJECT["img"].param_name = param_name;
+			IMGOBJECT["img"].preconfig = preconfig;
+			IMGOBJECT["img"].remote = remote;
+			IMGOBJECT["img"].onload = onloadImageTexture;
+			//using real-path for this image, if we are in local-control
+			var newsrc = ValueToSrc( ParamValue[0]["v"] );
+			if (IMGOBJECT["img"].filesrc!=newsrc || global_refresh) {
+			//if (newsrc) {
+				global_refresh = false;
+				IMGOBJECT["filesrc"] = newsrc;
+				IMGOBJECT["img"].filesrc = newsrc;
+				IMGOBJECT["img"].src = newsrc;
+
+			}
+			return true;
+		}
+	} catch(err) {
+		console.error("fetchImageTexture > ",err);
+	}
+	return false;
+}
+
+
+/**
+*
+*/
+function selectEditorImageTexture( moblabel, param_name, preconfig ) {
+	try {
+		if (config.log.full) console.log("selectEditorImageTexture(",moblabel,param_name,preconfig,")");
+
+		var object_edition = document.getElementById("TEXTURE_object_edition");
+
+		if ( fetchImageTexture( moblabel, param_name, preconfig ) ) {
+
+			object_edition.setAttribute("moblabel", moblabel );
+			object_edition.setAttribute("paramname", param_name );
+			object_edition.setAttribute("preconfig", preconfig );
+
+			//unselectEditorObjects(preconfig);
+			deactivateClass( object_edition, "object_edition_collapsed");
+
+			drawParamImageTexture( moblabel, param_name, preconfig );
+		}
+	} catch(err) {
+		console.error("selectEditorImageTexture > ",err);
+	}
+	/*
+	for( var paramName in EI) {
+		if (config.log.full) console.log("selectEditorImage > Editor.Images[",Editor.ObjectSelected,"][",paramName,"] > ", EI[paramName], " preconf: ","preconf_",preconfig);
+
+		var PreconfImage = EI[paramName]["preconf_"+preconfig];
+		var filesrc = "";
+		if (PreconfImage) {
+			filesrc = PreconfImage["src"];
+		} else {
+			console.error("selectEditorImage > no preconf for: " + preconfig );
+		}
+		if (	paramName=="texture" //in general
+				|| paramName=="images" //just for SECUENCIA -> FLOW
+				) {
+			object_edition.setAttribute("paramname", paramName );
+			object_edition.setAttribute("title", filesrc );
+		}
+
+		unselectEditorObjects(preconfig);
+		deactivateClass( object_edition, "object_edition_collapsed");
+
+		if (config.log.full) console.log("selectEditorPreconfig > paramName: ",paramName," EI: ", filesrc);
+
+		var IMGOBJECT = EI[paramName]["preconf_"+preconfig];
+
+		if (IMGOBJECT && IMGOBJECT.img) {
+			if (config.log.full) console.log("object_edition_image.width:",object_edition_image.width," object_edition_image:",object_edition_image.height );
+			if (config.log.full) console.log("IMGOBJECT.width:",IMGOBJECT.img.width," IMGOBJECT:",IMGOBJECT.img.height );
+
+			if (IMGOBJECT.img.width>0 && IMGOBJECT.img.height>0) {
+				canvas_image_context.drawImage( IMGOBJECT.img, 0,0, object_edition_image.width, object_edition_image.height );
+			}
+		} else {
+			if (config.log.full) console.log("selectEditorImage > no images in [",Editor.ObjectSelected,"]");
+		}
+	}
+	*/
+}
 function rgbToHex(r, g, b) {
 
 	var colorstr = "#FFFFFF";
@@ -1627,6 +1785,12 @@ function CreateStandardParameter( MOB_label, param_name, preconfig, psideWinPre 
 		alert( "CreateStandardParameter > " + err );
 	}
 	return ret;
+}
+
+function CreateImageTextureParameter( MOB_label, param_name, preconfig ) {
+
+	if (config.log.full) console.log("CreateImageTextureParameter  > ",MOB_label," param_name:",param_name," pre:",preconfig);
+	fetchImageTexture( MOB_label, param_name, preconfig );
 }
 
 function CreateTextureParameter( MOB_label, param_name, preconfig ) {
@@ -2413,6 +2577,17 @@ function UpdateImage( moblabel, param_name, preconfig, filename ) {
 	}
 }
 
+function UpdateImageTexture( moblabel, param_name, preconfig, filename ) {
+	try {
+		if (config.log.full) console.log("UpdateImageTexture");
+		//ok
+		//fecthImage and drawParamImage
+		selectEditorImageTexture( moblabel, param_name, preconfig );
+	} catch(err) {
+		console.error("UpdateImageTexture > ",err);
+	}
+}
+
 function ImportFile( moblabel, param_name, preconfig, filename ) {
 
 	if (config.log.full) console.log("ImportFile > moblabel: ",moblabel," param_name: ",param_name," preconfig:",preconfig," filename:",filename);
@@ -2847,6 +3022,17 @@ function UpdateColorInspector( inspectorElement, moblabel, paramName, paramType,
 
 }
 
+function UpdateTextureInspector( inspectorElement, moblabel, paramName, paramType, paramName, preconfig ) {
+
+		var Params = Editor.Parameters[moblabel];
+		if (Params==undefined) return false;
+		var Param = Params[paramName];
+		var paramValue = Param["pvals"][preconfig];
+		var paramDefinition = Param.pdef;
+
+		UpdateImageTexture( moblabel, paramName, preconfig );
+}
+
 function SetInspectorVariables( inspectorElement, moblabel, paramName, paramType, paramName, preconfig ) {
     	//SETTING INSPECTOR ATTRIBUTES
 		inspectorElement.setAttribute("moblabel", moblabel);
@@ -2904,6 +3090,7 @@ function UpdateStandardInspector( TabInspector, inspectorElement, moblabel, prec
 		}
 
 		if (paramType=="COLOR") UpdateColorInspector( inspectorElement, moblabel, paramName, paramType, paramName, preconfig );
+		if (paramType=="TEXTURE") UpdateTextureInspector( inspectorElement, moblabel, paramName, paramType, paramName, preconfig );
 
 		//only one slide / PARAM_TYPE inspector
 		var sliderInspectorName = paramType+"_slide";
