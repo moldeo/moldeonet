@@ -169,8 +169,9 @@ var MoldeoApiReceiver = {
     /**
     */
 		MoldeoApiReceiver.message_info = message["info"];
-		Editor.Update( message["target"], message["info"] );
+		var ret = Editor.Update( message["target"], message["info"] );
 		OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectgetconfig', 'val1': '' + Editor.ObjectRequested + '' } );
+
 	},
 	"getparams": function( moblabel, full ) {
 		var MOB = Editor.Objects[moblabel];

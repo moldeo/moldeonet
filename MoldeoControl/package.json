@@ -2,7 +2,7 @@
   "name": "MoldeoControl",
   "version": "1.0.0",
   "description": "Moldeo 1.0 Controller for Moldeo Player",
-  "node-main": "server.js",
+  "node-main": "",
   "main": "MoldeoControl.html",
   "single-instance": false,
   "always-on-top": false,

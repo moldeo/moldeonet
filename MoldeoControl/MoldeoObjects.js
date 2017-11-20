@@ -1549,33 +1549,73 @@ var ConsoleInterface = {
 
 			selectEditorEffectByLabel( MOB_label );
 			RegisterEditorLabelObject();
-      if (fullobjectInfo["object"])
-        Editor.Objects[MOB_label] = fullobjectInfo;
-
 
 			var MObject = Editor.Objects[MOB_label];
 
-      if (fullobjectInfo["objectconfig"] && MObject["object"])
-        MObject["object"]["objectconfig"] = fullobjectInfo["objectconfig"];
+      if (fullobjectInfo["object"]) {
+				MObject = Editor.Objects[MOB_label];
+				if (MObject==undefined) {
+					Editor.Objects[MOB_label] = fullobjectInfo;
+					MObject = Editor.Objects[MOB_label];
+				} else {
+					if (fullobjectInfo["effectstate"])
+						MObject["effectstate"] = fullobjectInfo["effectstate"];
 
-			var Config = MObject["object"]["objectconfig"];
-      if (Config==undefined) {  console.log("Must call objetgetpreconfig"); return -1; }
-			Editor.PreconfigSelected = Config["currentpreconfig"];
-
-			if (Editor.PreconfigSelected==-1) {
-				Editor.PreconfigSelected = 0;
+					MObject["object"]["objectdefinition"] = fullobjectInfo["object"]["objectdefinition"];
+					MObject["object"]["objectstate"] = fullobjectInfo["object"]["objectstate"];
+					MObject["object"]["objecttypeid"] = fullobjectInfo["object"]["objecttypeid"];
+				}
 			}
 
+			if (MObject["object"]==undefined) {
+				console.log("Must call objetget");
+				return -2;
+			}
+
+
+			var Config = MObject["object"]["objectconfig"];
+
+      if (fullobjectInfo["objectconfig"]!=undefined){
+				if (Config==undefined) {
+        	MObject["object"]["objectconfig"] = fullobjectInfo["objectconfig"];
+					Config = MObject["object"]["objectconfig"];
+				} else {
+					//compare and complete
+					if (fullobjectInfo["objectconfig"]["currentpreconfig"]!=undefined)
+						Config["currentpreconfig"] = fullobjectInfo["objectconfig"]["currentpreconfig"];
+					if (fullobjectInfo["objectconfig"]["preconfigs"]) {
+						for(var p=0;p<fullobjectInfo["objectconfig"]["preconfigs"].length;p++) {
+							if (Config["preconfigs"][p]==undefined) {
+								Config["preconfigs"][p] = fullobjectInfo["objectconfig"]["preconfigs"][p];
+							}
+						}
+					}
+				}
+
+				Editor.PreconfigSelected = Config["currentpreconfig"];
+				if (Editor.PreconfigSelected==-1) {
+					Editor.PreconfigSelected = 0;
+				}
+
+			}
+
+			if (Config==undefined) {
+				console.log("Must call objetgetpreconfig");
+				return -3;
+			}
+
+			////// STATE
 			if (fullobjectInfo["effectstate"]) {
 				Editor.States[MOB_label] = MObject["effectstate"];
 			} else Editor.States[MOB_label] = MObject["object"]["objectstate"];
+
 
 			Editor.Parameters[MOB_label] = Config["parameters"];
 			var Params = Editor.Parameters[MOB_label];
 
 
 			if (fullobjectInfo["preconfig"] && fullobjectInfo["position"]>=0 && Config["preconfigs"]) {
-        Config["preconfigs"][fullobjectInfo["position"]] = fullobjectInfo["preconfig"];
+        	Config["preconfigs"][fullobjectInfo["position"]] = fullobjectInfo["preconfig"];
 			}
 
       if (Config["preconfigs"] &&
@@ -1609,17 +1649,19 @@ var ConsoleInterface = {
 			// Parameters:
 			// console.log("target: "+ target+ " parameters:" + JSON.stringify( Editor.Parameters[target], "", "\t") );
 
-			// Preconfigs
-			// console.log("target: "+ target+ " preconfigs:" + JSON.stringify( Editor.Preconfigs[target], "", "\t") );
-
 			// activamos o desactivamos el boton de Object_Enable
 			if (config.log.full) console.log("Editor.Update > UpdateState > label: ",MOB_label);
 			Editor.UpdateState( MOB_label );
+			////// END STATE
 
-			if (config.log.full) console.log("Editor.Update > UpdatePreconfigs > label: ",MOB_label);
-			Editor.UpdatePreconfigs( MOB_label );
+			// Preconfigs
+			// console.log("target: "+ target+ " preconfigs:" + JSON.stringify( Editor.Preconfigs[target], "", "\t") );
+			if (fullobjectInfo["preconfig"] || fullobjectInfo["objectconfig"]) {
+				if (config.log.full) console.log("Editor.Update > UpdatePreconfigs > label: ",MOB_label);
+				Editor.UpdatePreconfigs( MOB_label );
+			}
 
-			if (config.log.full) console.log("Editor.Update > UpdateState > label: ",MOB_label);
+			if (config.log.full) console.log("Editor.Update > UpdateScene > label: ",MOB_label);
 			UpdateScene( MOB_label );
 
 			if (config.log.full) console.log("Editor.Update > deactivate parameters_side_*");
