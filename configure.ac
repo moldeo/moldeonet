@@ -7,7 +7,7 @@
 # make
 # make install
 #
-AC_INIT([MoldeoNet], [1.0.0.160], [info@moldeointeractive.com.ar], [moldeonet])
+AC_INIT([MoldeoNet], [1.1.0.0], [info@moldeointeractive.com.ar], [moldeonet])
 
 AM_INIT_AUTOMAKE
 AC_CONFIG_MACRO_DIR([m4])
@@ -102,7 +102,7 @@ AC_ARG_ENABLE(host,
 	host_name="64"
   elif test "x$enableval" = "xraspbian" ; then
 	host_name="raspbian"
-	
+
   elif test "x$enableval" = "xosx" ; then
     	host_name="osx"
 	nwjsexe="${nwjsdir}/nwjs.app/Contents/MacOS/nwjs"
@@ -170,5 +170,5 @@ AC_TYPE_SIZE_T
 AC_OUTPUT([
     Makefile
     MoldeoControl/Makefile
-    moldeo.desktop    
+    moldeo.desktop
 ])
