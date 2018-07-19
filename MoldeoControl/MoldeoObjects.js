@@ -3030,6 +3030,7 @@ var ConsoleInterface = {
             "GSTBIN": config.gstreamer.GSTBIN,
             "GSTLAUNCH": config.gstreamer.GSTLAUNCH,
             "COLORFILTER": config.gstreamer.COLORFILTER,
+            "H264ENCODE": config.gstreamer.H264ENCODE,
 			"frame_path": frame_path,
 			"videoname": videoname,
 			"videocontainer": videocontainer,
