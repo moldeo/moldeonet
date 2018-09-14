@@ -7,7 +7,7 @@
 # make
 # make install
 #
-AC_INIT([MoldeoNet], [1.1.0.0], [info@moldeointeractive.com.ar], [moldeonet])
+AC_INIT([MoldeoNet], [1.1.0.1], [info@moldeointeractive.com.ar], [moldeonet])
 
 AM_INIT_AUTOMAKE
 AC_CONFIG_MACRO_DIR([m4])
