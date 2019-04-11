@@ -54,15 +54,12 @@ var MoldeoApiReceiver = {
 		}
 	},
 	"consolesave": function( message ) {
-
 		deactivateClass( document.getElementById("buttonED_SaveProject"), "saveneeded" );
 		deactivateClass( document.getElementById("buttonED_SaveProjectAs"), "saveneeded" );
-
 		if (message["target"]=="success") {
 			alert("Se guardó el proyecto");
 			Editor.SaveNeeded = false;
 		}
-
 	},
 	"consolescreenshot": function( message ) {
 		var info = message["info"];

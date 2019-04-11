@@ -20,6 +20,8 @@ import netP5.*;
 OscP5 oscP5;
 NetAddress myRemoteLocation;
 NetAddress myRemoteLocation2;
+NetAddress mySpectrumLocation;
+boolean spec = false;
 
 Minim       minim;
 AudioInput jingle;
@@ -40,12 +42,14 @@ int umbralMaxHighHal = 10;
 int umbralMaxMediumVal = 10;
 int umbralMaxLowVal = 10;
 
+int spectrumPacks = 20;
+
 void setup()
 {
   size(512, 480 );
   height3 = height/3;
   height23 = 2*height/3;
-
+  frameRate(22);
 
   /* start oscP5, listening for incoming messages at port 12000 */
   oscP5 = new OscP5(this,12000);
@@ -57,8 +61,9 @@ void setup()
    * send messages back to this sketch.
    */
   myRemoteLocation = new NetAddress("127.0.0.1", 7401 );
-  myRemoteLocation2 = new NetAddress("192.168.43.102", 7401 );
-  frameRate(60);
+  myRemoteLocation2 = new NetAddress("127.0.0.1", 9991 );
+  mySpectrumLocation = new NetAddress("127.0.0.1", 9996 );
+  
   
   minim = new Minim(this);
   
@@ -67,7 +72,8 @@ void setup()
   // a power-of-two buffer size and this is a good size.
  // jingle = minim.loadFile("jingle.mp3", 1024);
   
-  jingle = minim.getLineIn(Minim.STEREO, 1024);
+  //jingle = minim.getLineIn(Minim.STEREO, 1024);
+  jingle = minim.getLineIn(Minim.MONO, 1024);
   
   // loop the file indefinitely
   //jingle.loop();
@@ -83,6 +89,22 @@ void setup()
   fftLog.logAverages( 22, 12 );
 }
 
+void spectrum( int pack ) {
+  Object args[] = new Object[pack];
+  int off = 0;
+  for(int  i=0; i<jingle.bufferSize(); i++) {
+    if ( i>0 && (i%20)==0) {
+      OscMessage myMessage = new OscMessage("/spec",args);
+      oscP5.send(myMessage, mySpectrumLocation);
+      off = 0;
+    }
+    
+    args[off] = new Float(jingle.left.get(i));    
+    off++;   
+  }
+}
+
+
 void beat( Float freq, Float gain, String range ) {
 
   Object args[] = new Object[2];
@@ -91,7 +113,7 @@ void beat( Float freq, Float gain, String range ) {
   OscMessage myMessage = new OscMessage("/beat"+range,args);
   /* send the message */
   oscP5.send(myMessage, myRemoteLocation);
-   oscP5.send(myMessage, myRemoteLocation2); 
+   //oscP5.send(myMessage, myRemoteLocation2); 
 }
 
 void beathigh( Float freq, Float gain ) {
@@ -227,6 +249,8 @@ void draw()
   if (maxlowval>5) beatlow( maxlowfreq, maxlowval );
   else  beatlow( maxlowfreq, (float)0 );
     
+  if (spec) drawRaw(0, 100,512,100);
+  if (spec) spectrum(spectrumPacks);
 }
 
 
@@ -363,4 +387,15 @@ void drawLogSpectrum() {
   }
 }
 
+
+void drawRaw( float x, float y, float w, float h) {
+// draw the waveforms
+  float b = jingle.bufferSize();
+  for(int i = 0; i < jingle.bufferSize() - 1; i++)
+  {
+    line(x+(i*w/b), y + jingle.left.get(i)*h, x+(i+1)*(w/b), y+ jingle.left.get(i+1)*h);
+    //line(i, 150 + jingle.right.get(i)*50, i+1, 150 + jingle.right.get(i+1)*50);
+  }
+
+}
 

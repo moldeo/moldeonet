@@ -123,7 +123,7 @@ function selectEffect( selkey ) {
 	} else OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectgetstate', 'val1': MOB_label } );
 
 	//TODO: CHECK
-	//if (dSEL) activateClass( dSEL, "fxselected" );
+	if (dSEL) activateClass( dSEL, "fxselected" );
 }
 
 function selectEditorEffect( selkey ) {
@@ -2722,7 +2722,7 @@ function SetValue( moblabel, selector, preconfig, value ) {
 						moCI.AddValue( moblabel, paramname, preconfig, value );
 						OscMoldeoSend( { 'msg': '/moldeo','val0': 'preconfigset', 'val1': moblabel, 'val2': preconfig } );
 						OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectget', 'val1': moblabel } );
-						console.error("SetValue > no ParamValue for " + preconfig,value);
+						console.error("SetValue > no ParamValue for ",preconfig,value);
 					}
 				} else console.error("SetValue > no ParamValues for paramname:" + paramname,value);
 			} else console.error("SetValue > no Param for paramname:" + paramname,value);

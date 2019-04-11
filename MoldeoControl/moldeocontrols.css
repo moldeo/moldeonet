@@ -290,10 +290,6 @@ button.fxselected:hover:after {
 	height: 33%;/*34px*/
 }
 
-.present {
-  color: #0FF !important;
-}
-
 .enabled {
   border-width: 1px !important;;
   border-color: #0FF !important;
@@ -316,9 +312,14 @@ button.fxselected:hover:after {
 	padding-top: 10px !important;
 }
 
+.present {
+  color: #0AA;
+}
+
 .key_button.object_enabled {
-  background-image: url(buttons/button_FX_on.svg);
-  color: #0FF;
+  background-image: url(buttons/button_FX_selec.svg);
+  color: #0FF !important;
+  text-shadow: 0px 0px 5px rgba(255,255,255,0.8);
 }
 
 .key_button.object_enabled.fxselected {
@@ -326,7 +327,7 @@ button.fxselected:hover:after {
 }
 
 .key_button.fxselected {
-  background-image: url(buttons/button_FX_selec.svg);
+  background-image: url(buttons/button_FX_on.svg);
 }
 
 .third_effects .key_button,
