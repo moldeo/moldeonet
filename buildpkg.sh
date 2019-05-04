@@ -1,5 +1,5 @@
 #!/bin/sh
-
+distro=$1
 DIE=0
 
 ./autogen.sh --prefix=/usr
@@ -88,6 +88,7 @@ sed -i -e 's/<insert up to 60 chars description>/Moldeo 1.0/'  debian/control
 sed -i -e 's/<insert long description, indented with spaces>/Moldeo 1.0 is a set of interface controls, bash scripts and other tools for Moldeo Platform. MoldeoControl, MoldeoJS, Molduino/g'  debian/control
 
 sed -i -e 's/unstable/experimental/g' debian/changelog
+sed -i -e 's/\-1/\-1'${distro}'/g' debian/changelog
 sed -i -e 's/fabricio/Moldeo Interactive/g' debian/changelog
 sed -i -e 's/Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>/Initial release/g' debian/changelog
 #sed -i -e 's///g'  debian/control
