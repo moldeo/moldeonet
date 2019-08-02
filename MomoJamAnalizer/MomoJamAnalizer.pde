@@ -21,6 +21,8 @@ OscP5 oscP5;
 NetAddress myRemoteLocation;
 NetAddress myRemoteLocation2;
 NetAddress mySpectrumLocation;
+
+
 boolean spec = false;
 
 Minim       minim;
@@ -61,8 +63,12 @@ void setup()
    * send messages back to this sketch.
    */
   myRemoteLocation = new NetAddress("127.0.0.1", 7401 );
-  myRemoteLocation2 = new NetAddress("127.0.0.1", 9991 );
-  mySpectrumLocation = new NetAddress("127.0.0.1", 9996 );
+  myRemoteLocation2 = null;
+  mySpectrumLocation = null;
+
+
+  //myRemoteLocation2 = new NetAddress("192.168.5.102",7401 );
+  //mySpectrumLocation = new NetAddress("127.0.0.1", 9996 );
   
   
   minim = new Minim(this);
@@ -91,16 +97,18 @@ void setup()
 
 void spectrum( int pack ) {
   Object args[] = new Object[pack];
-  int off = 0;
-  for(int  i=0; i<jingle.bufferSize(); i++) {
-    if ( i>0 && (i%20)==0) {
-      OscMessage myMessage = new OscMessage("/spec",args);
-      oscP5.send(myMessage, mySpectrumLocation);
-      off = 0;
+  if (mySpectrumLocation!=null) {
+    int off = 0;
+    for(int  i=0; i<jingle.bufferSize(); i++) {
+      if ( i>0 && (i%20)==0) {
+        OscMessage myMessage = new OscMessage("/spec",args);
+        oscP5.send(myMessage, mySpectrumLocation);
+        off = 0;
+      }
+      
+      args[off] = new Float(jingle.left.get(i));    
+      off++;   
     }
-    
-    args[off] = new Float(jingle.left.get(i));    
-    off++;   
   }
 }
 
@@ -113,7 +121,9 @@ void beat( Float freq, Float gain, String range ) {
   OscMessage myMessage = new OscMessage("/beat"+range,args);
   /* send the message */
   oscP5.send(myMessage, myRemoteLocation);
-   //oscP5.send(myMessage, myRemoteLocation2); 
+  if (myRemoteLocation2!=null) {
+    oscP5.send(myMessage, myRemoteLocation2);
+  } 
 }
 
 void beathigh( Float freq, Float gain ) {
