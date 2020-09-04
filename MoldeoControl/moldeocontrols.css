@@ -1890,6 +1890,128 @@ body.synchronizer {
 	background-color: rgba(0,0,0,0.58);
 }
 
+.tree_editor_effects {
+  top: 44px;
+  left: 1%;
+  width: 35%;
+  height: 58%;
+  z-index: 8;
+  position: absolute;
+  display: block;
+  overflow: hidden;
+  background-color: rgba(0,0,0,1.0);
+}
+
+.treeview_container {
+  display: block;
+  position: absolute;
+  top: 27px;
+  width: 100%;
+  height: 50px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  background-color: rgba(0,0,0,1.0);
+}
+
+.tree_editor_effects_actions button {
+  background-color: black;
+  border: 0px;
+  border-right: solid 1px #777;
+}
+
+#tree_editor_down {
+  border-left: solid 1px #777;
+}
+#tree_editor_add {
+  float: right;
+}
+#tree_editor_delete {
+  float: right;
+  border-right: solid 0px white;
+}
+
+#treeview_edit {
+  display: none;
+}
+.treeview_edit_action {
+  display: none;
+}
+.input-group {
+  margin-bottom: 2px;
+  margin-top: 2px;
+}
+.input-group .input-group-addon {
+  color: white;
+  background-color: #344;
+  width: 70px;
+  padding: 3px;
+  font-size: 13px;
+  height: 25px;
+}
+
+#treeview_edit_class_name {
+  display: none;
+  float: right;
+  margin-top: 5px;
+  font-size: 13px;
+  font-weight: normal;
+}
+
+button.disabled,
+button.disabled .glyphicon {
+  color: #555;
+}
+
+.mob_name {
+  padding: 0px;
+  background-color: black;
+  color: white;
+}
+
+.input-group input {
+  color: white;
+  background-color: black;
+  padding: 3px;
+  font-size: 13px;
+  height: 25px;
+}
+
+.toggle_button {
+  background-color: #000;
+  color: white;
+  width: 50px;
+  border: 1px solid #AFF;
+  margin: 2px;
+  border-radius: 3px;
+  height: 37px;
+  margin-top: 5px;
+}
+
+.list-group-item {
+  padding: 5px 7px;
+}
+
+.list-group {
+
+}
+
+.object_shortcut {
+    display: none;
+}
+
+.node-edit {
+  display: block;
+  color: white;
+  float: left;
+  margin: 8px;
+}
+
+.node-selected .node-edit {
+  display: block;
+  float: right;
+  color: white;
+}
+
 .first_editor_effects button,
 .second_editor_effects button {
 	width: 32%;
@@ -2137,8 +2259,8 @@ body.synchronizer {
 		}
 
     #TEXTURE_object_edition {
-      width: 200px !important;
-      height: 100px !important;
+      width: 70px !important;
+      height: 50px !important;
     }
 
 		.audio_edition {
@@ -2172,8 +2294,8 @@ body.synchronizer {
 			}
 
       #TEXTURE_object_edition_image {
-        width: 160px !important;
-        height: 100px !important;
+        /*width: 160px !important;*/
+        /*height: 100px !important;*/
       }
 
 			.audio_edition_image {

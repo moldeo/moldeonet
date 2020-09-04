@@ -171,6 +171,34 @@ function UnselectButtonsCircle( MOBlabel ) {
 }
 
 
+function selectMobColor( preconfig_index ) {
+	/*
+	var object_edition = document.getElementById("object_edition");
+	object_edition.setAttribute("moblabel", Editor.ObjectSelected );
+	object_edition.setAttribute("preconfig", Editor.PreconfigSelected );
+	*/
+	//var object_color_sel = document.getElementById("object_color_sel");
+	//var object_color_sel = ;
+/*
+	if (config.log.full) console.log("selectEditorColor(",preconfig_index,")");
+	if (preconfig_index==undefined) preconfig_index = Editor.PreconfigSelected;
+
+	var Color = Editor.Parameters[Editor.ObjectSelected]["color"];
+	if (Color) {
+		Color = Color["pvals"][preconfig_index];
+	}
+
+	//create hexa color:
+	if (Color && Color.length>3) {
+		var red = Math.round( Color[0]["v"]*255 );
+		var green = Math.round( Color[1]["v"]*255 );
+		var blue = Math.round( Color[2]["v"]*255 );
+		if (config.log.full) console.log("rgbToHex( ",red,", ",green,",", blue," ):",rgbToHex( red, green, blue ));
+		object_color_sel.setAttribute( "style" , "background-color:"+ rgbToHex( red, green, blue )+";");
+	}
+*/
+
+}
 
 
 

@@ -14,6 +14,9 @@ window.onresize = function() {
 		if (moCI.Connectors.FRib) {
 			moCI.Connectors.FRib.Resize( window.innerWidth, window.innerHeight );
 		}
+    if (moCI.Connectors.Tree) {
+      moCI.Connectors.Functions["Resize"]( window.innerWidth, window.innerHeight );
+    }
 	}
 
   var window_panels = document.getElementsByClassName("window_panel");

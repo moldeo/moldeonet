@@ -15,7 +15,7 @@ var ConsoleInterface = {
       return moCI.Options["MAX_N_PRECONFIGS"];
 		}
 	},
-	Log: true,
+	Log: false,
 	State: {},
 	Project: {},
 
@@ -1161,6 +1161,91 @@ var ConsoleInterface = {
 					$("#toggle_third_editor_effects").toggleClass("expanded");
 				},
 			},
+			"tree_editor_add": {
+				"click": function(event) {
+					var MOBNode = $('#treeview').treeview(true).getSelected()[0];
+					if (MOBNode!=undefined) {
+						$('#mob_name_i').val("");
+						$('#treeview_edit_class_name').html("[choose class]");
+						$('#mob_cfg_i').val("");
+						$('#mob_lbl_i').val("");
+						$('#mob_active_i').val("");
+						$('#mob_key_i').val("");
+					}
+					console.log( "tree_editor_add", MOBNode );
+					$('#treeview_edit').toggle();
+					$('#treeview_edit_class_name').toggle();
+					$('#treeview').toggle();
+					$('.treeview_action').toggle();
+					$('.treeview_edit_action').toggle();
+				}
+			},
+			"tree_editor_down": {
+				"click": function(event) {
+					var MOBnode = $('#treeview').treeview(true).getSelected()[0];
+					var MOBlabel = MOBnode.lbl;
+					console.log("tree_editor_down",MOBnode);
+					OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectmove', 'val1': '' + MOBlabel + '', 'val2': 1, 'val3': 1 } ); //move relative
+				}
+			},
+			"tree_editor_up": {
+				"click": function(event) {
+					var MOBnode = $('#treeview').treeview(true).getSelected()[0];
+					var MOBlabel = MOBnode.lbl;
+					console.log("tree_editor_down",MOBnode);
+					OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectmove', 'val1': '' + MOBlabel + '', 'val2': -1, 'val3': 1 } ); //move relative
+				}
+			},
+			"tree_editor_edit": {
+				"click": function(event) {
+					console.log("tree_editor_edit",$('#treeview').treeview(true).getSelected());
+					$('#treeview_edit').toggle();
+					$('#treeview_edit_class_name').toggle();
+					$('#treeview').toggle();
+					$('.treeview_action').toggle();
+					$('.treeview_edit_action').toggle();
+				}
+			},
+			"tree_editor_delete": {
+				"click": function(event) {
+					console.log("tree_editor_delete",$('#treeview').treeview(true).getSelected());
+				}
+			},
+			"tree_editor_savemob": {
+				"click": function(event) {
+					//TODO: add, caso especial, save caso clasico
+					console.log("tree_editor_savemob",$('#treeview').treeview(true).getSelected());
+					$('#treeview_edit').toggle();
+					$('#treeview_edit_class_name').toggle();
+					$('#treeview').toggle();
+					$('.treeview_action').toggle();
+					$('.treeview_edit_action').toggle();
+				}
+			},
+			"tree_editor_cancel": {
+				"click": function(event) {
+					console.log("tree_editor_cancel",$('#treeview').treeview(true).getSelected());
+					$('#treeview_edit').toggle();
+					$('#treeview_edit_class_name').toggle();
+					$('#treeview').toggle();
+					$('.treeview_action').toggle();
+					$('.treeview_edit_action').toggle();
+				}
+			},
+			"toggle_keys_editor_fx": {
+				"click": function(event) {
+					$("#third_editor_effects").toggle();
+					$("#tree_editor_effects").toggle();
+					$("#toggle_third_editor_effects").toggleClass("expanded");
+				},
+			},
+			"toggle_tree_editor_fx": {
+				"click": function(event) {
+					$("#third_editor_effects").toggle();
+					$("#tree_editor_effects").toggle();
+					$("#toggle_third_editor_effects").toggleClass("expanded");
+				},
+			},
 			"importfile": {
 				"change": function(event) {
 					if (event.target.importobject==undefined) return;
@@ -2125,6 +2210,7 @@ var ConsoleInterface = {
 		"Objects": {
 
 		},
+		"MOBnode": undefined,
 
 		"Tree": {
 
@@ -2137,72 +2223,269 @@ var ConsoleInterface = {
 			},
 		},
 		"Functions": {
+			"Resize": function(w,h) {
+				console.log( "Resize", w, h );
+				$('#tree_editor_effects').css("height",(h-70)+"px" )
+				$('#treeview_container').css("height",(h-98)+"px" )
+			},
 			"ObjectsToTree": function() {
 				var console_tree = {
 					"type": "seccion",
 					"wid": "",
 					"name": "console",
+					"text": "console",
 					"children": [
 						{
-							"name": "devices",
-							"type": "seccion",
-							"wid": "devices",
-							"order": 0,
-							"children": [
-							]
-						},
-						{
 							"name": "preeffect",
+							"text": "Pre Fx",
 							"type": "seccion",
 							"wid": "preeffect",
+							tags: [],
+							color: "#FFF",
+	  					backColor: "#000",
+							selectable: false,
+						  state: {
+						    checked: false,
+						    disabled: false,
+						    expanded: true,
+						    selected: false
+						  },
 							"order": 1,
 							"children": [
 							]
 						},
 						{
 							"name": "effect",
+							"text": "Fx",
 							"type": "seccion",
 							"wid": "effect",
+							tags: [],
+							color: "#FFF",
+	  					backColor: "#000",
+							selectable: false,
+						  state: {
+						    checked: false,
+						    disabled: false,
+						    expanded: true,
+						    selected: false
+						  },
 							"order": 2,
 							"children": [
 							]
 						},
 						{
 							"name": "posteffect",
+							"text": "Post Fx",
 							"type": "seccion",
 							"wid": "posteffect",
+							tags: [],
+							color: "#FFF",
+	  					backColor: "#000",
+							selectable: false,
+						  state: {
+						    checked: false,
+						    disabled: false,
+						    expanded: true,
+						    selected: false
+						  },
 							"order": 3,
 							"children": [
 							]
 						},
 						{
 							"name": "mastereffect",
+							"text": "Master Fx",
 							"type": "seccion",
 							"wid": "mastereffect",
+							tags: [],
+							color: "#FFF",
+	  					backColor: "#000",
+							selectable: false,
+						  state: {
+						    checked: false,
+						    disabled: false,
+						    expanded: true,
+						    selected: false
+						  },
 							"order": 4,
 							"children": [
 							]
 						},
 						{
 							"name": "resources",
+							"text": "Resources",
 							"type": "seccion",
 							"wid": "resources",
+							tags: [],
+							color: "#FFF",
+	  					backColor: "#000",
+							selectable: false,
+						  state: {
+						    checked: false,
+						    disabled: false,
+						    expanded: false,
+						    selected: false
+						  },
 							"order": 5,
+							"children": [
+							]
+						},
+						{
+							"name": "devices",
+							"text": "IO Devices",
+							"type": "seccion",
+							"wid": "devices",
+							tags: [],
+							color: "#FFF",
+	  					backColor: "#000",
+							selectable: false,
+						  state: {
+						    checked: false,
+						    disabled: false,
+						    expanded: false,
+						    selected: false
+						  },
+							"order": 0,
 							"children": [
 							]
 						},
 					],
 				};
-                if (moCI.Project.config==undefined) return;
-                if (moCI.Project.config.parameters==undefined) return;
+				console.log( "ObjectsToTree" );
+				if (moCI.Project.MapObjects) {
+					if (moCI.Project.config==undefined) {
+						moCI.Project.config = {};
+						moCI.Project.config.parameters = {
+							"preeffect": {},
+							"effect": {},
+							"posteffect": {},
+							"mastereffect": {},
+							"resources": {},
+							"devices": {},
+							"__console__": {}
+						};
+						moCI.Project.config.parameters["preeffect"].pvals = [];
+						moCI.Project.config.parameters["effect"].pvals = [];
+						moCI.Project.config.parameters["posteffect"].pvals = [];
+						moCI.Project.config.parameters["mastereffect"].pvals = [];
+						moCI.Project.config.parameters["resources"].pvals = [];
+						moCI.Project.config.parameters["devices"].pvals = [];
+						moCI.Project.config.parameters["__console__"].pvals = [];
+					}
+					var class_fx = {
+						"moPreEffect": [ "preeffect", 0 ],
+						"moEffect": [ "effect", 1 ],
+						"moPostEffect": [ "posteffect", 2 ],
+						"moMasterEffect": [ "mastereffect", 3 ],
+						"moResource": [ "resources", 4 ],
+						"moIODevice": [ "devices", 5 ],
+						//"moConsole": [ "__console__", 6 ]
+					}
+					for(var lname in moCI.Project.MapObjects ) {
+						mob_ref = moCI.Project.MapObjects[lname];
+						console.log( lname, mob_ref );
+						var cl_fx = class_fx[mob_ref.cla];
+						var is_expanded = true;
+						if (cl_fx) {
+							var node = console_tree.children[ cl_fx[1] ];
+							var mobd = {
+									"name": mob_ref.lbl,
+									"lbl": mob_ref.lbl,
+									"text": mob_ref.lbl,
+									//"text": mob_ref.lbl + " ["+mob_ref.id+"] "+mob_ref.key,
+									"fxname": mob_ref.name,
+									"type": "mob",
+									"order": mob_ref.vali,
+									"ix": mob_ref.ix,
+									"id": mob_ref.id,
+									"MobDefinition": mob_ref,
+									tags: [ mob_ref.key, mob_ref.name, mob_ref.id ],
+									color: "#FFF",
+			  					backColor: "#000",
+									selectable: true,
+								  state: {
+								    checked: false,
+								    disabled: false,
+								    expanded: is_expanded,
+								    selected: false
+								  },
+									//"children": [],//for Scenes...
+									//"nodes": []
+								};
+							if (node) {
+								node["children"].push(mobd);
+								node["nodes"] = node["children"];
+								node["tags"] = [node["children"].length]
+							}
 
+						}
+					}
+					console_tree["nodes"] = console_tree["children"];
+					moCI.Connectors.Tree = console_tree;
+					if (config.log.full) console.log("ObjectsToTree", moCI.Connectors.Tree );
+
+					var options = {
+						color: "#FFF",
+  					backColor: "#000",
+						selectedBackColor: "#567",
+	          bootstrap2: false,
+	          showTags: true,
+						expandIcon: "glyphicon glyphicon-plus",
+						collapseIcon: "glyphicon glyphicon-minus",
+	          levels: 5,
+						enableLinks: true,
+						onNodeSelected: function(ev) {
+							var MOBnode = $('#treeview').treeview(true).getSelected()[0];
+							console.log("NodeSelected:", MOBnode);
+							var MOBlabel = MOBnode.lbl;
+							moCI.Connectors.MOBnode = MOBnode;
+							$('#mob_name_i').val(MOBnode.MobDefinition.name);
+							$('#treeview_edit_class_name').html(MOBnode.MobDefinition.name);
+							$('.treeview_on_selection').removeClass('disabled');
+							$('#mob_cfg_i').val(MOBnode.MobDefinition.cfg);
+							$('#mob_lbl_i').val(MOBnode.MobDefinition.lbl);
+							$('#mob_active_i').val(MOBnode.MobDefinition.acti);
+							$('#mob_key_i').val(MOBnode.MobDefinition.key);
+							OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectget', 'val1': '' + MOBlabel + '' } ); //retreive all parameters
+						},
+						onNodeUnselected: function(ev) {
+							MOBnode = $('#treeview').treeview(true).getSelected()[0];
+							console.log("onNodeSelected:", MOBnode);
+							var MOBnode = $('#treeview').treeview(true).getUnselected()[0];
+							console.log("onNodeUnselected:", MOBnode);
+							$('.treeview_on_selection').addClass('disabled');
+							moCI.Connectors.MOBnode = undefined;
+						},
+	          data: console_tree["nodes"]
+	        };
+
+					//Tree.prototype.template.item = '<li class="list-group-item"><span class="glyphicon glyphicon-down"></span></li>';
+					$('#treeview').treeview( options );
+					TT = $('#treeview').treeview(true);
+					console.log(TT,$('#treeview').treeview(true));
+					$('.treeview_on_selection').addClass('disabled');
+					if (moCI.Connectors.MOBnode) {
+						console.log("selectNode",moCI.Connectors.MOBnode);
+						var NID = TT.getNode(moCI.Connectors.MOBnode.nodeId);
+						console.log("selectNode NID",NID);
+						//if (NID) TT.selectNode(moCI.Connectors.MOBnode.nodeId);
+						if (NID) TT.revealNode(NID.nodeId, { silent: true });
+						var SID = TT.getSelected();
+						console.log("selectedNode SID",SID);
+					}
+				}
+
+        if (moCI.Project.config==undefined) return;
+        if (moCI.Project.config.parameters==undefined) return;
+
+				/**
 				var preeffect = moCI.Project.config.parameters["preeffect"].pvals;
 				var effect = moCI.Project.config.parameters["effect"].pvals;
 				var posteffect = moCI.Project.config.parameters["posteffect"].pvals;
 				var mastereffect = moCI.Project.config.parameters["mastereffect"].pvals;
 				var resources = moCI.Project.config.parameters["resources"].pvals;
 				//var devices = moCI.Project.config.parameters["devices"].paramvalues;
-				/* TODO: do it right, searching full objects, with moldeo ids*/
+				// TODO: do it right, searching full objects, with moldeo ids
 
 				var moldeo_ids = 0;
 
@@ -2236,9 +2519,9 @@ var ConsoleInterface = {
 
 				moCI.Connectors.FRib = new FractalRibosome( moCI.Connectors.Tree, window.innerWidth, window.innerHeight,
 							{
-								'glowopacity': 0.2,/*0.3*/
-								'glowscalexy': 1.0,/*1.03*/
-								'glowduration': 2700, /*2700*/
+								'glowopacity': 0.2,//0.3
+								'glowscalexy': 1.0,//1.03
+								'glowduration': 2700, //2700
 								'showBox': false,
 								'showVars': false,
 								'showRiboline': true,
@@ -2248,16 +2531,15 @@ var ConsoleInterface = {
 
 								'node_size': 'fixed',
 								'node_size_base': 1.0,
-								'node_size_fixed': false, /* true for Vainer */
+								'node_size_fixed': false, // true for V
 
 
 								'node_position_mode': "linear",
-								/*
-								'node_position_radius': 200.0,
-								*/
+								//'node_position_radius': 200.0,
 							});
 
 				moCI.Connectors.FRib.Init( "connector_panel" );
+				*/
 			},
 		},
 		"Register": function() {
@@ -2799,7 +3081,7 @@ var ConsoleInterface = {
 	/**
 	*   SINCHRONIZER (server for synchronizer objects)
 	*
-	*   All members and functions related to the project browser.
+	*   All members and functions related to the project synchronizer.
 	*
 	*   TODO:
 	*/
@@ -2824,6 +3106,7 @@ var ConsoleInterface = {
 
 
 	/**GENERAL CONSOLE FUNCTIONS*/
+	/* Update Functions for Console and State */
 	"UpdateState": function( info ) {
 
 		moCI.State = info;
@@ -2912,6 +3195,7 @@ var ConsoleInterface = {
 			if (MOB.cfg) MOB.configname = MOB['cfg'];
 			if (MOB.key) MOB.keyname = MOB['key'];
 			if (MOB.cla) MOB.classname = MOB['cla'];
+			if (MOB.lbl) MOB.labelname = MOB['lbl'];
 
 			if (	MOB.classname.indexOf("Effect")>0 ) {
 				OscMoldeoSend( { 'msg': '/moldeo','val0': 'effectgetstate', 'val1': label } );
@@ -2931,6 +3215,8 @@ var ConsoleInterface = {
 		moCI.Connectors.Functions.ObjectsToTree();
 
 	},
+
+	/* Project Open/Save/Save As Functions */
 	"OpenProject": function( filename ) {
 		//filename = filename.replace( /\'/g , '"');
 		//filename = filename.replace( /\\/g , '\\\\');
@@ -2947,20 +3233,8 @@ var ConsoleInterface = {
 		//must clone!!! Use moDataManager::Export function...
 		OscMoldeoSend( { 'msg': '/moldeo','val0': 'consolesaveas', 'val1': filename } );
 	},
-	"SaveScreenshotAs": function( screenshot, filename ) {
-		console.log("screenshot:",screenshot," filename:",filename);
-		try {
-			fs.copyFile( screenshot, filename, function(err) {
-				if (err) {
-					console.error("fs.copyFile ERROR: ", err);
-				} else {
-					if (config.log.full) console.log("fs.copyFile OK!");
-				}
-			} );
-		} catch(bigerr) {
-			alert("Error copiando captura, intente de nuevo."+bigerr);
-		}
-	},
+
+	/* Project Rendering Sessions*/
 	"RecordSession": function( info ) {
 		console.log("Record Session");
 		console.log("Record Session", info);
@@ -2997,6 +3271,8 @@ var ConsoleInterface = {
 								});
 		}
 	},
+
+	/* Project Video Rendering*/
 	"PrepareAndRenderVideo": function() {
 		try {
 			console.log("PrepareAndRenderVideo > ");
@@ -3111,6 +3387,8 @@ var ConsoleInterface = {
 		select+= "</select>";
 		return select;
 	},
+
+	/* Project Presentation Mode Toggle, Screenshot and PreviewShots (4 miniatures or aniatmed GIF file) functions */
 	"Presentation": function() {
 		if (config.log.full) console.log("buttonED_Presentation > ");
 		OscMoldeoSend( { 'msg': '/moldeo','val0': 'consolepresentation', 'val1': '' } );
@@ -3118,6 +3396,20 @@ var ConsoleInterface = {
 	"Screenshot": function() {
 		if (config.log.full) console.log("buttonED_Screenshot > ");
 		OscMoldeoSend( { 'msg': '/moldeo','val0': 'consolescreenshot', 'val1': '' } );
+	},
+	"SaveScreenshotAs": function( screenshot, filename ) {
+		console.log("screenshot:",screenshot," filename:",filename);
+		try {
+			fs.copyFile( screenshot, filename, function(err) {
+				if (err) {
+					console.error("fs.copyFile ERROR: ", err);
+				} else {
+					if (config.log.full) console.log("fs.copyFile OK!");
+				}
+			} );
+		} catch(bigerr) {
+			alert("Error copiando captura, intente de nuevo."+bigerr);
+		}
 	},
 	"PreviewShot": function() {
 		if (config.log.full) console.log("buttonED_PreviewShot > ");
@@ -3142,7 +3434,7 @@ var ConsoleInterface = {
 		return data;
 	},
 
-	/**
+	/** Moldeo Core API TOOLS
 	* TOOLS:
 
 	*	retreive "paramvalues"

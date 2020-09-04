@@ -5,6 +5,7 @@
 <title>Moldeo Control</title>
 
 <link rel="stylesheet" href="css/bootstrap.min.css" media="screen">
+<link rel="stylesheet" href="css/bootstrap-treeview.css" type="text/css" media="screen"/>
 <link rel="stylesheet" type="text/css" href="moldeocontrols.css" />
 <link rel="stylesheet" href="css/tinyscrollbar.css" type="text/css" media="screen"/>
 <!--<link rel="stylesheet" href="css/bootstrap-gtreetable.css" type="text/css" media="screen"/>-->
@@ -27,6 +28,7 @@
 <script src="translations.js"></script>
 <script src="app.js"></script>
 <script src="moldeo.js"></script>
+<script src="js/bootstrap-treeview.js"></script>
 <script src="js/d3-master/d3.js"></script>
 <script src="js/d3_tree_navigator.js"></script>
 <script src="MoldeoObjects.js"></script>
@@ -245,11 +247,56 @@
 
 
   <!--AGREGAR BOOTSTRAP TABS -->
-  <ul class="nav nav-tabs nav-justified">
-    <li class="active" role="presentation">KEY</li>
-    <li role="presentation">TREE</li>
-    <li role="presentation">NODES</li>
+  <ul class="nav nav-tabs nav-justified nav-show" style="width:100px;">
+    <li class="active" role="showkeys">
+			<!--img src="images/bt-keys.png" width="32" title="KEYS"/-->
+			<button id="toggle_keys_editor_fx" title="Activar/Desactivar Panel de teclas"  class="toggle_button"><span class="glyphicon glyphicon-th-large"></span></button>
+		</li>
+    <li role="showtree">
+			<!--img src="images/bt-tree.png"  width="32" title="TREE"/-->
+			<button id="toggle_tree_editor_fx"  title="Activar/Desactivar Arbol de Efectos"  class="toggle_button"><span class="glyphicon glyphicon-th-list"></span></button>
+		</li>
+    <!--li role="shownodes">
+			<button id="toggle_nodes_editor_fx"><span class="glyphicon glyphicon-transfer"></span></button>
+		</li-->
   </ul>
+	<div id="keys_editor_effects" class="keys_editor_effects objects_editor_panel">
+	</div>
+	<div id="tree_editor_effects" class="tree_editor_effects objects_editor_panel">
+		<div id="tree_editor_effects_actions" class="tree_editor_effects_actions objects_editor_panel">
+			<button id="tree_editor_down" type="button" class="button treeview_action treeview_on_selection disabled"><span class="icon node-edit glyphicon glyphicon-menu-down"></span></button>
+			<button id="tree_editor_up" type="button" class="button treeview_action treeview_on_selection disabled"><span class="icon node-edit glyphicon glyphicon-menu-up"></span></button>
+			<button id="tree_editor_edit" type="button" class="hidden button treeview_action treeview_on_selection disabled"><span class="icon node-edit glyphicon glyphicon-pencil"></span></button>
+			<button id="tree_editor_delete" type="button" class="hidden button treeview_action treeview_on_selection disabled"><span class="icon node-edit glyphicon glyphicon-trash"></span></button>
+			<button id="tree_editor_add" type="button" class="hidden button treeview_action"><span class="icon node-edit glyphicon glyphicon-plus"></span></button>
+			<button id="tree_editor_savemob"  type="button" class="hidden button treeview_edit_action disabled"><span class="icon node-edit glyphicon glyphicon-ok"></span></button>
+			<button id="tree_editor_cancel" class="hidden button treeview_edit_action"><span class="icon node-edit glyphicon glyphicon-remove"></span></button>
+			<span id="treeview_edit_class_name" class="badge"></span>
+		</div>
+		<div id="treeview_container" class="treeview_container">
+			<div id="treeview_edit" class="">
+				<div class="input-group">
+					<span class="input-group-addon" id="mob_lbl_l">Label</span>
+					<input class="form-control" id="mob_lbl_i" type="text" name="mob_lbl" value="" aria-describedby="mob_lbl_l"/>
+  				<span class="input-group-addon" id="mob_cfg_l">Config</span>
+					<input class="form-control" id="mob_cfg_i" type="text" name="mob_cfg" value="" aria-describedby="mob_cfg_l"/>
+				</div>
+				<div class="input-group">
+  				<span class="input-group-addon" id="mob_key_l">Key</span>
+					<input class="form-control" id="mob_key_i" type="text" name="mob_key" value="" aria-describedby="mob_key_l"/>
+					<span class="input-group-addon" id="mob_active_l">Active</span>
+					<input class="form-control" id="mob_active_i" type="text" name="mob_active" value="" aria-describedby="mob_active_l"/>
+				</div>
+			</div>
+			<div class="input-group hidden">
+				<span class="input-group-addon" id="mob_name_l">Class Name</span>
+				<input class="form-control" id="mob_name_ix" type="text" name="mob_name" value="" aria-describedby="mob_name_l"/>
+			</div>
+			<div id="treeview"></div>
+		</div>
+	</div>
+	<div id="nodes_editor_effects" class="nodes_editor_effects objects_editor_panel">
+	</div>
 
 	<button id="toggle_third_editor_effects" class="button_ADD key_button" data-toggle="tooltip"><span class="glyphicon glyphicon-plus"></span><span class="glyphicon glyphicon-minus"></span></button>
 	<div id="third_editor_effects" class="third_editor_effects objects_editor_panel">
