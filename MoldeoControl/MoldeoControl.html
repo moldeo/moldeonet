@@ -99,7 +99,7 @@
 			<div id="control_project_led" class="con_indicator_led_big"></div>
 			<div id="control_project_header" class="header">
         <button id="buttonED_OpenProject" key="O" class="button_OpenProject key_button" title="Abrir un nuevo proyecto Moldeo"></button>
-        <label title="Abrir un proyecto" id="control_project_header_label"> &lt;&lt;&lt; AQUí!!</label>
+        <label title="Abrir un proyecto" id="control_project_header_label"> &lt;&lt;&lt; AqUí!!</label>
         <div class="buttons">
           <button id="buttonED_SaveProject" class="button_SaveProject control_button glyphicon glyphicon-save" title="Guardar"></button>
           <button id="buttonED_SaveProjectAs" class="button_SaveProjectAs control_button glyphicon glyphicon-export"  title="Guardar Como / Clonar"></button>
@@ -266,12 +266,18 @@
 		<div id="tree_editor_effects_actions" class="tree_editor_effects_actions objects_editor_panel">
 			<button id="tree_editor_down" type="button" class="button treeview_action treeview_on_selection disabled"><span class="icon node-edit glyphicon glyphicon-menu-down"></span></button>
 			<button id="tree_editor_up" type="button" class="button treeview_action treeview_on_selection disabled"><span class="icon node-edit glyphicon glyphicon-menu-up"></span></button>
-			<button id="tree_editor_edit" type="button" class="hidden button treeview_action treeview_on_selection disabled"><span class="icon node-edit glyphicon glyphicon-pencil"></span></button>
-			<button id="tree_editor_delete" type="button" class="hidden button treeview_action treeview_on_selection disabled"><span class="icon node-edit glyphicon glyphicon-trash"></span></button>
-			<button id="tree_editor_add" type="button" class="hidden button treeview_action"><span class="icon node-edit glyphicon glyphicon-plus"></span></button>
-			<button id="tree_editor_savemob"  type="button" class="hidden button treeview_edit_action disabled"><span class="icon node-edit glyphicon glyphicon-ok"></span></button>
-			<button id="tree_editor_cancel" class="hidden button treeview_edit_action"><span class="icon node-edit glyphicon glyphicon-remove"></span></button>
-			<span id="treeview_edit_class_name" class="badge"></span>
+			<button id="tree_editor_edit" type="button" class="button treeview_action treeview_on_selection disabled"><span class="icon node-edit glyphicon glyphicon-pencil"></span></button>
+			<button id="tree_editor_delete" type="button" class="button treeview_action treeview_on_selection disabled"><span class="icon node-edit glyphicon glyphicon-trash"></span></button>
+			<button id="tree_editor_add" type="button" class="button treeview_action"><span class="icon node-edit glyphicon glyphicon-plus"></span></button>
+			<button id="tree_editor_savemob"  type="button" class="button treeview_edit_action disabled"><span class="icon node-edit glyphicon glyphicon-ok"></span></button>
+			<button id="tree_editor_cancel" class="button treeview_edit_action"><span class="icon node-edit glyphicon glyphicon-remove"></span></button>
+			<span id="treeview_edit_class_name" class="badge" title="Cambiar clase de objeto">
+				<span class="glyphicon glyphicon-random"></span>
+			</span>
+			<div id="treeview_edit_class_tree" class="treeview_edit_class_container">
+				<div id="treeview_mob_class"></div>
+			</div>
+			</span>
 		</div>
 		<div id="treeview_container" class="treeview_container">
 			<div id="treeview_edit" class="">
@@ -290,7 +296,7 @@
 			</div>
 			<div class="input-group hidden">
 				<span class="input-group-addon" id="mob_name_l">Class Name</span>
-				<input class="form-control" id="mob_name_ix" type="text" name="mob_name" value="" aria-describedby="mob_name_l"/>
+				<input class="form-control" id="mob_name_i" type="text" name="mob_name" value="" aria-describedby="mob_name_l"/>
 			</div>
 			<div id="treeview"></div>
 		</div>

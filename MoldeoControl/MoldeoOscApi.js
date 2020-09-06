@@ -27,10 +27,20 @@ var configOsc = {
 var MoldeoApiReceiver = {
 
 	/** CONSOLE */
+	"consolegetplugins": function( message ) {
+		if (config.log.full) console.log("processing api message: consolegetplugins > ", message);
+		moCI.UpdatePlugins( message );
+	},
+	"consoleerror": function( message ) {
+		if (config.log.full) console.log("processing api message: consoleerror > ", message);
+		console.error(message);
+	},
 	"consoleget": function( message ) {
 		if (config.log.full) console.log("processing api message: consoleget > ", message);
 
 		moCI.UpdateConsole( message["target"], message["info"] );
+
+		OscMoldeoSend( { 'msg': '/moldeo','val0': 'consolegetplugins', 'val1': 'all' } );
 
 		if (Editor.ObjectRequested!=undefined
 			&& Editor.ObjectRequested!="")
@@ -359,8 +369,9 @@ var OscMoldeoSend = function( obj ) {
 				if (obj.val2!=undefined) {
 					if (obj.val3!=undefined) {
 						if (obj.val4!=undefined) {
-							oscClient.send( obj.msg, obj.val0, obj.val1, obj.val2, obj.val3, obj.val4 );
-							//console.log("obj.val4:"+obj.val4);
+							if (obj.val5!=undefined && obj.val6!=undefined && obj.val7!=undefined) {
+								oscClient.send( obj.msg, obj.val0, obj.val1, obj.val2, obj.val3, obj.val4, obj.val5, obj.val6, obj.val7 );
+							} else oscClient.send( obj.msg, obj.val0, obj.val1, obj.val2, obj.val3, obj.val4 );
 						} else oscClient.send( obj.msg, obj.val0, obj.val1, obj.val2, obj.val3 );
 					} else oscClient.send( obj.msg, obj.val0, obj.val1, obj.val2 );
 				} else oscClient.send( obj.msg, obj.val0, obj.val1 );

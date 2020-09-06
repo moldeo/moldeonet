@@ -18,6 +18,7 @@ var ConsoleInterface = {
 	Log: false,
 	State: {},
 	Project: {},
+	Plugins: [],
 
 	/**
 	*	UPDATER OBJECT
@@ -635,6 +636,7 @@ var ConsoleInterface = {
 	*/
 	Editor: {
 		"ObjectSelected": "",
+		"ObjectEditState": "",
 		"PreconfigSelected": 0,
 		"SaveNeeded": false,
 		"InspectorTabSelected": {},
@@ -1163,21 +1165,28 @@ var ConsoleInterface = {
 			},
 			"tree_editor_add": {
 				"click": function(event) {
-					var MOBNode = $('#treeview').treeview(true).getSelected()[0];
-					if (MOBNode!=undefined) {
-						$('#mob_name_i').val("");
-						$('#treeview_edit_class_name').html("[choose class]");
-						$('#mob_cfg_i').val("");
-						$('#mob_lbl_i').val("");
-						$('#mob_active_i').val("");
-						$('#mob_key_i').val("");
-					}
-					console.log( "tree_editor_add", MOBNode );
+					//var MOBNode = $('#treeview').treeview(true).getSelected()[0];
+					moCI.Editor.ObjectEditState = "newmob";
+					//if (MOBNode!=undefined) {
+						//$('#treeview_edit_class_name').html("[choose class]");
+						$('#treeview_edit_class_name').html("untitled"+": "+"image");
+						$('#mob_name_i').val("image");
+						$('#mob_cfg_i').val("untitled");
+						$('#mob_lbl_i').val("untitled");
+						$('#mob_active_i').val("1");
+						$('#mob_key_i').val("X");
+					//}
+					//console.log( "tree_editor_add", MOBNode );
 					$('#treeview_edit').toggle();
 					$('#treeview_edit_class_name').toggle();
 					$('#treeview').toggle();
 					$('.treeview_action').toggle();
 					$('.treeview_edit_action').toggle();
+				}
+			},
+			"treeview_edit_class_name": {
+				"click": function(event) {
+					$('#treeview_edit_class_tree').toggle();
 				}
 			},
 			"tree_editor_down": {
@@ -1208,13 +1217,32 @@ var ConsoleInterface = {
 			},
 			"tree_editor_delete": {
 				"click": function(event) {
-					console.log("tree_editor_delete",$('#treeview').treeview(true).getSelected());
+					var MOBnode = $('#treeview').treeview(true).getSelected()[0];
+					var MOBlabel = MOBnode.lbl;
+					console.log("tree_editor_delete",MOBnode);
+					if (confirm('Are you sure to delete this object?' + MOBlabel)) {
+						OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectdelete', 'val1': '' + MOBlabel + '' } ); //delete
+					}
 				}
 			},
 			"tree_editor_savemob": {
 				"click": function(event) {
 					//TODO: add, caso especial, save caso clasico
 					console.log("tree_editor_savemob",$('#treeview').treeview(true).getSelected());
+					if ( moCI.Editor.ObjectEditState == "newmob" || moCI.Editor.ObjectEditState == "editmob") {
+						var object_edit_state;
+						( moCI.Editor.ObjectEditState == "newmob" ) ? object_edit_state = 'objectadd' : object_edit_state = 'objectset';
+						OscMoldeoSend( { 'msg': '/moldeo',
+							'val0': object_edit_state,
+							'val1': $('#mob_name_i').val(),//fx Name
+							'val2': $('#mob_lbl_i').val(),//LabelName
+							'val3': $('#mob_cfg_i').val(),//ConfigName
+							'val4': 0, //$('#mob_type_i').val(), //Moldeo Object Type
+							'val5': $('#mob_key_i').val(), // Key Stroke to activate Fx
+							'val6': $('#mob_active_i').val(), // Fx Init at start flag (active)
+							'val7': '' //$('#mob_father').val() // for Scenes (group of pre,fx,post,res,devices)
+						} ); // move relative
+					}
 					$('#treeview_edit').toggle();
 					$('#treeview_edit_class_name').toggle();
 					$('#treeview').toggle();
@@ -2434,20 +2462,7 @@ var ConsoleInterface = {
 						collapseIcon: "glyphicon glyphicon-minus",
 	          levels: 5,
 						enableLinks: true,
-						onNodeSelected: function(ev) {
-							var MOBnode = $('#treeview').treeview(true).getSelected()[0];
-							console.log("NodeSelected:", MOBnode);
-							var MOBlabel = MOBnode.lbl;
-							moCI.Connectors.MOBnode = MOBnode;
-							$('#mob_name_i').val(MOBnode.MobDefinition.name);
-							$('#treeview_edit_class_name').html(MOBnode.MobDefinition.name);
-							$('.treeview_on_selection').removeClass('disabled');
-							$('#mob_cfg_i').val(MOBnode.MobDefinition.cfg);
-							$('#mob_lbl_i').val(MOBnode.MobDefinition.lbl);
-							$('#mob_active_i').val(MOBnode.MobDefinition.acti);
-							$('#mob_key_i').val(MOBnode.MobDefinition.key);
-							OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectget', 'val1': '' + MOBlabel + '' } ); //retreive all parameters
-						},
+						onNodeSelected: moCI.Connectors.Functions.onObjectSelected,
 						onNodeUnselected: function(ev) {
 							MOBnode = $('#treeview').treeview(true).getSelected()[0];
 							console.log("onNodeSelected:", MOBnode);
@@ -2540,6 +2555,33 @@ var ConsoleInterface = {
 
 				moCI.Connectors.FRib.Init( "connector_panel" );
 				*/
+			},
+			"onObjectSelected": function(ev) {
+				var MOBnode = $('#treeview').treeview(true).getSelected()[0];
+				console.log("NodeSelected:", MOBnode);
+				var MOBlabel = MOBnode.lbl;
+				moCI.Connectors.MOBnode = MOBnode;
+				$('#mob_name_i').val(MOBnode.MobDefinition.name);
+				$('#treeview_edit_class_name').html(MOBlabel+": "+MOBnode.MobDefinition.name);
+				$('.treeview_on_selection').removeClass('disabled');
+				$('#mob_cfg_i').val(MOBnode.MobDefinition.cfg);
+				$('#mob_lbl_i').val(MOBnode.MobDefinition.lbl);
+				$('#mob_active_i').val(MOBnode.MobDefinition.acti);
+				$('#mob_key_i').val(MOBnode.MobDefinition.key);
+				OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectget', 'val1': '' + MOBlabel + '' } ); //retreive all parameters
+			},
+			"onMobClassSelected": function(ev) {
+				var MOBClass = $('#treeview_mob_class').treeview(true).getSelected()[0];
+				console.log("NodeSelected:", MOBClass);
+				var MOBClassName = MOBClass.name;
+
+				moCI.Connectors.MOBClassName = MOBClassName;
+				$('#mob_name_i').val(MOBClassName);
+				var MOBlabel = "";
+				if (moCI.Connectors.MOBnode) {
+					MOBlabel = moCI.Connectors.MOBnode.lbl;
+				}
+				$('#treeview_edit_class_name').html(MOBlabel+": "+MOBClassName);
 			},
 		},
 		"Register": function() {
@@ -3214,6 +3256,81 @@ var ConsoleInterface = {
 
 		moCI.Connectors.Functions.ObjectsToTree();
 
+	},
+	"UpdatePlugins": function( message ) {
+		moCI.Plugins = message.info;
+		moCI.PluginsMap = {};
+		moCI.PluginsTree = [
+			{
+				'name': 'Pre Effects',
+				'text': 'Pre Effects',
+				'children': []
+			},
+			{
+				'name': 'Effects',
+				'text': 'Effects',
+				'children': []
+			},
+			{
+				'name': 'Post Effects',
+				'text': 'Post Effects',
+				'children': []
+			},
+			{
+				'name': 'Master Effects',
+				'text': 'Master Effects',
+				'children': []
+			},
+			{
+				'name': 'Resources',
+				'text': 'Resources',
+				'children': []
+			},
+			{
+				'name': 'Devices',
+				'text': 'Devices',
+				'children': []
+			}
+		];
+		var typemap = {
+			"0": 1,//fx
+			"1": 0,//prefx
+			"2": 2,//postfx
+			"3": 3,//overfx (ex master fx)
+			"4": 5,//iodevices
+			"5": 4//resources
+		};
+		for(idx in message.info) {
+			obj = message.info[idx];
+			console.log(obj);
+			moCI.PluginsMap[obj.name] = obj;
+			var typepos = typemap[obj.type];
+			if (typepos!=undefined) {
+				moCI.PluginsTree[typepos]["children"].push({
+					'name': obj.name,
+					'text': obj.name,
+					'children': []
+				});
+			}
+		}
+		var options_mob_class = {
+			color: "#FFF",
+			backColor: "#000",
+			selectedBackColor: "#567",
+			bootstrap2: false,
+			showTags: true,
+			expandIcon: "glyphicon glyphicon-plus",
+			collapseIcon: "glyphicon glyphicon-minus",
+			levels: 5,
+			enableLinks: true,
+			onNodeSelected: moCI.Connectors.Functions.onMobClassSelected,
+			onNodeUnselected: function(ev) {
+			},
+			data: moCI.PluginsTree
+		};
+
+
+		$('#treeview_mob_class').treeview(options_mob_class);
 	},
 
 	/* Project Open/Save/Save As Functions */
