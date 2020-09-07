@@ -19,6 +19,15 @@ var ConsoleInterface = {
 	State: {},
 	Project: {},
 	Plugins: [],
+	cla2types: {
+		"moEffect": 0,
+		"moPreEffect": 1,
+		"moPostEffect": 2,
+		"moMasterEffect": 3,
+		"moResource": 4,
+		"moIODevice": 5,
+		"moConsole": 6
+	},
 
 	/**
 	*	UPDATER OBJECT
@@ -1175,6 +1184,7 @@ var ConsoleInterface = {
 						$('#mob_lbl_i').val("untitled");
 						$('#mob_active_i').val("1");
 						$('#mob_key_i').val("X");
+						$('#mob_type_i').val('0');//taken from selector
 					//}
 					//console.log( "tree_editor_add", MOBNode );
 					$('#treeview_edit').toggle();
@@ -1207,6 +1217,7 @@ var ConsoleInterface = {
 			},
 			"tree_editor_edit": {
 				"click": function(event) {
+					moCI.Editor.ObjectEditState = "editmob";
 					console.log("tree_editor_edit",$('#treeview').treeview(true).getSelected());
 					$('#treeview_edit').toggle();
 					$('#treeview_edit_class_name').toggle();
@@ -1237,9 +1248,9 @@ var ConsoleInterface = {
 							'val1': $('#mob_name_i').val(),//fx Name
 							'val2': $('#mob_lbl_i').val(),//LabelName
 							'val3': $('#mob_cfg_i').val(),//ConfigName
-							'val4': 0, //$('#mob_type_i').val(), //Moldeo Object Type
+							'val4': Number($('#mob_type_i').val()), //Moldeo Object Type
 							'val5': $('#mob_key_i').val(), // Key Stroke to activate Fx
-							'val6': $('#mob_active_i').val(), // Fx Init at start flag (active)
+							'val6': Number($('#mob_active_i').val()), // Fx Init at start flag (active)
 							'val7': '' //$('#mob_father').val() // for Scenes (group of pre,fx,post,res,devices)
 						} ); // move relative
 					}
@@ -2568,6 +2579,7 @@ var ConsoleInterface = {
 				$('#mob_lbl_i').val(MOBnode.MobDefinition.lbl);
 				$('#mob_active_i').val(MOBnode.MobDefinition.acti);
 				$('#mob_key_i').val(MOBnode.MobDefinition.key);
+				$('#mob_type_i').val(moCI.cla2types[MOBnode.MobDefinition.cla])
 				OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectget', 'val1': '' + MOBlabel + '' } ); //retreive all parameters
 			},
 			"onMobClassSelected": function(ev) {
@@ -2577,11 +2589,15 @@ var ConsoleInterface = {
 
 				moCI.Connectors.MOBClassName = MOBClassName;
 				$('#mob_name_i').val(MOBClassName);
+				$('#mob_type_i').val(MOBClass.obj.type);
 				var MOBlabel = "";
 				if (moCI.Connectors.MOBnode) {
 					MOBlabel = moCI.Connectors.MOBnode.lbl;
+				} else {
+					MOBlabel = $('#mob_lbl_i').val();
 				}
 				$('#treeview_edit_class_name').html(MOBlabel+": "+MOBClassName);
+				$('#treeview_edit_class_tree').toggle();
 			},
 		},
 		"Register": function() {
@@ -3264,32 +3280,96 @@ var ConsoleInterface = {
 			{
 				'name': 'Pre Effects',
 				'text': 'Pre Effects',
+				tags: [],
+				color: "#FFF",
+				backColor: "#000",
+				selectable: false,
+				state: {
+					checked: false,
+					disabled: false,
+					expanded: true,
+					selected: false
+				},
 				'children': []
 			},
 			{
 				'name': 'Effects',
 				'text': 'Effects',
+				tags: [],
+				color: "#FFF",
+				backColor: "#000",
+				selectable: false,
+				state: {
+					checked: false,
+					disabled: false,
+					expanded: true,
+					selected: false
+				},
 				'children': []
 			},
 			{
 				'name': 'Post Effects',
 				'text': 'Post Effects',
-				'children': []
-			},
-			{
-				'name': 'Master Effects',
-				'text': 'Master Effects',
-				'children': []
+				tags: [],
+				color: "#FFF",
+				backColor: "#000",
+				selectable: false,
+				state: {
+					checked: false,
+					disabled: false,
+					expanded: true,
+					selected: false
+				},
+				'children': [],
+				'nodes': []
 			},
 			{
 				'name': 'Resources',
 				'text': 'Resources',
-				'children': []
+				tags: [],
+				color: "#FFF",
+				backColor: "#000",
+				selectable: false,
+				state: {
+					checked: false,
+					disabled: false,
+					expanded: true,
+					selected: false
+				},
+				'children': [],
+				'nodes': []
+			},
+			{
+				'name': 'Master Effects',
+				'text': 'Master Effects',
+				tags: [],
+				color: "#FFF",
+				backColor: "#000",
+				selectable: false,
+				state: {
+					checked: false,
+					disabled: false,
+					expanded: true,
+					selected: false
+				},
+				'children': [],
+				'nodes': []
 			},
 			{
 				'name': 'Devices',
 				'text': 'Devices',
-				'children': []
+				tags: [],
+				color: "#FFF",
+				backColor: "#000",
+				selectable: false,
+				state: {
+					checked: false,
+					disabled: false,
+					expanded: true,
+					selected: false
+				},
+				'children': [],
+				'nodes': []
 			}
 		];
 		var typemap = {
@@ -3309,8 +3389,11 @@ var ConsoleInterface = {
 				moCI.PluginsTree[typepos]["children"].push({
 					'name': obj.name,
 					'text': obj.name,
-					'children': []
+					'obj': obj,
+					'children': [],
+					'nodes': []
 				});
+				moCI.PluginsTree[typepos]["nodes"] = moCI.PluginsTree[typepos]["children"];
 			}
 		}
 		var options_mob_class = {
