@@ -2338,28 +2338,43 @@ button.disabled .glyphicon {
 
 			.object_edition .object_edit {
 				background-image: url(buttons/button_Editor_ObjectEdition_EDIT.svg);
-				top: 3px;
+				top: 0px;
+        position: absolute;
+        float: right;
+        margin-right: -45px;
 			}
+
+      .parameter_inspector .object_edition .object_import {
+        top: 0px;
+        position: absolute;
+        float: right;
+        margin-right: -40px;
+      }
 
 			.object_edition .object_edit:hover {
 				background-image: url(buttons/button_Editor_ObjectEdition_EDIT_on.svg);
-				top: 3px;
 			}
 
 			.object_edition .object_import {
 				background-image: url(buttons/button_Editor_ObjectEdition_IMPORT.svg);
-				top: 15px;
+        top: 15px;
 			}
 
 			.object_edition .object_import:hover {
 				background-image: url(buttons/button_Editor_ObjectEdition_IMPORT_on.svg);
-				top: 15px;
 			}
 
-			.object_edition .object_refresh {
+			.parameter_inspector .object_edition .object_refresh {
 				background-image: url(buttons/button_Editor_ObjectEdition_REFRESH.svg);
-				top: 3px;
+				top: 0px;
+        position: absolute;
+        float: right;
+        margin-right: -70px;
 			}
+      .object_edition .object_refresh {
+				background-image: url(buttons/button_Editor_ObjectEdition_REFRESH.svg);
+        top: 3px;
+      }
 
 			.object_edition .object_refresh:hover {
 				background-image: url(buttons/button_Editor_ObjectEdition_REFRESH_on.svg);
@@ -2733,6 +2748,7 @@ button.disabled .glyphicon {
 
   #parameter_inspector_TEXTURE .param_input {
     width: 290px;
+      top: 55px;
   }
 
 

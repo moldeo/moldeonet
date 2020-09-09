@@ -1187,11 +1187,14 @@ var ConsoleInterface = {
 						$('#mob_type_i').val('0');//taken from selector
 					//}
 					//console.log( "tree_editor_add", MOBNode );
-					$('#treeview_edit').toggle();
-					$('#treeview_edit_class_name').toggle();
-					$('#treeview').toggle();
-					$('.treeview_action').toggle();
-					$('.treeview_edit_action').toggle();
+					//show form
+					$('#treeview_edit').show();
+					$('#treeview_edit_class_name').show();
+					$('.treeview_edit_action').show();
+					$('#treeview_edit_class_tree').show();
+					//hide tree
+					$('#treeview').hide();
+					$('.treeview_action').hide();
 				}
 			},
 			"treeview_edit_class_name": {
@@ -1205,6 +1208,7 @@ var ConsoleInterface = {
 					var MOBlabel = MOBnode.lbl;
 					console.log("tree_editor_down",MOBnode);
 					OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectmove', 'val1': '' + MOBlabel + '', 'val2': 1, 'val3': 1 } ); //move relative
+					SetSaveNeeded();
 				}
 			},
 			"tree_editor_up": {
@@ -1213,17 +1217,21 @@ var ConsoleInterface = {
 					var MOBlabel = MOBnode.lbl;
 					console.log("tree_editor_down",MOBnode);
 					OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectmove', 'val1': '' + MOBlabel + '', 'val2': -1, 'val3': 1 } ); //move relative
+					SetSaveNeeded();
 				}
 			},
 			"tree_editor_edit": {
 				"click": function(event) {
 					moCI.Editor.ObjectEditState = "editmob";
 					console.log("tree_editor_edit",$('#treeview').treeview(true).getSelected());
-					$('#treeview_edit').toggle();
-					$('#treeview_edit_class_name').toggle();
-					$('#treeview').toggle();
-					$('.treeview_action').toggle();
-					$('.treeview_edit_action').toggle();
+					//show form
+					$('#treeview_edit').show();
+					$('#treeview_edit_class_name').show();
+					$('.treeview_edit_action').show();
+					$('#treeview_edit_class_tree').hide();
+					//hide tree
+					$('#treeview').hide();
+					$('.treeview_action').hide();
 				}
 			},
 			"tree_editor_delete": {
@@ -1233,6 +1241,7 @@ var ConsoleInterface = {
 					console.log("tree_editor_delete",MOBnode);
 					if (confirm('Are you sure to delete this object?' + MOBlabel)) {
 						OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectdelete', 'val1': '' + MOBlabel + '' } ); //delete
+						SetSaveNeeded();
 					}
 				}
 			},
@@ -1254,21 +1263,29 @@ var ConsoleInterface = {
 							'val7': '' //$('#mob_father').val() // for Scenes (group of pre,fx,post,res,devices)
 						} ); // move relative
 					}
-					$('#treeview_edit').toggle();
-					$('#treeview_edit_class_name').toggle();
-					$('#treeview').toggle();
-					$('.treeview_action').toggle();
-					$('.treeview_edit_action').toggle();
+					SetSaveNeeded();
+					moCI.Editor.ObjectEditState = "";
+					//hide form
+					$('#treeview_edit').hide();
+					$('#treeview_edit_class_name').hide();
+					$('.treeview_edit_action').hide();
+					$('#treeview_edit_class_tree').hide();
+					//show tree
+					$('#treeview').show();
+					$('.treeview_action').show();
 				}
 			},
 			"tree_editor_cancel": {
 				"click": function(event) {
 					console.log("tree_editor_cancel",$('#treeview').treeview(true).getSelected());
-					$('#treeview_edit').toggle();
-					$('#treeview_edit_class_name').toggle();
-					$('#treeview').toggle();
-					$('.treeview_action').toggle();
-					$('.treeview_edit_action').toggle();
+					//hide form
+					$('#treeview_edit').hide();
+					$('#treeview_edit_class_name').hide();
+					$('.treeview_edit_action').hide();
+					$('#treeview_edit_class_tree').hide();
+					//show tree
+					$('#treeview').show();
+					$('.treeview_action').show();
 				}
 			},
 			"toggle_keys_editor_fx": {
@@ -2597,7 +2614,7 @@ var ConsoleInterface = {
 					MOBlabel = $('#mob_lbl_i').val();
 				}
 				$('#treeview_edit_class_name').html(MOBlabel+": "+MOBClassName);
-				$('#treeview_edit_class_tree').toggle();
+				$('#treeview_edit_class_tree').hide();
 			},
 		},
 		"Register": function() {
@@ -3324,8 +3341,8 @@ var ConsoleInterface = {
 				'nodes': []
 			},
 			{
-				'name': 'Resources',
-				'text': 'Resources',
+				'name': 'Master Effects',
+				'text': 'Master Effects',
 				tags: [],
 				color: "#FFF",
 				backColor: "#000",
@@ -3340,8 +3357,8 @@ var ConsoleInterface = {
 				'nodes': []
 			},
 			{
-				'name': 'Master Effects',
-				'text': 'Master Effects',
+				'name': 'Resources',
+				'text': 'Resources',
 				tags: [],
 				color: "#FFF",
 				backColor: "#000",
@@ -3390,6 +3407,9 @@ var ConsoleInterface = {
 					'name': obj.name,
 					'text': obj.name,
 					'obj': obj,
+					backColor: "#000",
+					selectedBackColor: "#567",
+					onhoverColor: "#444",
 					'children': [],
 					'nodes': []
 				});
@@ -3400,6 +3420,7 @@ var ConsoleInterface = {
 			color: "#FFF",
 			backColor: "#000",
 			selectedBackColor: "#567",
+			onhoverColor: "#444",
 			bootstrap2: false,
 			showTags: true,
 			expandIcon: "glyphicon glyphicon-plus",
