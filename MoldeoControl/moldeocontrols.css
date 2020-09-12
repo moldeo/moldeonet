@@ -1897,7 +1897,7 @@ body.synchronizer {
   height: 58%;
   z-index: 8;
   position: absolute;
-  display: block;
+  display: none;
   overflow: hidden;
   background-color: rgba(0,0,0,1.0);
 }
@@ -2001,6 +2001,10 @@ button.disabled .glyphicon {
   border-radius: 3px;
   height: 37px;
   margin-top: 5px;
+}
+
+.toggle_button.disabled {
+  border: solid 1px #555;
 }
 
 .list-group-item {

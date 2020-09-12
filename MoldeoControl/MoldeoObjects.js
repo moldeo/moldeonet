@@ -179,9 +179,52 @@ var ConsoleInterface = {
 	*   TODO:
 	*/
 	Player: {
+		"document": null,
+		"winPlayer": null,
+		"playerOptions": null,
+		"initialized": false,
 		'Display': {
 		},
 		'moConsole': {
+		},
+		"Open": function( options ) {
+			moCI.Player.playerOptions = options;
+			if (moCI.Player.winPlayer==null) {
+
+				moCI.Player.winPlayer = gui.Window.open('MoldeoPlayer.html', {
+					icon: "moldeocontrol.png",
+					focus: true,
+					toolbar: false,
+					frame: true,
+					width: win.width,
+					height: 200,
+					position: "center",
+				});
+				if (moCI.Player.winPlayer) {
+					moCI.Player.winPlayer.moveTo(win.x, win.y-230);
+					moCI.Player.winPlayer.moCI = moCI;
+					moCI.Player.winPlayer.on('loaded', function() {
+						moCI.Player.document = moCI.Player.winPlayer.window.document;
+						moCI.Player.initialized = true;
+						moCI.Player.playerOptions["stdout_stream"].resume();
+					});
+					//moCI.Browser.winBrowser.on('focus', moCI.Browser.initBrowser);
+					moCI.Player.winPlayer.on('closed', function() {
+						console.log("Render closed!");
+						moCI.Player.winPlayer = null;
+						moCI.Player.initialized = false;
+					});
+					moCI.Player.winPlayer.on('close', function() {
+						console.log("Player closing!");
+						moCI.Player.winPlayer = null;
+						moCI.Player.initialized = false;
+						if (moCI.Player.playerOptions["playerprocess"]) {
+							//moCI.Render.renderOptions["renderprocess"].kill();
+						}
+						this.close(true);
+					});
+				}
+			}
 		},
 	},
 
@@ -1290,16 +1333,20 @@ var ConsoleInterface = {
 			},
 			"toggle_keys_editor_fx": {
 				"click": function(event) {
+					$("#toggle_keys_editor_fx").toggleClass("disabled");
+					$("#toggle_tree_editor_fx").toggleClass("disabled");
 					$("#third_editor_effects").toggle();
 					$("#tree_editor_effects").toggle();
-					$("#toggle_third_editor_effects").toggleClass("expanded");
+					//$("#toggle_third_editor_effects").toggleClass("expanded");
 				},
 			},
 			"toggle_tree_editor_fx": {
 				"click": function(event) {
+					$("#toggle_keys_editor_fx").toggleClass("disabled");
+					$("#toggle_tree_editor_fx").toggleClass("disabled");
 					$("#third_editor_effects").toggle();
 					$("#tree_editor_effects").toggle();
-					$("#toggle_third_editor_effects").toggleClass("expanded");
+					//$("#toggle_third_editor_effects").toggleClass("expanded");
 				},
 			},
 			"importfile": {
@@ -2300,10 +2347,11 @@ var ConsoleInterface = {
 							color: "#FFF",
 	  					backColor: "#000",
 							selectable: false,
+							showCheckbox: false,
 						  state: {
 						    checked: false,
 						    disabled: false,
-						    expanded: true,
+						    expanded: false,
 						    selected: false
 						  },
 							"order": 1,
@@ -2319,10 +2367,11 @@ var ConsoleInterface = {
 							color: "#FFF",
 	  					backColor: "#000",
 							selectable: false,
+							showCheckbox: false,
 						  state: {
 						    checked: false,
 						    disabled: false,
-						    expanded: true,
+						    expanded: false,
 						    selected: false
 						  },
 							"order": 2,
@@ -2338,10 +2387,11 @@ var ConsoleInterface = {
 							color: "#FFF",
 	  					backColor: "#000",
 							selectable: false,
+							showCheckbox: false,
 						  state: {
 						    checked: false,
 						    disabled: false,
-						    expanded: true,
+						    expanded: false,
 						    selected: false
 						  },
 							"order": 3,
@@ -2360,7 +2410,7 @@ var ConsoleInterface = {
 						  state: {
 						    checked: false,
 						    disabled: false,
-						    expanded: true,
+						    expanded: false,
 						    selected: false
 						  },
 							"order": 4,
@@ -2444,10 +2494,12 @@ var ConsoleInterface = {
 						var is_expanded = true;
 						if (cl_fx) {
 							var node = console_tree.children[ cl_fx[1] ];
+							var is_selected = (( moCI.Connectors.MobNodeSelected ) ? (moCI.Connectors.MobNodeSelected.MobDefinition.lbl == mob_ref.lbl) : false );
 							var mobd = {
 									"name": mob_ref.lbl,
 									"lbl": mob_ref.lbl,
 									"text": mob_ref.lbl,
+									"nodeIcon": "glyphicon glyphicon-adjust",
 									//"text": mob_ref.lbl + " ["+mob_ref.id+"] "+mob_ref.key,
 									"fxname": mob_ref.name,
 									"type": "mob",
@@ -2455,15 +2507,16 @@ var ConsoleInterface = {
 									"ix": mob_ref.ix,
 									"id": mob_ref.id,
 									"MobDefinition": mob_ref,
-									tags: [ mob_ref.key, mob_ref.name, mob_ref.id ],
+									tags: [ mob_ref.key, mob_ref.name ], // "activar: " + mob_ref.acti ],
 									color: "#FFF",
 			  					backColor: "#000",
 									selectable: true,
+									showCheckbox: true,
 								  state: {
-								    checked: false,
+								    checked: ((mob_ref.acti==1) ? true : false),
 								    disabled: false,
 								    expanded: is_expanded,
-								    selected: false
+								    selected: is_selected,
 								  },
 									//"children": [],//for Scenes...
 									//"nodes": []
@@ -2486,18 +2539,22 @@ var ConsoleInterface = {
 						selectedBackColor: "#567",
 	          bootstrap2: false,
 	          showTags: true,
-						expandIcon: "glyphicon glyphicon-plus",
-						collapseIcon: "glyphicon glyphicon-minus",
+						showCheckbox: true,
+						showIcon: true,
+						expandIcon: "glyphicon glyphicon-triangle-right",
+						collapseIcon: "glyphicon glyphicon-triangle-bottom",
 	          levels: 5,
 						enableLinks: true,
 						onNodeSelected: moCI.Connectors.Functions.onObjectSelected,
+						onNodeChecked: moCI.Connectors.Functions.onObjectChecked,
+						onNodeUnchecked: moCI.Connectors.Functions.onObjectChecked,
 						onNodeUnselected: function(ev) {
 							MOBnode = $('#treeview').treeview(true).getSelected()[0];
 							console.log("onNodeSelected:", MOBnode);
 							var MOBnode = $('#treeview').treeview(true).getUnselected()[0];
 							console.log("onNodeUnselected:", MOBnode);
 							$('.treeview_on_selection').addClass('disabled');
-							moCI.Connectors.MOBnode = undefined;
+							moCI.Connectors.MobNodeSelected = undefined;
 						},
 	          data: console_tree["nodes"]
 	        };
@@ -2507,14 +2564,22 @@ var ConsoleInterface = {
 					TT = $('#treeview').treeview(true);
 					console.log(TT,$('#treeview').treeview(true));
 					$('.treeview_on_selection').addClass('disabled');
-					if (moCI.Connectors.MOBnode) {
-						console.log("selectNode",moCI.Connectors.MOBnode);
-						var NID = TT.getNode(moCI.Connectors.MOBnode.nodeId);
+					if (moCI.Connectors.MobNodeSelected) {
+						var SID = TT.getSelected();
+						if (SID && SID.length) {
+							console.log("selectedNode SID",SID);
+							TT.revealNode(SID[0].nodeId, { silent: false });
+							moCI.Connectors.MobNodeSelected = SID[0];
+							TT.selectNode(moCI.Connectors.MobNodeSelected.nodeId, { silent: false });
+							moCI.Connectors.Functions.onObjectSelected( {}, moCI.Connectors.MobNodeSelected );
+						}
+						/*console.log("selectNode",moCI.Connectors.MobNodeSelected);
+						var NID = TT.getNode(moCI.Connectors.MobNodeSelected.nodeId);
 						console.log("selectNode NID",NID);
-						//if (NID) TT.selectNode(moCI.Connectors.MOBnode.nodeId);
+						if (NID) TT.selectNode(moCI.Connectors.MobNodeSelected.nodeId);
 						if (NID) TT.revealNode(NID.nodeId, { silent: true });
 						var SID = TT.getSelected();
-						console.log("selectedNode SID",SID);
+						console.log("selectedNode SID",SID);*/
 					}
 				}
 
@@ -2584,11 +2649,11 @@ var ConsoleInterface = {
 				moCI.Connectors.FRib.Init( "connector_panel" );
 				*/
 			},
-			"onObjectSelected": function(ev) {
+			"onObjectSelected": function(ev, node) {
 				var MOBnode = $('#treeview').treeview(true).getSelected()[0];
 				console.log("NodeSelected:", MOBnode);
 				var MOBlabel = MOBnode.lbl;
-				moCI.Connectors.MOBnode = MOBnode;
+				moCI.Connectors.MobNodeSelected = MOBnode;
 				$('#mob_name_i').val(MOBnode.MobDefinition.name);
 				$('#treeview_edit_class_name').html(MOBlabel+": "+MOBnode.MobDefinition.name);
 				$('.treeview_on_selection').removeClass('disabled');
@@ -2599,7 +2664,31 @@ var ConsoleInterface = {
 				$('#mob_type_i').val(moCI.cla2types[MOBnode.MobDefinition.cla])
 				OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectget', 'val1': '' + MOBlabel + '' } ); //retreive all parameters
 			},
-			"onMobClassSelected": function(ev) {
+			"onObjectChecked": function(ev, node) {
+				console.log("onObjectChecked", ev, node);
+				var MOBnode = node;
+				if (MOBnode.MobDefinition==undefined) {
+					console.error("TODO: just confirm if check all or uncheck all");
+					if (confirm("Are you sure to Check/Uncheck All ?")) {
+						console.log("TODO: implement check/uncheck all and diferente level of check icons (full, none, some)");
+					}
+					return;
+				}
+				moCI.Connectors.MobNodeSelected = node;
+				if (node && node.state) {
+					MOBnode.MobDefinition.acti = node.state.checked ? 1 : 0;
+					$('#mob_name_i').val(MOBnode.MobDefinition.name);
+					$('#mob_cfg_i').val(MOBnode.MobDefinition.cfg);
+					$('#mob_lbl_i').val(MOBnode.MobDefinition.lbl);
+					$('#mob_active_i').val(MOBnode.MobDefinition.acti);
+					$('#mob_key_i').val(MOBnode.MobDefinition.key);
+					$('#mob_type_i').val(moCI.cla2types[MOBnode.MobDefinition.cla]);
+					moCI.Editor.ObjectEditState = "editmob";
+					moCI.Editor.Buttons.tree_editor_savemob.click({});
+				}
+
+			},
+			"onMobClassSelected": function(ev, node) {
 				var MOBClass = $('#treeview_mob_class').treeview(true).getSelected()[0];
 				console.log("NodeSelected:", MOBClass);
 				var MOBClassName = MOBClass.name;
@@ -2608,8 +2697,8 @@ var ConsoleInterface = {
 				$('#mob_name_i').val(MOBClassName);
 				$('#mob_type_i').val(MOBClass.obj.type);
 				var MOBlabel = "";
-				if (moCI.Connectors.MOBnode) {
-					MOBlabel = moCI.Connectors.MOBnode.lbl;
+				if (moCI.Connectors.MobNodeSelected) {
+					MOBlabel = moCI.Connectors.MobNodeSelected.lbl;
 				} else {
 					MOBlabel = $('#mob_lbl_i').val();
 				}
@@ -3410,8 +3499,8 @@ var ConsoleInterface = {
 					backColor: "#000",
 					selectedBackColor: "#567",
 					onhoverColor: "#444",
-					'children': [],
-					'nodes': []
+					//'children': [],
+					//'nodes': []
 				});
 				moCI.PluginsTree[typepos]["nodes"] = moCI.PluginsTree[typepos]["children"];
 			}
@@ -3423,8 +3512,8 @@ var ConsoleInterface = {
 			onhoverColor: "#444",
 			bootstrap2: false,
 			showTags: true,
-			expandIcon: "glyphicon glyphicon-plus",
-			collapseIcon: "glyphicon glyphicon-minus",
+			expandIcon: "glyphicon glyphicon-triangle-right",
+			collapseIcon: "glyphicon glyphicon-triangle-bottom",
 			levels: 5,
 			enableLinks: true,
 			onNodeSelected: moCI.Connectors.Functions.onMobClassSelected,
@@ -3442,7 +3531,7 @@ var ConsoleInterface = {
 		//filename = filename.replace( /\'/g , '"');
 		//filename = filename.replace( /\\/g , '\\\\');
 
-		moCI.launchPlayer( ' -mol "'+filename+'" ' );
+		moCI.launchPlayerConsole( ' -mol "'+filename+'" ' );
 		moCI.Browser.SaveRecents( filename );
 		moCI.ReloadInterface();
 	},
@@ -3755,6 +3844,7 @@ var ConsoleInterface = {
 		//setTimeout( function() { win.reloadDev(); }, 2000 );
 	},
 	"launchPlayer": launchPlayer,
+	"launchPlayerConsole": launchPlayerConsole,
 	"linkProject": linkProject,
 	"unlinkProject": unlinkProject,
 	"fs": fs,

@@ -109,6 +109,112 @@ launchPlayer = function( project_file ) {
 
 }
 
+launchPlayerConsole = function( project_file, options ) {
+
+	console.log("launchPlayerConsole: ", project_file);
+
+	if (config.player_full_path==undefined || config.player_full_path=="") {
+		moCI.console.error("launchPlayer > config.player_full_path is undefined");
+		return false;
+	}
+	player_call = '"'+config.player_full_path+'" '+project_file
+	moCI.console.log("launchPlayerConsole > player_full_path:",config.player_full_path," project_file:",project_file, " player_call:",player_call );
+
+	if (options=="" || options==undefined) options = {};
+
+	options["player_call"] = player_call;
+	options["bash_player_call"] = "";
+
+	try {
+
+		if (config.platform.indexOf("win")==0) {
+			options["bash_player_call"] = config.home_path+"/player_console.bat";
+		} else if (config.platform=="linux") {
+			options["bash_player_call"] = config.home_path+"/player_console.sh";
+		} else if (config.platform=="mac" || config.platform=="osx" || config.platform.indexOf("darwin")>=0) {
+			options["bash_player_call"] = config.home_path+"/player_console.sh";
+		} else {
+			alert("platform not recognized:"+config.platform);
+			return false;
+		}
+
+		fd = fs.openSync( options["bash_player_call"],"w" );
+		fs.writeSync( fd, options["player_call"] );
+
+		if (config.platform=="linux" || config.platform=="mac" || config.platform=="osx" || config.platform.indexOf("darwin")>=0) {
+			fs.chmodSync( options["bash_player_call"], 0755);
+		}
+		fs.closeSync(fd);
+
+		var playerprocess = spawn( options["bash_player_call"], []);
+
+		console.log( "stream stdout:",playerprocess.stdout );
+
+		playerprocess.stdout.setEncoding('ascii');
+		playerprocess.stdout.pause();
+		playerprocess.stdout.on('data', function(data) {
+			if (data) {
+				moCI.console.log( data, moCI.Player  );
+				if (moCI.Player.document==null) {
+					if (moCI.Player.winPlayer.window) {
+						moCI.Player.document = moCI.Player.winPlayer.window.document;
+					}
+				}
+				if (moCI.Player.document && moCI.Player.initialized) {
+					var logarea = moCI.Player.document.getElementById("logarea");
+					if (logarea) {
+						logarea.innerHTML+= data;
+						logarea.scrollTop = logarea.scrollHeight
+					}
+				}
+			}
+		});
+
+		// add an 'end' event listener to close the writeable stream
+		playerprocess.stdout.on('end', function(data) {
+			if (data) {
+				moCI.console.log( data );
+			}
+			moCI.console.log("playerprocess end stream!");
+			var logarea = moCI.Player.document.getElementById("logarea");
+			var error = 0;
+			if (logarea) {
+				if (logarea.innerHTML.indexOf("ERROR")>=0) {
+					error = true;
+				}
+			}
+			//moCI.Player.ShowVideo(error);
+		});
+		// when the spawn child process exits, check if there were any errors and close the writeable stream
+		playerprocess.on('exit', function(code) {
+			if (code != 0) {
+				moCI.console.log('playerprocess Failed: ' + code);
+			}
+
+			moCI.console.log('playerprocess exited with code: ',code);
+		});
+
+		options["stdout_stream"] = playerprocess.stdout;
+
+		moCI.Player.Open( options );
+		/*
+		return moCI.fs.callProgram( new_render_call, options, function(error,stdout,stderr) {
+			//console.log("fs.launchRender > Calling callback for: project_file");
+			if (error) {
+				alert("No se pudo ejecutar el script de rendereo.");
+				moCI.console.error(error);
+			}
+			if (stdout) {
+				moCI.console.log(stdout);
+			}
+		} );
+		*/
+	} catch(err) {
+		alert(err);
+		console.error("launchPlayerConsole > ",player_call,err);
+	}
+}
+
 linkProject = function( target_project_path, symbolic_link_path, callback ) {
 
   return callProgram( 'ln', " -s "+target_project_path+" "+symbolic_link_path, function(error,stdout,stderr) {
