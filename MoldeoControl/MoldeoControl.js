@@ -166,7 +166,7 @@ function UnselectButtonsCircle( MOBlabel ) {
 	}
 	var diA = document.getElementById("button_ALL" );
 	if (diA) deactivateClass( diA, "circle_selected" );
-	$("#button_ALL").html("N");
+	$("#button_ALL").html("+");
 
 }
 

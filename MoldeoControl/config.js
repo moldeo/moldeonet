@@ -13,7 +13,8 @@ var config = {
     "release_mode": "develop" /*"production"*/,
 
 	"log": {
-		"full": false,
+    "player": false,
+		"full": true,
 		"save": false,
 		"logfile": "",
 	},

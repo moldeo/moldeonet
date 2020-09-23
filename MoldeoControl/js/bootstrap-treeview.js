@@ -69,7 +69,9 @@
 		onNodeUnchecked: undefined,
 		onNodeUnselected: undefined,
 		onSearchComplete: undefined,
-		onSearchCleared: undefined
+		onSearchCleared: undefined,
+
+		onNodeActivated: undefined
 	};
 
 	_default.options = {
@@ -199,6 +201,8 @@
 		this.$element.off('nodeUnselected');
 		this.$element.off('searchComplete');
 		this.$element.off('searchCleared');
+
+		this.$element.off('nodeActivated');
 	};
 
 	Tree.prototype.subscribeEvents = function () {
@@ -245,6 +249,10 @@
 
 		if (typeof (this.options.onSearchCleared) === 'function') {
 			this.$element.on('searchCleared', this.options.onSearchCleared);
+		}
+
+		if (typeof (this.options.onNodeActivated) === 'function') {
+			this.$element.on('nodeActivated', this.options.onNodeActivated);
 		}
 	};
 
@@ -323,7 +331,13 @@
 		if (!node || node.state.disabled) return;
 
 		var classList = target.attr('class') ? target.attr('class').split(' ') : [];
-		if ((classList.indexOf('expand-icon') !== -1)) {
+		if ((classList.indexOf('control_button')  !== -1)) {
+			console.log("control_button ok!", target, node );
+			//this.$element.trigger('nodeActivated', $.extend(true, {}, node));
+			if (this.options.onNodeActivated) this.options.onNodeActivated(node);
+			this.render();
+		}
+		else if ((classList.indexOf('expand-icon') !== -1)) {
 
 			this.toggleExpandedState(node, _default.options);
 			this.render();
@@ -510,12 +524,14 @@
 
 		var _this = this;
 		$.each(nodes, function addNodes(id, node) {
-
+			var _is_activated = (typeof node.state.activated == "function" && node.state.activated(node)) || (typeof node.state.activated == "boolean" && node.state.activated);
 			var treeItem = $(_this.template.item)
 				.addClass('node-' + _this.elementId)
 				.addClass(node.state.checked ? 'node-checked' : '')
 				.addClass(node.state.disabled ? 'node-disabled': '')
 				.addClass(node.state.selected ? 'node-selected' : '')
+				.addClass( _is_activated ? 'object_enabled' : '')
+				.addClass(node.lbl ? ''+node.lbl : '')
 				.addClass(node.searchResult ? 'search-result' : '')
 				.attr('data-nodeid', node.nodeId)
 				.attr('style', _this.buildStyleOverride(node));
@@ -544,6 +560,15 @@
 				.append($(_this.template.icon)
 					.addClass(classList.join(' '))
 				);
+
+			//TODO: Add Activation Button
+			if (_this.options.onNodeActivated && node.MobDefinition && node.lbl) {
+				var classList2 = ['button_object_onoff','control_button', node.lbl];
+				var class_activated = (_is_activated) ? classList2.push("object_enabled") : "";
+				treeItem.append(
+						$(_this.template.button).attr("moblabel",node.lbl).addClass(classList2.join(' '))
+					);
+			}
 
 
 			// Add node icon
@@ -689,7 +714,8 @@
 	Tree.prototype.template = {
 		list: '<ul class="list-group"></ul>',
 		//item: '<li class="list-group-item"></li>',
-		item: '<li class="list-group-item"></li>',
+		item: '<li class="list-group-item mob-item mob-item-status"></li>',
+		button: '<button title="Activar/Desactivar objeto" moblabel=""></button>',
 		indent: '<span class="indent"></span>',
 		icon: '<span class="icon"></span>',
 		link: '<a href="#" style="color:inherit;"></a>',

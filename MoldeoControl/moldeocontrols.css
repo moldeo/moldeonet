@@ -305,7 +305,7 @@ button.fxselected:hover:after {
 .key_button,
 .circle_button {
   font-family: moldeofont;
-	color: #BBB;
+	color: #444;
 	font-size: 18px;
 	text-align: right;
 	padding-right: 2px !important;
@@ -314,6 +314,19 @@ button.fxselected:hover:after {
 
 .present {
   color: #0AA;
+}
+
+li.object_enabled {
+  color: #0FF !important;
+  font-weight: bold;
+}
+
+li.list-group-item .button_object_onoff {
+  padding: 0px !important;
+  margin: 0px !important;
+  top: -2px;
+  height: 20px;
+  width: 20px;
 }
 
 .key_button.object_enabled {
@@ -350,6 +363,7 @@ button.fxselected:hover:after {
 
 .circle_button.circle_selected {
 	background-image: url( buttons/circle_button_on.svg );
+  color: #00FFF4;
 }
 
 .special_button {
@@ -666,16 +680,31 @@ PRECONFIG SELECTOR  PANEL
 #preconfigs_all {
   display: none;
   position: fixed;
-  z-index: 30000;
-  width: 100% !important;
-  height: 40%;
+  z-index: 99;
+  width: auto;
+  height: 36px;
   bottom: 0px !important;
-  left: 0% !important;
+  left: 3% !important;
   margin: 0 !important;
   padding: 0 !important;
-  top: 38%;
-  background-color: rgba(0,0,0,0.55);
+  top: 25px;
+  background-color: rgba(0,0,0,1.0);
+  border: solid 1px rgba(155,155,155,1.0);
+  border-radius: 5px;
 }
+
+#preconfigs_all {
+  left: 3% !important;
+}
+
+#presets_all {
+  left: 50% !important;
+}
+
+#object_preconfigs_all {
+  left: 35% !important;
+}
+
 
 #object_preconfigs_all>button,
 #presets_all>button,
@@ -693,6 +722,13 @@ PRECONFIG SELECTOR  PANEL
   bottom: auto;
   position: relative;
   background-image: url( buttons/indicat_VOID.svg);
+  color: #888;
+}
+
+.button_X_Close {
+  color: rgba(255,235,235,1.0) !important;
+  font-family: Arial !important;
+  font-weight: bold;
 }
 
 #object_preconfigs_all>button.circle_selected,
@@ -1585,6 +1621,7 @@ input[type=range]::-webkit-slider-thumb:active {
   top: 10%;
   width: 18px;
   height: 20px;
+  color: #FFF;
 }
 
 .browser_panel .header {
@@ -1592,6 +1629,7 @@ input[type=range]::-webkit-slider-thumb:active {
 	position: relative;
 	float: left;
 	margin-top: 25px;
+  width: 100%;
 }
 .browser_panel .header #buttonED_OpenProject {
 	display: block;
@@ -1640,7 +1678,7 @@ input[type=range]::-webkit-slider-thumb:active {
 #control_project_header > div.buttons {
   display: block;
   position: relative;
-  left: 200px;
+  left: 180px;
   top: 0px;
   width: 120px;
   margin:  0px;
@@ -1700,13 +1738,26 @@ div.buttons .buttons {
 	background-image: url(buttons/button_SaveAs.svg);
 }
 
+.saveneeded {
+	color: #FFFCCC !important;
+}
+
+#buttonED_UploadProject {
+  display: block;
+  position: absolute;
+  left: 70px;
+  top: 2px;
+  width: 18px;
+  height: 20px;
+  color: #ADD;
+}
 
 
 
 #buttonED_Presentation {
   display: block;
   position: absolute;
-  left: 70px;
+  left: 90px;
   top: 2px;
   width: 18px;
   height: 20px;
@@ -1786,7 +1837,7 @@ body.synchronizer {
   display: block;
   position: absolute;
   min-width: 30px !important;
-  left: 90px !important;
+  left: 110px !important;
   background-color: red;
 }
 
@@ -1812,7 +1863,7 @@ body.synchronizer {
   position: absolute;
   font-size: 14px;
   letter-spacing: 1px;
-  width: 190px;
+  width: 170px;
   overflow: hidden;
   font-family: moldeofont;
   font-weight: normal;
@@ -1890,6 +1941,25 @@ body.synchronizer {
 	background-color: rgba(0,0,0,0.58);
 }
 
+
+
+/** TREE MOLDEO OBJECTS VIEW AND ACTIONS */
+
+.config_actions {
+  display: block;
+  position: relative;
+  width: 50%;
+  left: 50%;
+  margin-left: -25%;
+}
+
+.config_actions button {
+  float: left;
+  margin: 20px;
+  cursor: pointer;
+  cursor: hand;
+}
+
 .tree_editor_effects {
   top: 44px;
   left: 1%;
@@ -1901,6 +1971,8 @@ body.synchronizer {
   overflow: hidden;
   background-color: rgba(0,0,0,1.0);
 }
+
+
 
 .treeview_container {
   display: block;
@@ -1948,6 +2020,29 @@ body.synchronizer {
   font-size: 13px;
   height: 25px;
 }
+
+#edit_preferences {
+  top: 20px;
+  position: relative;
+  width: 100%;
+}
+
+#edit_preferences .input-group {
+  width: 80%;
+  left: 50%;
+  margin-left: -40%;
+}
+
+#edit_preferences .input-group .input-group {
+  width: 100%;
+  left: 0%;
+  margin-left: 0%;
+}
+
+#edit_preferences .input-group-addon {
+  width: 30%;
+}
+
 
 #treeview_edit_class_name {
   display: none;
@@ -2137,6 +2232,10 @@ button.disabled .glyphicon {
 				background-image: url(buttons/button_Object_Enable.svg) !important;
 			}
 
+      .button_object_onoff.object_enabled {
+        background-image: url(buttons/button_Object_Enable.svg) !important;
+      }
+
       .button_object_stop {
         position: relative !important;
         float: left;
@@ -2286,7 +2385,6 @@ button.disabled .glyphicon {
 		.audio_edition {
 			position: relative;
 			margin-left: 0;
-			z-index: 40000;
 			background-color: #333;
 			transition: all 1s;
 		}

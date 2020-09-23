@@ -369,8 +369,8 @@ var OscMoldeoSend = function( obj ) {
 				if (obj.val2!=undefined) {
 					if (obj.val3!=undefined) {
 						if (obj.val4!=undefined) {
-							if (obj.val5!=undefined && obj.val6!=undefined && obj.val7!=undefined) {
-								oscClient.send( obj.msg, obj.val0, obj.val1, obj.val2, obj.val3, obj.val4, obj.val5, obj.val6, obj.val7 );
+							if (obj.val5!=undefined && obj.val6!=undefined && obj.val7!=undefined && obj.val8!=undefined) {
+								oscClient.send( obj.msg, obj.val0, obj.val1, obj.val2, obj.val3, obj.val4, obj.val5, obj.val6, obj.val7, obj.val8 );
 							} else oscClient.send( obj.msg, obj.val0, obj.val1, obj.val2, obj.val3, obj.val4 );
 						} else oscClient.send( obj.msg, obj.val0, obj.val1, obj.val2, obj.val3 );
 					} else oscClient.send( obj.msg, obj.val0, obj.val1, obj.val2 );

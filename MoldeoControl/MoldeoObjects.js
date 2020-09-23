@@ -236,6 +236,10 @@ var ConsoleInterface = {
 	*   TODO:
 	*/
 	Control: {
+		"Preferences": {
+		},
+		"controlOptions": null,
+		"winPreferences": null,
 		"ObjectSelected": undefined,
 		"PreconfigSelected": {},
 		"PreconfigsSelected": {},
@@ -557,21 +561,36 @@ var ConsoleInterface = {
 
         var nPreconfigs = moCI.Options.GetMaxPreconfigs();
 
-        for(var i=4; i<=nPreconfigs; i++) {
+        for(var i=1; i<=nPreconfigs; i++) {
           var button = document.createElement("BUTTON");
+					var circle_selected = "";
+					if (Control.ObjectSelected && Control.PreconfigSelected[Control.ObjectSelected]==(i-1) ) circle_selected = " circle_selected";
           //var label = document.createElement("BUTTON");
           //var ll = Control.Objects[Control.ObjectSelected];
           button.setAttribute("id","button_"+i+"_");
           button.setAttribute("title","Activate Preconfig "+i);
           button.setAttribute("key",i);
-          button.setAttribute("class","button_"+i+" circle_button");
+          button.setAttribute("class","button_"+i+" circle_button"+circle_selected);
           button.addEventListener("click",function(event) {
             Control.Functions.selectControlPreconfig( Control.ObjectSelected, event.target.getAttribute("key")-1 );
             if (Editor.ObjectSelected) Editor.selectEditorPreconfig( event.target.getAttribute("key")-1 );
+						$("#preconfigs_all").toggle();
           });
           $("#preconfigs_all").append(button);
           button.innerHTML = i;
         }
+
+				var button = document.createElement("BUTTON");
+				button.setAttribute("id","button_X_Close_");
+				button.setAttribute("title","Close Preconfigs");
+				button.setAttribute("key","x");
+				button.setAttribute("class","button_X_Close circle_button");
+				button.addEventListener("click",function(event) {
+					$("#preconfigs_all").hide();
+				});
+				$("#preconfigs_all").append(button);
+				button.innerHTML = "x";
+
         $("#preconfigs_all").toggle();
       },
       "showAllPresets": function() {
@@ -579,7 +598,7 @@ var ConsoleInterface = {
 
         var nPreconfigs = moCI.Options.GetMaxPreconfigs();
 
-        for(var i=4; i<=nPreconfigs; i++) {
+        for(var i=1; i<=nPreconfigs; i++) {
           var button = document.createElement("BUTTON");
           button.setAttribute("id","button_F"+i+"_");
           button.setAttribute("title","Activate all preconfigs #"+i);
@@ -592,6 +611,18 @@ var ConsoleInterface = {
           $("#presets_all").append(button);
           button.innerHTML = "F"+i;
         }
+
+				var button = document.createElement("BUTTON");
+				button.setAttribute("id","button_X_Close_");
+				button.setAttribute("title","Close Full Preconfigs");
+				button.setAttribute("key","x");
+				button.setAttribute("class","button_X_Close circle_button");
+				button.addEventListener("click",function(event) {
+					$("#presets_all").hide();
+				});
+				$("#presets_all").append(button);
+				button.innerHTML = "x";
+
         $("#presets_all").toggle();
       },
 		},
@@ -1193,6 +1224,14 @@ var ConsoleInterface = {
 					moCI.Editor.Functions.CloneDialog();
 				},
 			},
+			"buttonED_UploadProject": {
+				"click": function(event) {
+					if (config.log.full)
+						console.log("buttonED_UploadProject > UpoladoProjectDialog");
+
+					//moCI.Editor.Functions.CloneDialog();
+				},
+			},
 			"buttonED_Presentation": {
 				"click": function(event) { moCI.Presentation(); },
 			},
@@ -1291,10 +1330,18 @@ var ConsoleInterface = {
 			"tree_editor_savemob": {
 				"click": function(event) {
 					//TODO: add, caso especial, save caso clasico
-					console.log("tree_editor_savemob",$('#treeview').treeview(true).getSelected());
+					console.log("tree_editor_savemob");
 					if ( moCI.Editor.ObjectEditState == "newmob" || moCI.Editor.ObjectEditState == "editmob") {
 						var object_edit_state;
-						( moCI.Editor.ObjectEditState == "newmob" ) ? object_edit_state = 'objectadd' : object_edit_state = 'objectset';
+						var moid = -1;
+						if ( moCI.Editor.ObjectEditState == "newmob" ) {
+							 object_edit_state = 'objectadd';
+						} else {
+							object_edit_state = 'objectset';
+							var MOBNode = $('#treeview').treeview(true).getSelected()[0];
+							moid = MOBNode.MobDefinition.id;
+							console.log("tree_editor_savemob",MOBNode);
+						}
 						OscMoldeoSend( { 'msg': '/moldeo',
 							'val0': object_edit_state,
 							'val1': $('#mob_name_i').val(),//fx Name
@@ -1303,7 +1350,8 @@ var ConsoleInterface = {
 							'val4': Number($('#mob_type_i').val()), //Moldeo Object Type
 							'val5': $('#mob_key_i').val(), // Key Stroke to activate Fx
 							'val6': Number($('#mob_active_i').val()), // Fx Init at start flag (active)
-							'val7': '' //$('#mob_father').val() // for Scenes (group of pre,fx,post,res,devices)
+							'val7': '', //$('#mob_father').val() // for Scenes (group of pre,fx,post,res,devices)
+							'val8': Number(moid)
 						} ); // move relative
 					}
 					SetSaveNeeded();
@@ -1990,7 +2038,7 @@ var ConsoleInterface = {
           $("#buttonED_ALL").html((Number(preconfig_index)+1));
           activateClass( diA, "circle_selected" );
         } else {
-          $("#buttonED_ALL").html("N");
+          $("#buttonED_ALL").html("+");
           deactivateClass( diA, "circle_selected" );
         }
 
@@ -2037,41 +2085,37 @@ var ConsoleInterface = {
 
       $("#object_preconfigs_all").html("");
       var nPreconfigs = moCI.Options.GetMaxPreconfigs();
-      for(var i=4; i<=nPreconfigs; i++) {
+
+      for(var i=1; i<=nPreconfigs; i++) {
+				var circle_selected = "";
+				if (Editor.ObjectSelected && Editor.PreconfigSelected[Editor.ObjectSelected]==(i-1) ) circle_selected = " circle_selected";
         //htmla+= '<button id="buttonED_'+i+'" title="Edit Preconfig '+i+'"  key="'+i+'" class="buttonED_'+i+' circle_button"></button>';
         var button = document.createElement("BUTTON");
         button.setAttribute("id","buttonED_"+i+"_");
         button.setAttribute("key",i);
         button.setAttribute("title","Edit Preconfig "+i);
-        button.setAttribute("class","buttonED_"+i+" circle_button");
+        button.setAttribute("class","buttonED_"+i+" circle_button"+circle_selected);
         button.addEventListener("click",function(event) {
           Editor.selectEditorPreconfig( event.target.getAttribute("key")-1 );
+					$("#object_preconfigs_all").toggle();
         });
         $("#object_preconfigs_all").append(button);
         button.innerHTML = i;
       }
+
+			var button = document.createElement("BUTTON");
+			button.setAttribute("id","button_X_Close_");
+			button.setAttribute("title","Close Edit Preconfigs");
+			button.setAttribute("key","x");
+			button.setAttribute("class","button_X_Close circle_button");
+			button.addEventListener("click",function(event) {
+				$("#object_preconfigs_all").hide();
+			});
+			$("#object_preconfigs_all").append(button);
+			button.innerHTML = "x";
+
       $("#object_preconfigs_all").toggle();
 
-
-		},
-
-		"showAllEditorPreconfigs": function() {
-
-        $("#object_preconfigs_all").html("");
-        for(var i=4; i<=moCI.Options["MAX_N_PRECONFIGS"]; i++) {
-            //htmla+= '<button id="buttonED_'+i+'" title="Edit Preconfig '+i+'"  key="'+i+'" class="buttonED_'+i+' circle_button"></button>';
-            var button = document.createElement("BUTTON");
-            button.setAttribute("id","buttonED_"+i+"_");
-            button.setAttribute("key",i);
-            button.setAttribute("title","Edit Preconfig "+i);
-            button.setAttribute("class","buttonED_"+i+" circle_button");
-            button.addEventListener("click",function(event) {
-              Editor.selectEditorPreconfig( event.target.getAttribute("key")-1 );
-            });
-            $("#object_preconfigs_all").append(button);
-            button.innerHTML = i;
-        }
-        $("#object_preconfigs_all").toggle();
 
 		},
 
@@ -2352,7 +2396,8 @@ var ConsoleInterface = {
 						    checked: false,
 						    disabled: false,
 						    expanded: false,
-						    selected: false
+						    selected: false,
+								activated: undefined
 						  },
 							"order": 1,
 							"children": [
@@ -2372,7 +2417,8 @@ var ConsoleInterface = {
 						    checked: false,
 						    disabled: false,
 						    expanded: false,
-						    selected: false
+						    selected: false,
+								activated: undefined
 						  },
 							"order": 2,
 							"children": [
@@ -2392,7 +2438,8 @@ var ConsoleInterface = {
 						    checked: false,
 						    disabled: false,
 						    expanded: false,
-						    selected: false
+						    selected: false,
+								activated: undefined
 						  },
 							"order": 3,
 							"children": [
@@ -2411,7 +2458,8 @@ var ConsoleInterface = {
 						    checked: false,
 						    disabled: false,
 						    expanded: false,
-						    selected: false
+						    selected: false,
+								activated: undefined
 						  },
 							"order": 4,
 							"children": [
@@ -2430,7 +2478,8 @@ var ConsoleInterface = {
 						    checked: false,
 						    disabled: false,
 						    expanded: false,
-						    selected: false
+						    selected: false,
+								activated: undefined
 						  },
 							"order": 5,
 							"children": [
@@ -2449,7 +2498,8 @@ var ConsoleInterface = {
 						    checked: false,
 						    disabled: false,
 						    expanded: false,
-						    selected: false
+						    selected: false,
+								activated: undefined
 						  },
 							"order": 0,
 							"children": [
@@ -2517,6 +2567,10 @@ var ConsoleInterface = {
 								    disabled: false,
 								    expanded: is_expanded,
 								    selected: is_selected,
+										activated: function(node) {
+											var is_activated = (moCI && node.lbl && moCI.Editor.States[node.lbl] ) ? (moCI.Editor.States[node.lbl].activated == 1) : false;
+											return is_activated;
+										},
 								  },
 									//"children": [],//for Scenes...
 									//"nodes": []
@@ -2548,7 +2602,7 @@ var ConsoleInterface = {
 						onNodeSelected: moCI.Connectors.Functions.onObjectSelected,
 						onNodeChecked: moCI.Connectors.Functions.onObjectChecked,
 						onNodeUnchecked: moCI.Connectors.Functions.onObjectChecked,
-						onNodeUnselected: function(ev) {
+						onNodeUnselected: function(ev, node) {
 							MOBnode = $('#treeview').treeview(true).getSelected()[0];
 							console.log("onNodeSelected:", MOBnode);
 							var MOBnode = $('#treeview').treeview(true).getUnselected()[0];
@@ -2556,14 +2610,28 @@ var ConsoleInterface = {
 							$('.treeview_on_selection').addClass('disabled');
 							moCI.Connectors.MobNodeSelected = undefined;
 						},
+						onNodeActivated: function(node) {
+							console.log("onNodeActivated:", node );
+							var mob_label = node.lbl;
+							if (!node.state.activated || !typeof node.state.activated == "function") return;
+							if ( !node.state.activated(node) ) {
+								if (moCI.Project.MapObjects[mob_label].classname.indexOf("Effect")>0) {
+									OscMoldeoSend( { 'msg': '/moldeo','val0': 'effectenable', 'val1': mob_label } );
+								} else OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectenable', 'val1': mob_label } );
+							} else {
+								if (moCI.Project.MapObjects[mob_label].classname.indexOf("Effect")>0) {
+									OscMoldeoSend( { 'msg': '/moldeo','val0': 'effectdisable', 'val1': mob_label } );
+								} else OscMoldeoSend( { 'msg': '/moldeo','val0': 'objectdisable', 'val1': mob_label } );
+							}
+						},
 	          data: console_tree["nodes"]
 	        };
 
-					//Tree.prototype.template.item = '<li class="list-group-item"><span class="glyphicon glyphicon-down"></span></li>';
 					$('#treeview').treeview( options );
 					TT = $('#treeview').treeview(true);
-					console.log(TT,$('#treeview').treeview(true));
+					console.log(TT);
 					$('.treeview_on_selection').addClass('disabled');
+
 					if (moCI.Connectors.MobNodeSelected) {
 						var SID = TT.getSelected();
 						if (SID && SID.length) {
@@ -3394,7 +3462,8 @@ var ConsoleInterface = {
 					checked: false,
 					disabled: false,
 					expanded: true,
-					selected: false
+					selected: false,
+					activated: undefined
 				},
 				'children': []
 			},
@@ -3409,7 +3478,8 @@ var ConsoleInterface = {
 					checked: false,
 					disabled: false,
 					expanded: true,
-					selected: false
+					selected: false,
+					activated: undefined
 				},
 				'children': []
 			},
@@ -3424,7 +3494,8 @@ var ConsoleInterface = {
 					checked: false,
 					disabled: false,
 					expanded: true,
-					selected: false
+					selected: false,
+					activated: undefined
 				},
 				'children': [],
 				'nodes': []
@@ -3440,7 +3511,8 @@ var ConsoleInterface = {
 					checked: false,
 					disabled: false,
 					expanded: true,
-					selected: false
+					selected: false,
+					activated: undefined
 				},
 				'children': [],
 				'nodes': []
@@ -3456,7 +3528,8 @@ var ConsoleInterface = {
 					checked: false,
 					disabled: false,
 					expanded: true,
-					selected: false
+					selected: false,
+					activated: undefined
 				},
 				'children': [],
 				'nodes': []
@@ -3472,7 +3545,8 @@ var ConsoleInterface = {
 					checked: false,
 					disabled: false,
 					expanded: true,
-					selected: false
+					selected: false,
+					activated: undefined
 				},
 				'children': [],
 				'nodes': []
@@ -3531,7 +3605,11 @@ var ConsoleInterface = {
 		//filename = filename.replace( /\'/g , '"');
 		//filename = filename.replace( /\\/g , '\\\\');
 
-		moCI.launchPlayerConsole( ' -mol "'+filename+'" ' );
+		if (config.log.player) {
+			moCI.launchPlayerConsole( ' -mol "'+filename+'" ' );
+		} else {
+			moCI.launchPlayer( ' -mol "'+filename+'" ' );
+		}
 		moCI.Browser.SaveRecents( filename );
 		moCI.ReloadInterface();
 	},
@@ -3698,6 +3776,105 @@ var ConsoleInterface = {
 		return select;
 	},
 
+	/* Control Preferences */
+	"SavePreference": function(event) {
+		console.log("SavePreference",event);
+		if (event.target.type=="checkbox" || true) {
+
+			var att_name = event.target.getAttribute("name");
+			att_name = att_name.replace("mob_","");
+
+			var att_type = event.target.getAttribute("type");
+
+			var att_father = event.target.getAttribute("father");
+
+			var config2eval = "config"+att_father+" = ";
+
+			if ( att_type == "checkbox" ) {
+					config2eval+= (event.target.checked ? "true" : "false")+";";
+			} else {
+					config2eval+= '"'+event.target.value+'"'+";";
+			}
+
+			console.log( event.target.value, config2eval, eval(config2eval) );
+
+		}
+	},
+	"OpenFieldPreference": function( _field, _config, _father ) {
+		var html = "";
+		_father = _father+"['"+_field+"']"
+		if (typeof _config[_field]=="string" || typeof _config[_field]=="number" || typeof _config[_field]=="boolean") {
+			html+= '<div class="input-group">'
+				+'<span class="input-group-addon" id="mob_'+_field+'_l">'+_field+'</span>';
+			if (typeof _config[_field]=="boolean") {
+					true_is_checked = (_config[_field] == true ) ? "checked" : "";
+					false_is_checked = (_config[_field] == false ) ? "checked" : "";
+					html+= '<input type="checkbox" id="mob_'+_field+'" name="mob_'+_field+'" father="'+_father+'" '+true_is_checked+' onclick="moCI.SavePreference(event);"/>';
+					//html+= '<input type="radio" id="mob_'+_field+'" name="mob_'+_field+'" '+false_is_checked+' onclick="moCI.SavePreference(event);"/>false';
+			} else {
+				html+='<input class="form-control" id="mob_'+_field+'_i" type="text" name="mob_'+_field+'"  father="'+_father+'" value="'+_config[_field]+'" aria-describedby="mob_'+_field+'_l"';
+				html+= ' onblur="moCI.SavePreference(event);" />';
+			}
+			html+='</div>';
+		} else if (typeof _config[_field]=="object") {
+			html+= '<div class="input-group">'
+				+'<span class="input-group-addon" id="mob_'+_field+'_l">'+_field+'</span>'
+				+'<div class="input-group">';
+			for( _ofield in _config[_field]) {
+				html+= moCI.OpenFieldPreference( _ofield, _config[_field], _father );
+			}
+			html+= '</div>';
+			html+= '</div>';
+		}
+		return html;
+	},
+	"OpenPreferences": function( options ) {
+		moCI.Control.controlOptions = options;
+		if (moCI.Control.winPreferences==null) {
+
+			moCI.Control.winPreferences = gui.Window.open('MoldeoPreferences.html', config.browser_window_options);
+			if (moCI.Control.winPreferences) {
+				moCI.Control.winPreferences.moveTo(win.x, win.y-230);
+				moCI.Control.winPreferences.moCI = moCI;
+				moCI.Control.winPreferences.on('loaded', function() {
+					moCI.Control.Preferences.document = moCI.Control.winPreferences.window.document;
+					moCI.Control.winPreferences.window.moCI = moCI;
+					moCI.Control.Preferences.initialized = true;
+					//moCI.Control.controlOptions["stdout_stream"].resume();
+					var html = "";
+					for( var field in config) {
+						value = config[field];
+						console.log(field, typeof value);
+						html+= moCI.OpenFieldPreference( field, config, "" );
+						//if (typeof value == "object" )
+					}
+					var form = moCI.Control.Preferences.document.getElementById("edit_preferences");
+					if (form) {
+
+						form.innerHTML = html;
+					}
+
+					//$(".tpl_edit_preferences").html(html)
+				});
+				//moCI.Browser.winBrowser.on('focus', moCI.Browser.initBrowser);
+				moCI.Control.winPreferences.on('closed', function() {
+					console.log("Control Preferences closed!");
+					moCI.Control.winPreferences = null;
+					moCI.Control.Preferences.initialized = false;
+				});
+				moCI.Control.winPreferences.on('close', function() {
+					console.log("Control Preferences closing!");
+					moCI.Control.winPreferences = null;
+					moCI.Control.Preferences.initialized = false;
+					//if (moCI.Control.controlOptions["controlpreferencesprocess"]) {
+						//moCI.Render.renderOptions["renderprocess"].kill();
+					//}
+					this.close(true);
+				});
+			}
+		}
+	},
+
 	/* Project Presentation Mode Toggle, Screenshot and PreviewShots (4 miniatures or aniatmed GIF file) functions */
 	"Presentation": function() {
 		if (config.log.full) console.log("buttonED_Presentation > ");
@@ -3823,6 +4000,7 @@ var ConsoleInterface = {
 		if (Editor.SaveNeeded) {
 			activateClass( document.getElementById("buttonED_SaveProject"), "saveneeded" );
 			activateClass( document.getElementById("buttonED_SaveProjectAs"), "saveneeded" );
+			activateClass( document.getElementById("buttonED_UploadProject"), "saveneeded" );
 		}
 	},
 	"AddPreconfig": function( moblabel, preconfig ) {
@@ -3834,6 +4012,7 @@ var ConsoleInterface = {
 		if (Editor.SaveNeeded) {
 			activateClass( document.getElementById("buttonED_SaveProject"), "saveneeded" );
 			activateClass( document.getElementById("buttonED_SaveProjectAs"), "saveneeded" );
+			activateClass( document.getElementById("buttonED_UploadProject"), "saveneeded" );
 		}
 	},
 	"ReloadInterface": function() {
