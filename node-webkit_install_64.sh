@@ -15,7 +15,11 @@ if [ -a $FILE_LOCAL ]; then
 else        
     echo "./$NWJS_PACKAGE_FILE not found, downloading:"
     wget $NWJS_URL
+fi
+
+if [ -a $FILE_LOCAL ]; then
     tar -zxvf $NWJS_PACKAGE_FILE
+    rm nwjs -R
     mv $NWJS_PACKAGE_NAME nwjs        
 fi
 
