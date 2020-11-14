@@ -14,6 +14,7 @@ var execFile = require('child_process').execFile,
 exec = require('child_process').exec,
 spawn = require('child_process').spawn,
 child;
+var process = require('process'); 
 
 fs.copyFile = function(source, target, cb) {
 
@@ -49,7 +50,8 @@ callProgram = function( programrelativepath, programarguments, callback ) {
 					," programarguments:",programarguments );
 
 
-		child = exec( programrelativepath + " "+ programarguments,
+		dcwd = process.execPath.replace("nw.exe","")
+		child = exec( programrelativepath + " "+ programarguments, { cwd: dcwd  },
 			function(error,stdout,stderr) {
 
 				//alert(stdout);
@@ -146,7 +148,11 @@ launchPlayerConsole = function( project_file, options ) {
 		}
 		fs.closeSync(fd);
 
-		var playerprocess = spawn( options["bash_player_call"], []);
+		console.log(process.execPath);
+        dcwd = process.execPath.replace("nw.exe","");
+		console.log(dcwd);
+		//https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options
+		var playerprocess = spawn( options["bash_player_call"], [], { cwd: dcwd } );
 
 		console.log( "stream stdout:",playerprocess.stdout );
 
@@ -178,9 +184,13 @@ launchPlayerConsole = function( project_file, options ) {
 			moCI.console.log("playerprocess end stream!");
 			var logarea = moCI.Player.document.getElementById("logarea");
 			var error = 0;
-			if (logarea) {
-				if (logarea.innerHTML.indexOf("ERROR")>=0) {
-					error = true;
+			if (moCI.Player.document) {
+				var logarea = moCI.Player.document.getElementById("logarea");
+				var error = 0;
+				if (logarea) {
+					if (logarea.innerHTML.indexOf("ERROR")>=0) {
+						error = true;
+					}
 				}
 			}
 			//moCI.Player.ShowVideo(error);
