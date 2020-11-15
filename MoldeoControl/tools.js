@@ -14,7 +14,7 @@ var execFile = require('child_process').execFile,
 exec = require('child_process').exec,
 spawn = require('child_process').spawn,
 child;
-var process = require('process'); 
+var process = require('process');
 
 fs.copyFile = function(source, target, cb) {
 
@@ -49,9 +49,15 @@ callProgram = function( programrelativepath, programarguments, callback ) {
 		moCI.console.log("Call Program: programrelativepath:",programrelativepath
 					," programarguments:",programarguments );
 
-
-		dcwd = process.execPath.replace("nw.exe","")
-		child = exec( programrelativepath + " "+ programarguments, { cwd: dcwd  },
+		soptions = {};
+		if (config.platform.indexOf("win")==0) {
+			console.log(process.execPath);
+			dcwd = process.execPath.replace("nw.exe","");
+			console.log(dcwd);
+			soptions = { cwd: dcwd };
+			dcwd = process.execPath.replace("nw.exe","")
+		}
+		child = exec( programrelativepath + " "+ programarguments, soptions,
 			function(error,stdout,stderr) {
 
 				//alert(stdout);
@@ -128,9 +134,13 @@ launchPlayerConsole = function( project_file, options ) {
 	options["bash_player_call"] = "";
 
 	try {
-
+		soptions = {};
 		if (config.platform.indexOf("win")==0) {
-			options["bash_player_call"] = config.home_path+"/player_console.bat";
+			options["bash_player_call"] = config.home_path+"\\player_console.bat";
+			console.log(process.execPath);
+	    dcwd = process.execPath.replace("nw.exe","");
+			console.log(dcwd);
+			soptions = { cwd: dcwd };
 		} else if (config.platform=="linux") {
 			options["bash_player_call"] = config.home_path+"/player_console.sh";
 		} else if (config.platform=="mac" || config.platform=="osx" || config.platform.indexOf("darwin")>=0) {
@@ -148,11 +158,9 @@ launchPlayerConsole = function( project_file, options ) {
 		}
 		fs.closeSync(fd);
 
-		console.log(process.execPath);
-        dcwd = process.execPath.replace("nw.exe","");
-		console.log(dcwd);
+
 		//https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options
-		var playerprocess = spawn( options["bash_player_call"], [], { cwd: dcwd } );
+		var playerprocess = spawn( options["bash_player_call"], [], soptions );
 
 		console.log( "stream stdout:",playerprocess.stdout );
 
@@ -257,9 +265,8 @@ launchRender = function( render_call, options ) {
 	options["bash_render_call"] = "";
 
 	try {
-
 		if (config.platform.indexOf("win")==0) {
-			options["bash_render_call"] = config.home_path+"/render_video.bat";
+			options["bash_render_call"] = config.home_path+"\\render_video.bat";
 		} else if (config.platform=="linux") {
 			options["bash_render_call"] = config.home_path+"/render_video.sh";
 		} else if (config.platform=="mac" || config.platform=="osx" || config.platform.indexOf("darwin")>=0) {
@@ -277,7 +284,7 @@ launchRender = function( render_call, options ) {
 		}
 		fs.closeSync(fd);
 
-		var renderprocess = spawn( options["bash_render_call"], []);
+		var renderprocess = spawn( options["bash_render_call"], [] );
 
 		console.log( "stream stdout:",renderprocess.stdout );
 
