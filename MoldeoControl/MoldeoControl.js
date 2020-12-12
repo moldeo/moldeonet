@@ -2629,20 +2629,34 @@ function ImportFile( moblabel, param_name, preconfig, filename ) {
 
 }
 
-function selectorToSubselector( selector ) {
+function selectorToSubselector( selector, moblabel ) {
 	var subselec = 0;
 	if (selector=="color:0") { subselec = 0;}
-	if (selector=="color_1") subselec = 1;
-	if (selector=="color_2") subselec = 2;
-	if (selector=="color_3") subselec = 3;
-	if (selector=="particlecolor:0") subselec = 0;
-	if (selector=="particlecolor_1") subselec = 1;
-	if (selector=="particlecolor_2") subselec = 2;
-	if (selector=="particlecolor_3") subselec = 3;
+	else if (selector=="color_1") subselec = 1;
+	else if (selector=="color_2") subselec = 2;
+	else if (selector=="color_3") subselec = 3;
+	else if (selector=="particlecolor:0") subselec = 0;
+	else if (selector=="particlecolor_1") subselec = 1;
+	else if (selector=="particlecolor_2") subselec = 2;
+	else if (selector=="particlecolor_3") subselec = 3;
+	else {
+		var Params = Editor.Parameters[selector];
+		if (Params && Params[selector]) {
+			return subselec;//return default 0
+		}
+		if (selector.length>3) {
+			if (
+						(selector.charAt(selector.length-2)=="_" || selector.charAt(selector.length-2)==":")
+						&& !isNaN(selector.slice(-1))
+					) {
+							subselec = Number(selector.slice(-1));
+			}
+		}
+	}
 	return subselec;
 }
 
-function selectorToParamSelector( selector ) {
+function selectorToParamSelector( selector, moblabel ) {
 	var Selector = selector;
 
 	if (selector=="color:0"
@@ -2661,6 +2675,24 @@ function selectorToParamSelector( selector ) {
 	|| selector=="particlecolor_3") {
 		Selector = "particlecolor";
 	}
+
+	var Params = Editor.Parameters[moblabel];
+	if (Params && Params[Selector]) {
+		return Selector;
+	}
+
+	if (selector.length>3) {
+		if (
+				(selector.charAt(selector.length-2)=="_" || selector.charAt(selector.length-2)==":")
+					&& !isNaN(selector.slice(-1) )
+				) {
+
+			SelectorColor = selector.substr(0,selector.length-2);
+			if (Params && Params[SelectorColor]) {
+				Selector = SelectorColor;
+			}
+		}
+	}
 	return Selector;
 }
 
@@ -2675,8 +2707,8 @@ function SetSaveNeeded() {
 
 function RefreshValue( moblabel, selector, preconfig ) {
 
-	var subselec = selectorToSubselector(selector);
-	paramname = selectorToParamSelector(selector);
+	var subselec = selectorToSubselector(selector, moblabel);
+	paramname = selectorToParamSelector(selector, moblabel);
 
 	var APIObj = {
 				"msg": "/moldeo",
@@ -2699,8 +2731,8 @@ function SetValue( moblabel, selector, preconfig, value ) {
 	var subselec = undefined;
 	var clselector=selector;
 
-	subselec = selectorToSubselector(selector);
-	paramname = selectorToParamSelector(selector);
+	subselec = selectorToSubselector(selector, moblabel);
+	paramname = selectorToParamSelector(selector, moblabel);
 
 	var success = false;
 	try {
