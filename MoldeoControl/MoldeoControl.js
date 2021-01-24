@@ -3169,6 +3169,7 @@ function UpdateStandardInspector( TabInspector, inspectorElement, moblabel, prec
 			if (paramValue.length) {
 				for(var sub=0; sub<paramValue.length; sub++) {
  					var datav = paramValue[sub]["v"];
+					var datadef = paramValue[sub]["d"];
 
 					//now that we have	it, assign it to inspector...
 					var inputInspector;
@@ -3178,6 +3179,11 @@ function UpdateStandardInspector( TabInspector, inspectorElement, moblabel, prec
 					}
 
 					if (slider) {
+						if ( datadef && datadef.min!=undefined && datadef.max!=undefined && datadef.min!=datadef.max ) {
+							slider.setAttribute("min",datadef.min);
+							slider.setAttribute("max",datadef.max);
+							//slider.setAttribute("step","auto");
+						}
 						slider.value = datav;
 					}
 
