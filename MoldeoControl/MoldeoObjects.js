@@ -1144,6 +1144,27 @@ var ConsoleInterface = {
 					}
 				}
 			},
+			"button_object_play_pause": {
+				"click": function(event) {
+					if (config.log.full) console.log("button_object_play/pause");
+
+					var mob_label = event.target.getAttribute("moblabel");
+					if (mob_label=="" || mob_label==undefined) {
+						showModalDialog("Atención", "Debe tocar alguna de las teclas para seleccionar el efecto a editar.", {
+							"buttons": {
+								"OK": { "class": "button", "return": true  },
+								"CANCEL": { "class": "button", "return": false  },
+							}
+						});
+						return;
+					}
+
+					if (moCI.Project.MapObjects[mob_label].classname.indexOf("Effect")>0) {
+						OscMoldeoSend( { 'msg': '/moldeo','val0': 'effectplaypause', 'val1': mob_label } );
+					}
+
+				}
+			},
 			"button_object_play": {
 				"click": function(event) {
 					if (config.log.full) console.log("button_object_play");
@@ -1940,10 +1961,22 @@ var ConsoleInterface = {
 			var btn_Play = document.getElementById("button_object_play");
 			var btn_Stop = document.getElementById("button_object_stop");
 			var btn_Pause = document.getElementById("button_object_pause");
+			var btn_Play_Pause = document.getElementById("button_object_play_pause");
 
 			if (btn_Stop) btn_Stop.setAttribute("moblabel", MOB_label );
 			if (btn_Play) btn_Play.setAttribute("moblabel", MOB_label );
 			if (btn_Pause) btn_Pause.setAttribute("moblabel", MOB_label );
+			if (btn_Play_Pause) btn_Play_Pause.setAttribute("moblabel", MOB_label );
+
+			if (btn_Play_Pause) {
+				if ( objectState.tempo!=undefined && objectState.tempo.state == "playing" ) {
+					activateClass( btn_Play_Pause, "button_object_pause");
+					deactivateClass( btn_Play_Pause, "button_object_play");
+				} else {
+					deactivateClass( btn_Play_Pause, "button_object_pause");
+					activateClass( btn_Play_Pause, "button_object_play");
+				}
+			}
 
 			if (btn_OnOff) {
 
