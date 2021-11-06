@@ -38,6 +38,7 @@ boolean maxhighvalZeroFlag =  false;
 boolean maxmediumvalZeroFlag = false;
 boolean maxlowvalZeroFlag = false;
 
+int bufsize = 2048;
 
 int umbralMaxVal = 10;
 int umbralMaxHighHal = 10;
@@ -79,7 +80,7 @@ void setup()
  // jingle = minim.loadFile("jingle.mp3", 1024);
   
   //jingle = minim.getLineIn(Minim.STEREO, 1024);
-  jingle = minim.getLineIn(Minim.MONO, 1024);
+  jingle = minim.getLineIn(Minim.MONO, bufsize);
   
   // loop the file indefinitely
   //jingle.loop();
@@ -179,10 +180,10 @@ void draw()
    float minLowFrequency = 50.0;
    float maxLowFrequency = 200.0;
 
-   float minMedFrequency = 400.0;
-   float maxMedFrequency = 1500.0;
+   float minMedFrequency = 300.0;
+   float maxMedFrequency = 1000.0;
 
-   float minHighFrequency = 1800.0;
+   float minHighFrequency = 1000.0;
    float maxHighFrequency = 100000.0;
     
   textSize(12);
