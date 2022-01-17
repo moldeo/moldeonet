@@ -89,6 +89,9 @@ var config = {
 			"darwin": ""
 		},
     },
+    "imagemagick": {
+      'convert': 'convert -delay 10 -loop 0 -alpha copy -dispose Background  {FRAMEPATH}/*.png {VIDEONAME}.gif'
+    },
   "audio_video_pipes": {
     "linux": {
       "ogg": {
@@ -120,6 +123,8 @@ var config = {
 				h264high: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=100000 threads=0 pass=5 ! avimux ! filesink location="{VIDEONAME}.avi"',
 
 				wmv: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! ffenc_wmv2 ! avimux ! filesink location="{VIDEONAME}.avi"',
+
+        huff: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.png" ! decodebin ! videorate ! videoconvert ! video/x-raw,format=BGRA,framerate='+config_fps+'/1 ! avenc_huffyuv ! avimux ! filesink location="{VIDEONAME}.avi"'
 			},
 			"mov": {
 				mjpeg: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! jpegenc ! ffmux_mov ! filesink location="{VIDEONAME}.mov"',
@@ -130,6 +135,9 @@ var config = {
 
 				h264high: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=100000 threads=0 pass=5 ! ffmux_mov ! filesink location="{VIDEONAME}.mov"',
 			},
+      "gif": {
+        gif: 'convert -delay 10 -loop 0 -alpha copy -dispose Background  {FRAMEPATH}/*.png {VIDEONAME}.gif'
+      }
 		},
 		"win32": {
 			"ogg": {
