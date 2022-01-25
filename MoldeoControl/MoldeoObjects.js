@@ -3751,6 +3751,8 @@ var ConsoleInterface = {
             "GSTLAUNCH": config.gstreamer.GSTLAUNCH,
             "COLORFILTER": config.gstreamer.COLORFILTER,
             "H264ENCODE": config.gstreamer.H264ENCODE,
+						"PROCESSPATH": config.process_path,
+						"PROCESSPNG2SPRITE": config.process_png2sprite,
 			"frame_path": frame_path,
 			"videoname": videoname,
 			"videocontainer": videocontainer,
@@ -3780,6 +3782,9 @@ var ConsoleInterface = {
         rOptions["full_call"] = rOptions["full_call"].replace("{COLORFILTER}", rOptions["COLORFILTER"] );
 		rOptions["full_call"] = rOptions["full_call"].replace("{VIDEONAME}", rOptions["videoname"] );
 		rOptions["full_call"] = rOptions["full_call"].replace("{FRAMEPATH}", rOptions["frame_path"] );
+		rOptions["full_call"] = rOptions["full_call"].replace("{PROCESSPATH}", rOptions["PROCESSPATH"] );
+		rOptions["full_call"] = rOptions["full_call"].replace("{PROCESSPNG2SPRITE}", rOptions["PROCESSPNG2SPRITE"] );
+
 		if (rOptions["H264ENCODE"]) {
 			if (rOptions["H264ENCODE"][config.platform]) {
 				if (rOptions["H264ENCODE"][config.platform]["normal"])

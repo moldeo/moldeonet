@@ -32,6 +32,8 @@ var config = {
   "moldeorecents_path": "",
 	"user_path": "",
 	"desktop_path": "",
+  "process_path": "",
+  "process_png2sprite": "",
 	"browser_window_options": {
 		icon: "moldeocontrol.png",
 		focus: false,
@@ -136,7 +138,14 @@ var config = {
 				h264high: '"{GSTBIN}{GSTLAUNCH}" -v -m multifilesrc location="{FRAMEPATH}/frame_%07d.jpg" index=0 caps=image/jpeg,framerate='+config_fps+'/1 ! jpegdec ! {COLORFILTER} ! videorate ! x264enc qp-min=18 byte-stream=1 bitrate=100000 threads=0 pass=5 ! ffmux_mov ! filesink location="{VIDEONAME}.mov"',
 			},
       "gif": {
-        gif: 'convert -delay 10 -loop 0 -alpha copy -dispose Background  {FRAMEPATH}/*.png {VIDEONAME}.gif'
+        gif: 'convert -delay 10 -loop 0 -alpha copy -dispose Background  "{FRAMEPATH}/*.png" {VIDEONAME}.gif'
+      },
+      "png": {
+        sprite_256x256x8: '{PROCESSPNG2SPRITE} -fw 256 -fh 256 -fo 2 -fs 10  -ft 8 -o {VIDEONAME}.png "{FRAMEPATH}/*.png"',
+        sprite_128x128x16: '{PROCESSPNG2SPRITE} -fw 128 -fh 128 -fo 2 -fs 5 -ft 16 -o {VIDEONAME}.png "{FRAMEPATH}/*.png"',
+        sprite_64x64x16: '{PROCESSPNG2SPRITE} -fw 64 -fh 64 -fo 2 -fs 5 -ft 16 -o {VIDEONAME}.png "{FRAMEPATH}/*.png"',
+        sprite_32x32x16: '{PROCESSPNG2SPRITE} -fw 32 -fh 32 -fo 2 -fs 5 -ft 16 -o {VIDEONAME}.png "{FRAMEPATH}/*.png"',
+        sprite_16x16x8: '{PROCESSPNG2SPRITE} -fw 16 -fh 16 -fo 2 -fs 10 -ft 8 -o {VIDEONAME}.png "{FRAMEPATH}*.png"'
       }
 		},
 		"win32": {
@@ -253,6 +262,9 @@ var config = {
 			config.desktop_path = config.home_path+"\\Desktop";
 			config.moldeo_version = config.bin_path+"/moldeoversion.txt";
 
+      config.process_path = process.cwd();
+      config.process_png2sprite =  config.process_path + "/lib/png2sprite.py";
+
 			console.log("fullArgv:"+gui.App.fullArgv+" dataPath:"+gui.App.dataPath+" process.execPath:"+process.execPath);
 		}
 
@@ -268,6 +280,9 @@ var config = {
       config.moldeorecents_path = config.moldeouser_path+"/.recents";
 			config.desktop_path = config.home_path+"/Desktop";
 			config.moldeo_version = config.moldeo_path+"/moldeoversion.txt";
+
+      config.process_path = process.cwd();
+      config.process_png2sprite =  config.process_path + "/lib/png2sprite.py";
       console.log("fullArgv:",gui.App.fullArgv," dataPath:",gui.App.dataPath," process.execPath:",process.execPath,"process.cwd():",process.cwd());
       console.log("config",config);
 		}
@@ -286,6 +301,9 @@ var config = {
       config.moldeorecents_path = config.moldeouser_path+"/.recents";
 			config.desktop_path = config.home_path+"/Desktop";
 			config.moldeo_version = config.moldeo_path+"/moldeoversion.txt";
+
+      config.process_path = process.cwd();
+      config.process_png2sprite =  config.process_path + "/lib/png2sprite.py";
 
             config.gstreamer.GSTBIN = "/Library/Frameworks/GStreamer.framework/Versions/1.0/bin/";
 
