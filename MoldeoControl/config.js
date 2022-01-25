@@ -282,7 +282,7 @@ var config = {
 			config.moldeo_version = config.moldeo_path+"/moldeoversion.txt";
 
       config.process_path = process.cwd();
-      config.process_png2sprite =  config.process_path + "/lib/png2sprite.py";
+      config.process_png2sprite =  '/usr/bin/python ' + config.process_path + "/lib/png2sprite.py";
       console.log("fullArgv:",gui.App.fullArgv," dataPath:",gui.App.dataPath," process.execPath:",process.execPath,"process.cwd():",process.cwd());
       console.log("config",config);
 		}
