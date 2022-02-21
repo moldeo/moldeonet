@@ -289,11 +289,20 @@ var MoldeoMessenger = {
 var ReceiverFunction = function(msg, rinfo) {
 
 	try {
-		//console.log( "oscServer.on('message'.....) receive ! msg: " + msg, ' rinfo:' + rinfo);
 		if (config.log.full) console.log( "oscServer.on('message'.....) receive ! msg: ",msg );
+		mhistory.push(msg);
+
+		var isA = Array.isArray(msg);
+		if (isA==false) {
+			return;
+		}
+		//console.log( "oscServer.on('message'.....) receive ! msg: " + msg, ' rinfo:' + rinfo);
 		//socket.emit("message", msg);
 		var object_regexp = /({.*})/i
+
 		//var data = msg.match( object_regexp );
+		if (msg.length<3) return;
+
 		var  moldeoapimessage = msg[2];
 		var moldeo_message = {};
 
@@ -309,7 +318,7 @@ var ReceiverFunction = function(msg, rinfo) {
 		var objectinfo = moldeoapimessage[3];
 		moldeo_message["info"] = undefined;
 
-		history[nhis] = msg[2];
+		//history[nhis] = msg[2];
 
 		if (objectinfo!=undefined) {
 
@@ -380,8 +389,8 @@ var OscMoldeoSend = function( obj ) {
 	} else oscClient.send( obj );
 };
 
-var history = [];
-var historyobj = [];
+var mhistory = [];
+var mhistoryobj = [];
 var nhis = 0;
 
 oscServer = new osc.Server( configOsc.server.port, configOsc.server.host);

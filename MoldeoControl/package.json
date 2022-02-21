@@ -19,17 +19,17 @@
     "min_height": 164
   },
   "dependencies": {
+    "body-parser": "^1.15.2",
     "connect": "^3.6.3",
+    "express": "^4.14.0",
     "formidable": "^1.1.1",
     "http": "0.0.0",
     "md5-node": "^1.0.1",
-    "moment": "^2.13.0",
-    "node-osc": "^2.0.3",
-    "osenv": "^0.1.3",
-    "serve-static": "^1.12.4",
-    "body-parser": "^1.15.2",
-    "express": "^4.14.0",
-    "multer": "^1.2.0"
+    "moment": "^2.29.1",
+    "multer": "^1.2.0",
+    "node-osc": "^2.1.0",
+    "osenv": "^0.1.5",
+    "serve-static": "^1.12.4"
   },
   "platformOverrides": {
     "osx32": {
