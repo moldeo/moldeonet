@@ -2938,31 +2938,34 @@ var ConsoleInterface = {
 		"Open": function() {
 			try {
 				if (moCI.Browser.winBrowser==null) {
-					moCI.Browser.winBrowser = gui.Window.open('MoldeoBrowser.html', config.browser_window_options );
-					if (moCI.Browser.winBrowser) {
-						if (config.log.full) console.log("moCI.Browser.Open > registering events.");
-                        moCI.Browser.winBrowser.moveTo(win.x, win.y-330);
-						moCI.Browser.winVisible	= true;
-						//moCI.Browser.winBrowser.opener = gui.Window.get();
-						moCI.Browser.winBrowser.on('loaded', moCI.Browser.initBrowser);
-						//moCI.Browser.winBrowser.on('focus', moCI.Browser.initBrowser);
-						moCI.Browser.winBrowser.on('closed', function() {
-							console.log("Browser closed!");
-							moCI.Browser.winBrowser = null;
-							moCI.Browser.initialized = false;
-						});
-						moCI.Browser.winBrowser.on('close', function() {
-							console.log("Browser closing!");
-							moCI.Browser.winBrowser = null;
-							moCI.Browser.initialized = false;
-							this.close(true);
-						});
-						///*setTimeout( moCI.Browser.initBrowser, 1000 );*/
+					gui.Window.open('MoldeoBrowser.html', config.browser_window_options, function(open_win) {
+						moCI.Browser.winBrowser = open_win;
+						if (moCI.Browser.winBrowser) {
+							if (config.log.full) console.log("moCI.Browser.Open > registering events.");
+	                        moCI.Browser.winBrowser.moveTo(win.x, win.y-330);
+							moCI.Browser.winVisible	= true;
+							//moCI.Browser.winBrowser.opener = gui.Window.get();
+							moCI.Browser.winBrowser.on('loaded', moCI.Browser.initBrowser);
+							//moCI.Browser.winBrowser.on('focus', moCI.Browser.initBrowser);
+							moCI.Browser.winBrowser.on('closed', function() {
+								console.log("Browser closed!");
+								moCI.Browser.winBrowser = null;
+								moCI.Browser.initialized = false;
+							});
+							moCI.Browser.winBrowser.on('close', function() {
+								console.log("Browser closing!");
+								moCI.Browser.winBrowser = null;
+								moCI.Browser.initialized = false;
+								this.close(true);
+							});
+							///*setTimeout( moCI.Browser.initBrowser, 1000 );*/
 
-                        setTimeout( function() { if (moCI.Browser.winBrowser) moCI.Browser.winBrowser.focus(); }, 2000 );
-					} else {
-						console.error("moCI.Browser.Open > moCI.Browser.winBrowser NULL: ", moCI.Browser.winBrowser);
-					}
+	                        setTimeout( function() { if (moCI.Browser.winBrowser) moCI.Browser.winBrowser.focus(); }, 2000 );
+						} else {
+							console.error("moCI.Browser.Open > moCI.Browser.winBrowser NULL: ", moCI.Browser.winBrowser);
+						}
+					} );
+
 				} else {
 					if (config.log.full) console.log("Browser.Open() > just show it",moCI.Browser.winBrowser.window);
 
@@ -2980,6 +2983,7 @@ var ConsoleInterface = {
 				}
 			} catch(err) {
 				console.error("Open:",err);
+				alert(err);
 			}
 
 
@@ -3377,9 +3381,13 @@ var ConsoleInterface = {
 		winBrowser: null,
 		"Open": function() {
 			if (moCI.Synchronizer.winBrowser==null) {
-				moCI.Synchronizer.winBrowser = gui.Window.open('MoldeoSynchronizer.html', config.browser_window_options );
+				gui.Window.open('MoldeoSynchronizer.html', config.browser_window_options, function(open_win) {
+					moCI.Synchronizer.winBrowser = open_win;
+				} );
 			} else {
-				moCI.Synchronizer.winBrowser = gui.Window.open('MoldeoSynchronizer.html', config.browser_window_options );
+				gui.Window.open('MoldeoSynchronizer.html', config.browser_window_options, function(open_win) {
+					moCI.Synchronizer.winBrowser = open_win;
+				} );
 			}
 		},
 	},
@@ -3893,46 +3901,49 @@ var ConsoleInterface = {
 		moCI.Control.controlOptions = options;
 		if (moCI.Control.winPreferences==null) {
 
-			moCI.Control.winPreferences = gui.Window.open('MoldeoPreferences.html', config.browser_window_options);
-			if (moCI.Control.winPreferences) {
-				moCI.Control.winPreferences.moveTo(win.x, win.y-230);
-				moCI.Control.winPreferences.moCI = moCI;
-				moCI.Control.winPreferences.on('loaded', function() {
-					moCI.Control.Preferences.document = moCI.Control.winPreferences.window.document;
-					moCI.Control.winPreferences.window.moCI = moCI;
-					moCI.Control.Preferences.initialized = true;
-					//moCI.Control.controlOptions["stdout_stream"].resume();
-					var html = "";
-					for( var field in config) {
-						value = config[field];
-						console.log(field, typeof value);
-						html+= moCI.OpenFieldPreference( field, config, "" );
-						//if (typeof value == "object" )
-					}
-					var form = moCI.Control.Preferences.document.getElementById("edit_preferences");
-					if (form) {
+			gui.Window.open('MoldeoPreferences.html', config.browser_window_options, function(open_win) {
+				moCI.Control.winPreferences = open_win;
+				if (moCI.Control.winPreferences) {
+					moCI.Control.winPreferences.moveTo(win.x, win.y-230);
+					moCI.Control.winPreferences.moCI = moCI;
+					moCI.Control.winPreferences.on('loaded', function() {
+						moCI.Control.Preferences.document = moCI.Control.winPreferences.window.document;
+						moCI.Control.winPreferences.window.moCI = moCI;
+						moCI.Control.Preferences.initialized = true;
+						//moCI.Control.controlOptions["stdout_stream"].resume();
+						var html = "";
+						for( var field in config) {
+							value = config[field];
+							console.log(field, typeof value);
+							html+= moCI.OpenFieldPreference( field, config, "" );
+							//if (typeof value == "object" )
+						}
+						var form = moCI.Control.Preferences.document.getElementById("edit_preferences");
+						if (form) {
 
-						form.innerHTML = html;
-					}
+							form.innerHTML = html;
+						}
 
-					//$(".tpl_edit_preferences").html(html)
-				});
-				//moCI.Browser.winBrowser.on('focus', moCI.Browser.initBrowser);
-				moCI.Control.winPreferences.on('closed', function() {
-					console.log("Control Preferences closed!");
-					moCI.Control.winPreferences = null;
-					moCI.Control.Preferences.initialized = false;
-				});
-				moCI.Control.winPreferences.on('close', function() {
-					console.log("Control Preferences closing!");
-					moCI.Control.winPreferences = null;
-					moCI.Control.Preferences.initialized = false;
-					//if (moCI.Control.controlOptions["controlpreferencesprocess"]) {
-						//moCI.Render.renderOptions["renderprocess"].kill();
-					//}
-					this.close(true);
-				});
-			}
+						//$(".tpl_edit_preferences").html(html)
+					});
+					//moCI.Browser.winBrowser.on('focus', moCI.Browser.initBrowser);
+					moCI.Control.winPreferences.on('closed', function() {
+						console.log("Control Preferences closed!");
+						moCI.Control.winPreferences = null;
+						moCI.Control.Preferences.initialized = false;
+					});
+					moCI.Control.winPreferences.on('close', function() {
+						console.log("Control Preferences closing!");
+						moCI.Control.winPreferences = null;
+						moCI.Control.Preferences.initialized = false;
+						//if (moCI.Control.controlOptions["controlpreferencesprocess"]) {
+							//moCI.Render.renderOptions["renderprocess"].kill();
+						//}
+						this.close(true);
+					});
+				}
+			});
+
 		}
 	},
 

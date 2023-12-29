@@ -181,8 +181,24 @@ screen {
 	$(".x_minimize").on("click", function(event) { win.minimize(); /*gui.App.quit();*/ });
 	$(".x_maximize").on("click", function(event) { /*win.maximize();*/ /*gui.App.quit();*/ });
 	$(".x_debug").on("click", function(event) {
-    win.showDevTools(); /*gui.App.quit();*/
-    if (moCI) moCI.OpenPreferences();
+    //alert("dev tools");
+    try {
+      win.showDevTools(); /*gui.App.quit();*/
+    } catch(err) {
+      //alert(err);
+    }
+
+    try {
+      //alert("dev tools");
+      if (moCI) {
+        //alert("open preferences");
+        moCI.OpenPreferences();
+      }
+    } catch(err) {
+      //alert(err);
+    }
+
+
   });
 	$(".x_close").on("click", function(event) {
     win.close();

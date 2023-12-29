@@ -37,7 +37,7 @@ var config = {
 	"browser_window_options": {
 		icon: "moldeocontrol.png",
 		focus: false,
-		toolbar: false,
+		/*toolbar: false,*/
 		frame: false,
 		width: win.width,
 		height: 280,

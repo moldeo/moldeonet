@@ -361,7 +361,7 @@ var ReceiverFunction = function(msg, rinfo) {
 
 	} catch(err) {
 		console.error("oscServer > on message: ",err);
-		alert("Error en el formato de recepción de datos",err);
+		//alert("Error en el formato de recepción de datos",err);
 	}
 };
 

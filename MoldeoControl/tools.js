@@ -49,14 +49,15 @@ callProgram = function( programrelativepath, programarguments, callback ) {
 		moCI.console.log("Call Program: programrelativepath:",programrelativepath
 					," programarguments:",programarguments );
 
-		soptions = {};
+		soptions = { maxBuffer: undefined };
 		if (config.platform.indexOf("win")==0) {
 			console.log(process.execPath);
 			dcwd = process.execPath.replace("nw.exe","");
 			console.log(dcwd);
-			soptions = { cwd: dcwd };
+			soptions["cwd"] = dcwd;
 			dcwd = process.execPath.replace("nw.exe","")
 		}
+		//alert(soptions["maxBuffer"]);
 		child = exec( programrelativepath + " "+ programarguments, soptions,
 			function(error,stdout,stderr) {
 
