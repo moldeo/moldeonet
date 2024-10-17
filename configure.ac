@@ -77,14 +77,19 @@ case "$host" in
                 ;;
 esac
 
-nwjsfiles="nwjs/nw nwjs/nwjc nwjs/nw.pak nwjs/credits.html nwjs/libffmpegsumo.so nwjs/icudtl.dat"
+nwjsfiles="nwjs/nw nwjs/credits.html nwjs/nw_100_percent.pak  nwjs/nw_200_percent.pak  nwjs/resources.pak nwjs/icudtl.dat nwjs/v8_context_snapshot.bin"
+#nwjsfiles="nwjs/nw nwjs/nwjc nwjs/nw.pak nwjs/credits.html nwjs/libffmpegsumo.so nwjs/icudtl.dat"
 nwjslocalesfiles=nwjs/locales/*.*
+nwjslibfiles=nwjs/lib/*.*
+nwjsswiftshaderfiles=nwjs/swiftshader/*.*
 moldeonetdir=${prefix}/share/moldeonet
 moldeocontroldir=${moldeonetdir}/moldeocontrol
 moldeocontrolapp=${moldeonetdir}/MoldeoControl.nw
 nwjsdir=${prefix}/bin/nwjs
 nwjsexe=${nwjsdir}/nw
 nwjslocalesdir=${nwjsdir}/locales
+nwjslibdir=${nwjsdir}/lib
+nwjsswiftshaderdir=${nwjsdir}/swiftshader
 nwjsfileszip=
 nwjsfilesunzip=
 nwjspermissions=
@@ -124,11 +129,16 @@ AC_SUBST([nwjsfilesunzip],$nwjsfilesunzip)
 AC_SUBST([moldeonetdir],$moldeonetdir)
 AC_SUBST([moldeocontroldir],$moldeocontroldir)
 AC_SUBST([moldeocontrolapp],$moldeocontrolapp)
+
 AC_SUBST([nwjsdir],$nwjsdir)
 AC_SUBST([nwjsexe],$nwjsexe)
 AC_SUBST([nwjslocalesdir],$nwjslocalesdir)
+AC_SUBST([nwjslibdir],$nwjslibdir)
+AC_SUBST([nwjsswiftshaderdir],$nwjsswiftshaderdir)
 AC_SUBST([nwjsfiles],$nwjsfiles)
 AC_SUBST([nwjslocalesfiles],$nwjslocalesfiles)
+AC_SUBST([nwjslibfiles],$nwjslibfiles)
+AC_SUBST([nwjsswiftshaderfiles],$nwjsswiftshaderfiles)
 AC_SUBST([nwjspermissions],$nwjspermissions)
 
 AC_CONFIG_FILES([moldeo], [chmod +x moldeo])

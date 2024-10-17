@@ -98,6 +98,8 @@ sed -i -e 's/Initial release (Closes: #nnnn)  <nnnn is the bug number of your IT
 echo "usr/bin" > debian/moldeonet.dirs
 echo "usr/bin/nwjs" >> debian/moldeonet.dirs
 echo "usr/bin/nwjs/locales" >> debian/moldeonet.dirs
+echo "usr/bin/nwjs/lib" >> debian/moldeonet.dirs
+echo "usr/bin/nwjs/swiftshader" >> debian/moldeonet.dirs
 echo "usr/share/applications" >> debian/moldeonet.dirs
 echo "usr/share/moldeonet" >> debian/moldeonet.dirs
 
@@ -105,6 +107,8 @@ echo "usr/share/moldeonet" >> debian/moldeonet.dirs
 echo "debian/moldeonet/usr/bin/*" > debian/moldeonet.install
 echo "debian/moldeonet/usr/bin/nwjs/*" >> debian/moldeonet.install
 echo "debian/moldeonet/usr/bin/nwjs/locales/*" >> debian/moldeonet.install
+echo "debian/moldeonet/usr/bin/nwjs/lib/*" >> debian/moldeonet.install
+echo "debian/moldeonet/usr/bin/nwjs/swiftshader/*" >> debian/moldeonet.install
 echo "debian/moldeonet/usr/share/applications/*" >> debian/moldeonet.install
 echo "debian/moldeonet/usr/share/moldeonet/*" >> debian/moldeonet.install
 
